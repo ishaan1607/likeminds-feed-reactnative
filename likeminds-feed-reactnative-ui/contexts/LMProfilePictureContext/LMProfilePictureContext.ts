@@ -3,7 +3,7 @@ import { LMProfilePictureProps } from "../../components/LMProfilePicture/types";
 
 export const LMProfilePictureContext = React.createContext({} as LMProfilePictureProps);
 
-export const useLMTextContext = <LMProfilePictureProps>() => {
+export const useLMProfilePictureContext = <LMProfilePictureProps>() => {
   const contextValue = useContext(LMProfilePictureContext) as unknown as LMProfilePictureProps;
   return contextValue;
 };

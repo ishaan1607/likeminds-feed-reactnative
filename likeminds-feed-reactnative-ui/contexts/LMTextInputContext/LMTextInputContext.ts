@@ -3,7 +3,7 @@ import { LMInputTextProps } from "../../components/LMTextInput/types";
 
 export const LMInputTextContext = React.createContext({} as LMInputTextProps);
 
-export const useLMTextContext = <LMInputTextProps>() => {
+export const useLMInputTextContext = <LMInputTextProps>() => {
   const contextValue = useContext(LMInputTextContext) as unknown as LMInputTextProps;
   return contextValue;
 };
