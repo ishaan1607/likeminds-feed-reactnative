@@ -1,11 +1,9 @@
 import {ActivityIndicator} from 'react-native';
-import React, { useContext } from 'react';
+import React from 'react';
+import {LMLoaderProps} from './types';
 import STYLES from '../../constants/constants';
-import { LMLoaderContext } from '../../contexts/LMLoaderContext/LMLoaderContext';
 
-const LMLoader = () => {
-  const {color, size} = useContext(LMLoaderContext)
-
+const LMLoader = ({color, size}: LMLoaderProps) => {
   return (
     <ActivityIndicator
       size={size ? size : 'large'}

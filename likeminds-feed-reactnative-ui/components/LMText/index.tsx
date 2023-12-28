@@ -1,30 +1,29 @@
 import { StyleSheet, Text } from "react-native";
-import React, { useContext } from "react";
-import {LMTextContext} from '../../contexts/LMTextContext/LMTextContext'
+import React from "react";
+import { LMTextProps } from "./types";
+import { defaultStyles } from "./styles";
 
-const LMText = () => {
-  const {textStyle, maxLines, children, onTextLayout, selectable}  = useContext(LMTextContext)
+const LMText = ({
+  maxLines,
+  textStyle,
+  selectable,
+  onTextLayout,
+  children,
+
+  ...textProps
+}: LMTextProps) => {
   return (
     // this renders the text component
     <Text
-      selectable={selectable ? selectable : false} // default selectable value is false
+      selectable={selectable ? selectable : true} // default selectable value is true
       numberOfLines={maxLines}
       onTextLayout={onTextLayout}
-      style={StyleSheet.flatten([defaultStyles.textStyle,textStyle])}
+      style={StyleSheet.flatten([defaultStyles.textStyle, textStyle])}
+      {...textProps}
     >
       {children}
     </Text>
   );
 };
 
-// default text style
-const defaultStyles = StyleSheet.create({
-  textStyle: {
-    color: "black",
-    fontSize: 14,
-    fontFamily: "Arial",
-    textAlign: "auto",
-    fontStyle: "normal",
-  },
-});
 export default LMText

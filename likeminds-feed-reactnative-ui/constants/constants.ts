@@ -1,3 +1,4 @@
+import { TextStyle } from "react-native";
 export default {
   $COLORS: {
     WHITE: '#ffffff',
@@ -11,4 +12,11 @@ export default {
     LIGHT: '#ffffff',
     DARK: '#000000',
   },
+  $FONT_WEIGHT: {
+    LIGHT: '300' as const,
+    REGULAR: '400' as const,
+    MEDIUM: '500' as const ,
+    BOLD: '600' as const,
+    BOLDER: '700' as const
+  }
 };

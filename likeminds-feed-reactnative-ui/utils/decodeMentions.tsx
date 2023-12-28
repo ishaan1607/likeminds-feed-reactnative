@@ -5,6 +5,7 @@ const REGEX_USER_SPLITTING = /(<<.+?\|route:\/\/[^>]+>>)/gu;
 const REGEX_USER_TAGGING =
   /<<(?<name>[^<>|]+)\|route:\/\/(?<route>[^?]+(\?.+)?)>>/g;
 
+  // this function detect links in a string
 function detectLinks(message: string, isLongPress?: boolean) {
   const regex =
     /((?:https?:\/\/)?(?:www\.)?(?:\w+\.)+\w+(?:\/\S*)?|\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b)/i;
@@ -49,6 +50,7 @@ function detectLinks(message: string, isLongPress?: boolean) {
   }
 }
 
+// this function convert the route to mentioned username
 const decode = (
   text: string | undefined,
   enableClick: boolean,

@@ -1,18 +1,10 @@
-import { LMText, LMButton, LMHeader, LMInputText, LMIcon, LMLoader, LMProfilePicture } from "./components";
-import { LMButtonContext, LMHeaderContext, LMIconContext, LMInputTextContext, LMLoaderContext, LMProfilePictureContext, LMTextContext } from "./contexts";
+import { LMText, LMButton, LMHeader, LMIcon, LMLoader , LMProfilePicture, LMInputText} from "./components";
 export {
   LMText,
   LMHeader,
   LMButton,
   LMIcon,
-  LMInputText,
   LMLoader,
   LMProfilePicture,
-  LMButtonContext,
-  LMHeaderContext,
-  LMIconContext,
-  LMInputTextContext,
-  LMLoaderContext,
-  LMProfilePictureContext,
-  LMTextContext
+  LMInputText
 }
