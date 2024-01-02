@@ -1,25 +1,21 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import React, { useContext, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
 import LMIcon from "../LMIcon";
-import STYLES from "../../constants/constants";
-import { LMTextContext } from "../../contexts/LMTextContext/LMTextContext";
+import { LMButtonProps } from "./types";
 import LMText from "../LMText";
-import { LMIconContext } from "../../contexts/LMIconContext/LMIconContext";
-import { LMButtonContext } from "../../contexts/LMButtonContext/LMButtonContext";
+import { defaultStyles } from "./styles";
 
-const LMButton = () => {
-  const {
-    text,
-    icon,
-    onTap,
-    placement,
-    isActive,
-    activeIcon,
-    activeText,
-    buttonStyle,
-    isClickable = false,
-  } = useContext(LMButtonContext);
-
+const LMButton = ({
+  text,
+  icon,
+  onTap,
+  placement,
+  isActive,
+  activeIcon,
+  activeText,
+  buttonStyle,
+  isClickable = false,
+}: LMButtonProps) => {
   const [active, setActive] = useState(isActive);
 
   // this function handles the active state of the button
@@ -53,15 +49,31 @@ const LMButton = () => {
           active ? (
             activeIcon ? (
               // this renders the icon in active state
-              <LMIconContext.Provider value={activeIcon}>
-                <LMIcon></LMIcon>
-              </LMIconContext.Provider>
+              <LMIcon
+                type={activeIcon.type}
+                width={activeIcon.width}
+                height={activeIcon.height}
+                iconUrl={activeIcon.iconUrl}
+                assetPath={activeIcon.assetPath}
+                color={activeIcon.color}
+                iconStyle={activeIcon.iconStyle}
+                boxFit={activeIcon.boxFit}
+                boxStyle={activeIcon.boxStyle}
+              />
             ) : null
           ) : (
             // this renders the icon in inactive state
-            <LMIconContext.Provider value={icon}>
-              <LMIcon></LMIcon>
-            </LMIconContext.Provider>
+            <LMIcon
+              type={icon.type}
+              width={icon.width}
+              height={icon.height}
+              iconUrl={icon.iconUrl}
+              assetPath={icon.assetPath}
+              color={icon.color}
+              iconStyle={icon.iconStyle}
+              boxFit={icon.boxFit}
+              boxStyle={icon.boxStyle}
+            />
           )
         ) : null}
         {/* text view */}
@@ -69,36 +81,34 @@ const LMButton = () => {
           active ? (
             activeText ? (
               // this renders the text for active state
-              <LMTextContext.Provider value={activeText}>
-                <LMText></LMText>
-              </LMTextContext.Provider>
+              <LMText
+                textStyle={StyleSheet.flatten([
+                  defaultStyles.buttonTextStyle,
+                  activeText.textStyle,
+                ])}
+                maxLines={activeText.maxLines}
+                selectable={activeText.selectable}
+              >
+                {activeText.children}
+              </LMText>
             ) : null
           ) : (
             // this renders the text in inactive state
-            <LMTextContext.Provider value={text}>
-              <LMText></LMText>
-            </LMTextContext.Provider>
+            <LMText
+              textStyle={StyleSheet.flatten([
+                defaultStyles.buttonTextStyle,
+                text.textStyle,
+              ])}
+              maxLines={text.maxLines}
+              selectable={text.selectable}
+            >
+              {text.children}
+            </LMText>
           )
         ) : null}
       </View>
     </TouchableOpacity>
   );
 };
-
-// default button style
-const defaultStyles = StyleSheet.create({
-  buttonViewStyle: {
-    backgroundColor: STYLES.$BACKGROUND_COLORS.LIGHT,
-    borderColor: STYLES.$COLORS.BLACK,
-    borderWidth: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 5,
-    borderRadius: 5,
-  },
-  buttonTextStyle: {
-    fontSize: 16,
-  },
-});
 
 export default LMButton;

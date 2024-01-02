@@ -1,6 +1,6 @@
 import {TextStyle, ViewStyle} from 'react-native';
-import {LMIconProps} from '../../LMIcon/types';
 import {LMAttachmentUI} from '../../../models';
+import { LMIconProps } from '../../LMIcon/types';
 
 export interface LMDocumentProps {
   attachments: Array<LMAttachmentUI>; // this represents the array of document attachments to be displayed

@@ -2,8 +2,8 @@ import {View, Text, StyleSheet, TouchableOpacity, Linking} from 'react-native';
 import React from 'react';
 import {LMLinkPreviewProps} from './types';
 import STYLES from '../../../constants/constants';
-import LMButton from '../../../base/LMButton';
 import LMImage from '../LMImage';
+import LMButton from '../../LMButton';
 
 const LMLinkPreview = ({
   attachments,

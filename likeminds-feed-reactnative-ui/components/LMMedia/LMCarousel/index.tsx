@@ -6,10 +6,7 @@ import LMImage from '../LMImage';
 import LMVideo from '../LMVideo';
 import layout from '../../../utils/layout';
 import STYLES from '../../../constants/constants';
-import {
-  IMAGE_ATTACHMENT_TYPE,
-  VIDEO_ATTACHMENT_TYPE,
-} from '../../../constants/strings';
+import { ATTACHMENT_TYPE } from '../../../constants/strings';
 
 const LMCarousel = ({
   attachments,
@@ -69,7 +66,7 @@ const LMCarousel = ({
       renderItem={({item, index}) => (
         <>
           {/* this section render image */}
-          {item?.attachmentType === IMAGE_ATTACHMENT_TYPE && (
+          {item?.attachmentType === ATTACHMENT_TYPE.IMAGE && (
             <LMImage
               imageUrl={item?.attachmentMeta?.url}
               width={imageItem?.width}
@@ -93,7 +90,7 @@ const LMCarousel = ({
             />
           )}
           {/* this section render video */}
-          {item?.attachmentType === VIDEO_ATTACHMENT_TYPE && (
+          {item?.attachmentType === ATTACHMENT_TYPE.VIDEO && (
             <LMVideo
               videoUrl={item?.attachmentMeta?.url}
               height={videoItem?.height}

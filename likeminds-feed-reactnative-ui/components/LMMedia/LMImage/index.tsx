@@ -1,11 +1,11 @@
 import {View, Text, Image, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {LMImageProps} from './types';
-import LMLoader from '../../../base/LMLoader';
 import layout from '../../../utils/layout';
 import STYLES from '../../../constants/constants';
 import {MEDIA_FETCH_ERROR} from '../../../constants/strings';
-import LMButton from '../../../base/LMButton';
+import LMLoader from '../../LMLoader';
+import LMButton from '../../LMButton';
 
 const LMImage = ({
   imageUrl,

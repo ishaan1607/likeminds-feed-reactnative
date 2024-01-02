@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
 import {ViewStyle} from 'react-native';
-import {LMButtonProps} from '../../LMButton/types';
+import { LMButtonProps } from '../../LMButton/types';
 
 export interface LMVideoProps {
   videoUrl: string; // url of the video to be displayed

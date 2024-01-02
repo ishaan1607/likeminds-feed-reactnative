@@ -10,11 +10,11 @@ import React, {useState} from 'react';
 // @ts-ignore the lib do not have TS declarations yet
 import Video from 'react-native-video';
 import {LMVideoProps} from './types';
-import LMLoader from '../../../base/LMLoader';
 import layout from '../../../utils/layout';
 import STYLES from '../../../constants/constants';
 import {MEDIA_FETCH_ERROR} from '../../../constants/strings';
-import LMButton from '../../../base/LMButton';
+import LMLoader from '../../LMLoader';
+import LMButton from '../../LMButton';
 
 const LMVideo = ({
   videoUrl,

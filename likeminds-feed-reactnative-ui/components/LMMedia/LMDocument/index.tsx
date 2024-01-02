@@ -12,9 +12,9 @@ import {LMDocumentProps} from './types';
 import STYLES from '../../../constants/constants';
 import {formatBytes} from '../../../utils';
 import {MIN_DOCUMENT_ITEM} from '../../../constants/strings';
-import { LMIconContext, LMButtonContext } from '../../../contexts';
-import LMIcon from '../../LMIcon'
+import LMIcon from '../../LMIcon';
 import LMButton from '../../LMButton';
+import LMText from '../../LMText';
 
 const LMDocument = ({
   attachments,
@@ -62,9 +62,17 @@ const LMDocument = ({
               style={StyleSheet.flatten([styles.docView, documentViewStyle])}>
               {/* checks if there is any custom pdf icon is present or not */}
               {documentIcon ? (
-                <LMIconContext.Provider value={documentIcon}>
-                  <LMIcon></LMIcon>
-                </LMIconContext.Provider>
+                <LMIcon
+                  type={documentIcon?.type}
+                  iconUrl={documentIcon?.iconUrl}
+                  assetPath={documentIcon?.assetPath}
+                  iconStyle={documentIcon?.iconStyle}
+                  color={documentIcon?.color}
+                  height={documentIcon?.height}
+                  width={documentIcon?.width}
+                  boxFit={documentIcon?.boxFit}
+                  boxStyle={documentIcon?.boxStyle}
+                />
               ) : (
                 <Image
                   source={require('../../../assets/images/pdf_icon3x.png')}
@@ -187,19 +195,16 @@ const LMDocument = ({
               </View>
               {/* this renders the cancel button */}
               {showCancel && (
-                <LMButtonContext.Provider>
-                  <LMButton></LMButton>
-                </LMButtonContext.Provider>
-                // <LMButton
-                //   onTap={onCancel ? () => onCancel(index) : () => null}
-                //   buttonStyle={styles.cancelButton}
-                //   icon={{
-                //     assetPath: require('../../../assets/images/crossCircle_icon3x.png'),
-                //     type: 'png',
-                //     height: 22,
-                //     width: 22,
-                //   }}
-                // />
+                <LMButton
+                  onTap={onCancel ? () => onCancel(index) : () => null}
+                  buttonStyle={styles.cancelButton}
+                  icon={{
+                    assetPath: require('../../../assets/images/crossCircle_icon3x.png'),
+                    type: 'png',
+                    height: 22,
+                    width: 22,
+                  }}
+                />
               )}
             </View>
           </TouchableOpacity>
@@ -213,10 +218,8 @@ const LMDocument = ({
           onPress={() => setShowFullList(true)}
           style={styles.showMoreView}
           accessibilityRole="button">
-          <LMText
-            text={`+ ${attachments.length - 2} More`}
-            textStyle={StyleSheet.flatten([styles.showMoreText])}
-          />
+          <LMText textStyle={StyleSheet.flatten([styles.showMoreText])}
+          >{`+ ${attachments.length - 2} More`}</LMText>
         </TouchableOpacity>
       )}
     </View>
