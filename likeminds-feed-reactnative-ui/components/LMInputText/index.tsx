@@ -42,6 +42,8 @@ const LMInputText: FC<LMInputTextProps> = ({
   disabled,
   rightIcon,
   autoFocus,
+  plainTextStyle,
+  mentionTextStyle,
 
   ...textInputProps
 }) => {
@@ -161,11 +163,11 @@ const LMInputText: FC<LMInputTextProps> = ({
             partType ? (
               <Text
                 key={`${index}-${data?.trigger ?? 'pattern'}`}
-                style={partType.textStyle ?? defaultMentionTextStyle}>
+                style={partType.textStyle ?? mentionTextStyle ? mentionTextStyle : defaultMentionTextStyle}>
                 {text}
               </Text>
             ) : (
-              decode(text, true)
+              <Text key={index}>{decode(text, true, plainTextStyle)}</Text>
             ),
           )}
         </Text>
