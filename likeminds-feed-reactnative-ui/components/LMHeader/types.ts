@@ -1,4 +1,6 @@
 import {ReactElement} from 'react';
+import { LMIconProps } from '../LMIcon/types';
+import { TextStyle } from 'react-native';
 
 export interface LMHeaderProps {
   heading?: string;
@@ -6,5 +8,7 @@ export interface LMHeaderProps {
   showBackArrow?: boolean;
   onBackPress?: () => void;
   subHeading?: string;
-  // backIcon
+  backIcon?: LMIconProps;
+  subHeadingStyle?: TextStyle;
+  headingStyle?: TextStyle
 }

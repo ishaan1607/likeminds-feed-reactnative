@@ -5,7 +5,6 @@ export const defaultStyles = StyleSheet.create({
     textStyle: {
       color: "black",
       fontSize: 14,
-      fontFamily: "Arial",
       textAlign: "auto",
       fontStyle: "normal",
     },

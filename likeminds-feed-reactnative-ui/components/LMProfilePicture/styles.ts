@@ -15,6 +15,5 @@ export const defaultStyles = StyleSheet.create({
       color: STYLES.$COLORS.WHITE,
       fontWeight: STYLES.$FONT_WEIGHT.MEDIUM,
       fontSize: 16,
-      fontFamily: "Arial",
     },
   });
