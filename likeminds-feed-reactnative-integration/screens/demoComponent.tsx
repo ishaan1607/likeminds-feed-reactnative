@@ -1,19 +1,23 @@
 import React from 'react';
-import {Button, Text, View} from 'react-native'
+import { Text, View} from 'react-native'
 import { useAppContext } from '../store/AppContext';
 
 const DemoComponent = () => {
   const { state, dispatch } = useAppContext();
 
-  const handleButtonClick = () => {
-    // Dispatch an action when the button is clicked
-    dispatch({ type: 'ACTION_TYPE', payload: 'new name' });
+  const handleIncrement = () => {
+    dispatch({ type: 'INCREMENT' });
+  };
+
+  const handleDecrement = () => {
+    dispatch({ type: 'DECREMENT' });
   };
 
   return (
     <View>
-      <Text>State value: {state.name}</Text>
-      <Text onPress={handleButtonClick}>Click me</Text>
+      <Text>State value: {state.counter.count}</Text>
+      <Text onPress={handleIncrement}>Increase</Text>
+      <Text onPress={handleDecrement}>Decrease</Text>
     </View>
   );
 };

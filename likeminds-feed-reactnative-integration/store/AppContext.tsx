@@ -1,59 +1,59 @@
-import React, { createContext, useReducer, useContext, ReactNode, Dispatch } from 'react';
+import React, {createContext, useReducer, useContext, ReactNode} from 'react';
+import {counterReducer, initialState} from './reducers/one';
+import {userInit, userReducer} from './reducers/two';
+import { ActionTypes } from './actions/types';
 
-// Define your state and action types
+// Define your state type
 interface AppState {
-  // Define your state properties and types here
-  name: string
+  counter: initialState;
+  user: userInit;
 }
 
-type Action =
-  | { type: 'ACTION_TYPE'; payload: string }
-  // Add more action types as needed
-
-interface AppContextType {
-  state: AppState;
-  dispatch: Dispatch<Action>;
+export interface AppAction {
+  type: ActionTypes;
+  payload?: any;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+// Combine your reducers
+const rootReducer = (state: AppState, action: AppAction): AppState => ({
+  counter: counterReducer(state.counter, action),
+  user: userReducer(state.user, action),
+});
 
-const initialState: AppState = {
-  // Set initial state properties
-  name:'old name'
-};
+// Create your context
+const AppContext = createContext<
+  {state: AppState; dispatch: React.Dispatch<AppAction>} | undefined
+>(undefined);
 
-const reducer = (state: AppState, action: Action): AppState => {
-  switch (action.type) {
-    case 'ACTION_TYPE':
-      // Handle your actions and update state accordingly
-      return {
-        ...state,name : action.payload
-        // Update state based on the action
-      };
-    // Add more cases as needed
-    default:
-      return state;
-  }
-};
-
+// Create a context provider component
 interface AppProviderProps {
   children: ReactNode;
 }
 
-export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+const initState = {
+  counter: {count: 0, type: ''},
+  user: {user: null, age: 0},
+};
+
+const AppProvider: React.FC<AppProviderProps> = ({
+  children,
+}: AppProviderProps) => {
+  const [state, dispatch] = useReducer(rootReducer, initState);
 
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
+    <AppContext.Provider value={{state, dispatch}}>
       {children}
     </AppContext.Provider>
   );
 };
 
-export const useAppContext = (): AppContextType => {
+// Create a custom hook to use the context
+const useAppContext = () => {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error('useAppContext must be used within an AppProvider');
   }
   return context;
 };
+
+export {AppProvider, useAppContext};
