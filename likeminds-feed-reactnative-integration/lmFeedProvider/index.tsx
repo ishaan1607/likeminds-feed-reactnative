@@ -8,11 +8,12 @@ import React, {
 import STYLES from "../constants/Styles";
 import { StyleSheet, View } from "react-native";
 import { Credentials } from "../credentials";
-import { LMFeedClient } from "@likeminds.community/feed-js";
+import { LMFeedClient } from "@likeminds.community/feed-js-beta";
 import { Client } from "../client";
 import { LMFeedProviderProps, ThemeContextProps } from "./types";
 import { useAppContext } from "../store/AppContext";
 import { INIT_API_SUCCESS, PROFILE_DATA_SUCCESS } from "../store/actions/types";
+import { UniversalFeed} from "../screens";
 
 // Create the theme context
 export const LMFeedStylesContext = createContext<ThemeContextProps | undefined>(
@@ -45,6 +46,7 @@ export const LMFeedProvider = ({
   userName,
   userUniqueId,
   themeStyles,
+  newPostButtonStyles
 }: LMFeedProviderProps): React.JSX.Element => {
   const [isInitiated, setIsInitiated] = useState(false);
   const {state, dispatch } = useAppContext();
@@ -92,7 +94,8 @@ export const LMFeedProvider = ({
 
   return isInitiated ? (
     <LMFeedContext.Provider value={myClient}>
-      <LMFeedStylesContext.Provider value={{ themeStyles }}>
+      <LMFeedStylesContext.Provider value={{ newPostButtonStyles }}>
+        <UniversalFeed />
         <View style={styles.flexStyling}>{children}</View>
       </LMFeedStylesContext.Provider>
     </LMFeedContext.Provider>

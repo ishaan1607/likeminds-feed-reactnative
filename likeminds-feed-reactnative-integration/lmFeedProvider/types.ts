@@ -1,5 +1,5 @@
-import React from 'react'
-import {LMFeedClient} from '@likeminds.community/feed-js';
+import React from "react";
+import { LMFeedClient } from "@likeminds.community/feed-js-beta";
 
 interface TextStyles {
   fontSize: number;
@@ -14,9 +14,20 @@ interface ThemeStyles {
   secondaryColor?: string;
   lightBackgroundColor?: string;
 }
+interface NewPostButtonStylesProps {
+  backgroundColor: string;
+  width: string;
+  padding: string;
+  borderRadius: number;
+  shadowOpacity: number;
+  shadowRadius: number;
+  elevation: number;
+  shadowColor: string;
+}
 
 export interface ThemeContextProps {
-    textStyle?: TextStyles
+  textStyle?: TextStyles;
+  newPostButtonStyles?: NewPostButtonStylesProps;
 }
 
 export interface LMFeedProviderProps {
@@ -25,4 +36,5 @@ export interface LMFeedProviderProps {
   userName: string;
   userUniqueId: string;
   themeStyles?: ThemeStyles;
+  newPostButtonStyles?: NewPostButtonStylesProps;
 }

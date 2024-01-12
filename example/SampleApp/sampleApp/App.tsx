@@ -1,13 +1,31 @@
 import React from 'react';
-import {AppProvider, LMFeedProvider} from 'likeminds-feed-reactnative-integration';
-import { myClient } from '.';
-import { Text } from 'react-native';
+import {
+  AppProvider,
+  LMFeedProvider,
+} from 'likeminds-feed-reactnative-integration';
+import {myClient} from '.';
+import {Text} from 'react-native';
 const App = () => {
+  // custom style of new post button
+  const newPostStyle = {
+    backgroundColor: 'red',
+    width: '40%',
+    padding: '10%',
+    borderRadius: 35,
+    shadowOpacity: 10,
+    shadowRadius: 10,
+    elevation: 10,
+    shadowColor: '#000',
+  };
   return (
     <AppProvider>
-    <LMFeedProvider myClient={myClient} userName='user123' userUniqueId='fed69eac-2857-4fe6-af05-830c0950e032'>
-      <Text>Example app</Text>
-    </LMFeedProvider>
+      <LMFeedProvider
+        myClient={myClient}
+        userName="user123"
+        userUniqueId="0e53748a-969b-44c6-b8fa-a4c8e1eb1208"
+        newPostButtonStyles={newPostStyle}>
+        <Text>Sample app</Text>
+      </LMFeedProvider>
     </AppProvider>
   );
 };
