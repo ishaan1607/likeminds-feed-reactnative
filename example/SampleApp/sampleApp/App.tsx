@@ -4,10 +4,10 @@ import {
   LMFeedProvider,
 } from 'likeminds-feed-reactnative-integration';
 import {myClient} from '.';
-import {Text} from 'react-native';
+import {Text, ViewStyle} from 'react-native';
 const App = () => {
   // custom style of new post button
-  const newPostStyle = {
+  const newPostStyle: ViewStyle = {
     backgroundColor: 'red',
     width: '40%',
     padding: '10%',
@@ -23,7 +23,29 @@ const App = () => {
         myClient={myClient}
         userName="user123"
         userUniqueId="0e53748a-969b-44c6-b8fa-a4c8e1eb1208"
-        newPostButtonStyles={newPostStyle}>
+        universalFeedStyle={{
+          newPostButtonStyle: newPostStyle,
+          screenHeader: {headingViewStyle: {display: 'none'}},
+        }}
+        postListStyle={{
+          footer: {
+            likeIconButton: {
+              onTap: () => {
+                console.log('likeee');
+              },
+            },
+          },
+          header: {
+            onTap: () => {
+              console.log('outside header tap');
+            },
+            profilePicture: {
+              fallbackTextBoxStyle: {backgroundColor: 'pink'},
+              fallbackText: {children: <Text>dd</Text>},
+            },
+          },
+        }}
+        loaderStyle={{loader: {color:'green'}}}>
         <Text>Sample app</Text>
       </LMFeedProvider>
     </AppProvider>

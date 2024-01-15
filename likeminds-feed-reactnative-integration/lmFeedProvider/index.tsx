@@ -46,7 +46,9 @@ export const LMFeedProvider = ({
   userName,
   userUniqueId,
   themeStyles,
-  newPostButtonStyles
+  universalFeedStyle,
+  postListStyle,
+  loaderStyle
 }: LMFeedProviderProps): React.JSX.Element => {
   const [isInitiated, setIsInitiated] = useState(false);
   const {state, dispatch } = useAppContext();
@@ -94,7 +96,7 @@ export const LMFeedProvider = ({
 
   return isInitiated ? (
     <LMFeedContext.Provider value={myClient}>
-      <LMFeedStylesContext.Provider value={{ newPostButtonStyles }}>
+      <LMFeedStylesContext.Provider value={{ universalFeedStyle, postListStyle, loaderStyle }}>
         <UniversalFeed />
         <View style={styles.flexStyling}>{children}</View>
       </LMFeedStylesContext.Provider>
