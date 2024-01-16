@@ -1,9 +1,15 @@
-import {View, Text, StyleSheet, TouchableOpacity, Linking} from 'react-native';
-import React from 'react';
-import {LMLinkPreviewProps} from './types';
-import STYLES from '../../../constants/constants';
-import LMImage from '../LMImage';
-import LMButton from '../../LMButton';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
+import React from "react";
+import { LMLinkPreviewProps } from "./types";
+import LMImage from "../LMImage";
+import LMButton from "../../LMButton";
+import { styles } from "./styles";
 
 const LMLinkPreview = ({
   attachments,
@@ -28,19 +34,21 @@ const LMLinkPreview = ({
       onPress={() => {
         Linking.openURL(
           previewAttachmentData?.url
-            ? previewAttachmentData.url.includes('https://')
+            ? previewAttachmentData.url.includes("https://")
               ? previewAttachmentData.url
               : `https://${previewAttachmentData.url}`
-            : '',
+            : ""
         );
         onTap;
-      }}>
+      }}
+    >
       {/* link preview image */}
       <View
         style={StyleSheet.flatten([
           styles.previewContainer,
           linkPreviewBoxStyle,
-        ])}>
+        ])}
+      >
         {attachments && previewAttachmentData?.image && (
           <LMImage
             imageUrl={previewAttachmentData?.image}
@@ -51,9 +59,9 @@ const LMLinkPreview = ({
                 display:
                   showImage !== undefined
                     ? showImage
-                      ? 'flex'
-                      : 'none'
-                    : 'flex',
+                      ? "flex"
+                      : "none"
+                    : "flex",
               },
             ])}
             height={220}
@@ -72,12 +80,13 @@ const LMLinkPreview = ({
                 display:
                   showTitle !== undefined
                     ? showTitle
-                      ? 'flex'
-                      : 'none'
-                    : 'flex',
-                width: showCancel ? '92%' : '100%',
+                      ? "flex"
+                      : "none"
+                    : "flex",
+                width: showCancel ? "92%" : "100%",
               },
-            ])}>
+            ])}
+          >
             {previewAttachmentData?.title}
           </Text>
           {/* preview description */}
@@ -89,11 +98,12 @@ const LMLinkPreview = ({
                 display:
                   showDescription !== undefined
                     ? showDescription
-                      ? 'flex'
-                      : 'none'
-                    : 'flex',
+                      ? "flex"
+                      : "none"
+                    : "flex",
               },
-            ])}>
+            ])}
+          >
             {previewAttachmentData?.description}
           </Text>
           {/* preview url */}
@@ -105,12 +115,13 @@ const LMLinkPreview = ({
                 display:
                   showLinkUrl !== undefined
                     ? showLinkUrl
-                      ? 'flex'
-                      : 'none'
-                    : 'flex',
-                textTransform: 'lowercase',
+                      ? "flex"
+                      : "none"
+                    : "flex",
+                textTransform: "lowercase",
               },
-            ])}>
+            ])}
+          >
             {previewAttachmentData?.url}
           </Text>
         </View>
@@ -121,8 +132,8 @@ const LMLinkPreview = ({
               onTap={onCancel ? () => onCancel() : () => null}
               buttonStyle={styles.cancelButton}
               icon={{
-                assetPath: require('../../../assets/images/crossCircle_icon3x.png'),
-                type: 'png',
+                assetPath: require("../../../assets/images/crossCircle_icon3x.png"),
+                type: "png",
                 height: 22,
                 width: 22,
               }}
@@ -133,57 +144,5 @@ const LMLinkPreview = ({
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  postMedia: {
-    width: '100%',
-    paddingHorizontal: 15,
-  },
-  previewContainer: {
-    borderColor: STYLES.$COLORS.LIGHT_GREY,
-    borderWidth: 0.5,
-    borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  previewImage: {
-    width: '100%',
-    height: 220,
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
-  },
-  previewTitle: {
-    fontWeight: '500',
-    color: STYLES.$COLORS.TEXT_COLOR,
-    fontSize: 16,
-  },
-  previewDescription: {
-    color: STYLES.$COLORS.TEXT_COLOR,
-    paddingVertical: 2,
-    opacity: 0.8,
-  },
-  previewLink: {
-    color: STYLES.$COLORS.TEXT_COLOR,
-    fontSize: 12,
-    opacity: 0.7,
-  },
-  previewDetailView: {
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-  },
-  cancelButtonView: {
-    position: 'absolute',
-    right: 10,
-    top: 10,
-  },
-  previewImageView: {
-    borderRadius: 8,
-    width: '100%',
-  },
-  cancelButton: {
-    borderWidth: 0,
-    backgroundColor: 'transparent',
-  },
-});
 
 export default LMLinkPreview;

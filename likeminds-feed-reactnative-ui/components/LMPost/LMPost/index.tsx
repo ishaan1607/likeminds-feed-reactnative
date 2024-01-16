@@ -1,13 +1,14 @@
-import {StyleSheet, View} from 'react-native';
-import React from 'react';
-import LMPostHeader from '../LMPostHeader';
-import LMPostContent from '../LMPostContent';
-import LMPostMedia from '../LMPostMedia';
-import LMPostFooter from '../LMPostFooter';
-import {LMPostProps} from './types';
-import layout from '../../../utils/layout';
-import STYLES from '../../../constants/constants';
-import { ATTACHMENT_TYPE } from '../../../constants/strings';
+import { StyleSheet, View } from "react-native";
+import React from "react";
+import LMPostHeader from "../LMPostHeader";
+import LMPostContent from "../LMPostContent";
+import LMPostMedia from "../LMPostMedia";
+import LMPostFooter from "../LMPostFooter";
+import { LMPostProps } from "./types";
+import layout from "../../../utils/layout";
+import STYLES from "../../../constants/constants";
+import { ATTACHMENT_TYPE } from "../../../constants/strings";
+import { styles } from "./styles";
 
 const LMPost = ({
   post,
@@ -20,7 +21,7 @@ const LMPost = ({
   const updatedHeaderProps = {
     post: post,
     profilePicture: {
-      fallbackText: {children: post?.user?.name},
+      fallbackText: { children: post?.user?.name },
       imageUrl: post?.user?.imageUrl,
       size: headerProps?.profilePicture?.size,
       onTap: headerProps?.profilePicture?.onTap,
@@ -35,7 +36,7 @@ const LMPost = ({
         : () => null,
       modalPosition: headerProps?.postMenu.modalPosition
         ? headerProps?.postMenu.modalPosition
-        : {x: 0, y: 0},
+        : { x: 0, y: 0 },
       modalVisible: headerProps?.postMenu.modalVisible
         ? headerProps.postMenu.modalVisible
         : false,
@@ -110,7 +111,7 @@ const LMPost = ({
       {/* post content */}
       {(post?.text ||
         post?.attachments?.find(
-          item => item?.attachmentType === ATTACHMENT_TYPE.LINK,
+          (item) => item?.attachmentType === ATTACHMENT_TYPE.LINK
         )?.attachmentType === ATTACHMENT_TYPE.LINK) && (
         <LMPostContent {...updatedContentProps} />
       )}
@@ -123,14 +124,5 @@ const LMPost = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    width: layout.window.width,
-    backgroundColor: STYLES.$BACKGROUND_COLORS.LIGHT,
-    marginBottom: 10,
-    paddingTop: 10,
-  },
-});
 
 export default LMPost;

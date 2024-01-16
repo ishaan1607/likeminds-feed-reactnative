@@ -1,11 +1,10 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
-import {LMImageProps} from './types';
-import layout from '../../../utils/layout';
-import STYLES from '../../../constants/constants';
-import {MEDIA_FETCH_ERROR} from '../../../constants/strings';
-import LMLoader from '../../LMLoader';
-import LMButton from '../../LMButton';
+import { View, Text, Image, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { LMImageProps } from "./types";
+import { MEDIA_FETCH_ERROR } from "../../../constants/strings";
+import LMLoader from "../../LMLoader";
+import LMButton from "../../LMButton";
+import { defaultStyles } from "./styles";
 
 const LMImage = ({
   imageUrl,
@@ -31,13 +30,14 @@ const LMImage = ({
             defaultStyles.imageStyle,
             defaultStyles.loaderView,
             imageStyle,
-          ]}>
+          ]}
+        >
           {loaderWidget ? loaderWidget : <LMLoader />}
         </View>
       ) : null}
       {/* this renders the image */}
       <Image
-        source={{uri: imageUrl}}
+        source={{ uri: imageUrl }}
         onLoad={() => setLoading(false)}
         onError={() => setError(true)}
         style={StyleSheet.flatten([
@@ -57,8 +57,8 @@ const LMImage = ({
             onTap={onCancel ? () => onCancel(imageUrl) : () => null}
             buttonStyle={defaultStyles.cancelButton}
             icon={{
-              assetPath: require('../../../assets/images/crossCircle_icon3x.png'),
-              type: 'png',
+              assetPath: require("../../../assets/images/crossCircle_icon3x.png"),
+              type: "png",
               height: 22,
               width: 22,
             }}
@@ -72,7 +72,8 @@ const LMImage = ({
             defaultStyles.imageStyle,
             defaultStyles.errorView,
             imageStyle,
-          ])}>
+          ])}
+        >
           {errorWidget ? (
             errorWidget
           ) : (
@@ -83,43 +84,5 @@ const LMImage = ({
     </View>
   );
 };
-
-const defaultStyles = StyleSheet.create({
-  imageStyle: {
-    height: 325,
-    width: layout.window.width,
-    resizeMode: 'contain',
-  },
-  imageContainer: {
-    backgroundColor: STYLES.$COLORS.BLACK,
-    width: layout.window.width,
-  },
-  loaderView: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  errorView: {
-    backgroundColor: STYLES.$COLORS.LIGHT_GREY,
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  errorText: {
-    color: STYLES.$COLORS.RED,
-  },
-  cancelButtonView: {
-    position: 'absolute',
-    right: 15,
-    top: 15,
-    zIndex: 2000,
-  },
-  cancelButton: {
-    borderWidth: 0,
-    backgroundColor: 'transparent',
-  },
-});
 
 export default LMImage;

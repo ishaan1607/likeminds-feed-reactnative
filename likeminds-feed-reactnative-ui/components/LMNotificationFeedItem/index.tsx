@@ -1,14 +1,13 @@
-import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
-import React from 'react';
-import LMProfilePicture from '../LMProfilePicture';
-import layout from '../../utils/layout';
-import LMText from '../LMText';
-import {timeStamp} from '../../utils';
-import STYLES from '../../constants/constants';
-import {LMNotificationFeedItemProps} from './types';
-import LMIcon from '../LMIcon';
-import { ATTACHMENT_TYPE } from '../../constants/strings';
-
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import React from "react";
+import LMProfilePicture from "../LMProfilePicture";
+import LMText from "../LMText";
+import { timeStamp } from "../../utils";
+import STYLES from "../../constants/constants";
+import { LMNotificationFeedItemProps } from "./types";
+import LMIcon from "../LMIcon";
+import { ATTACHMENT_TYPE } from "../../constants/strings";
+import { styles } from "./styles";
 
 const LMNotificationFeedItem = ({
   activity,
@@ -25,12 +24,12 @@ const LMNotificationFeedItem = ({
   // storing the value of attachment type of the attachment if present
   const activityAttachmentType = activityAttachments
     ? activityAttachments[0].attachmentType
-    : '';
+    : "";
   //creating profile picture props as per customization
   const updatedProfilePictureProps = userProfilePicture
     ? userProfilePicture
     : {
-        fallbackText: {children:<Text>{activity.activityByUser.name}</Text>},
+        fallbackText: { children: <Text>{activity.activityByUser.name}</Text> },
         size: 50,
         imageUrl: activity.activityByUser.imageUrl,
       };
@@ -39,12 +38,14 @@ const LMNotificationFeedItem = ({
       style={StyleSheet.flatten([
         styles.container,
         boxStyle,
-        {backgroundColor: activity.isRead ? '' : STYLES.$COLORS.LIGHT_GREY},
-      ])}>
+        { backgroundColor: activity.isRead ? "" : STYLES.$COLORS.LIGHT_GREY },
+      ])}
+    >
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={onTap}
-        style={styles.flexView}>
+        style={styles.flexView}
+      >
         {/* profile avatar view */}
         <View>
           {/* profile picture section */}
@@ -55,7 +56,7 @@ const LMNotificationFeedItem = ({
             (activityAttachmentType === ATTACHMENT_TYPE.IMAGE ||
             activityAttachmentType === ATTACHMENT_TYPE.VIDEO ? (
               <LMIcon
-                assetPath={require('../../assets/images/notification_image3x.png')}
+                assetPath={require("../../assets/images/notification_image3x.png")}
                 type="png"
                 boxStyle={styles.notificationTypeIcon}
                 height={35}
@@ -64,7 +65,7 @@ const LMNotificationFeedItem = ({
             ) : // show document icon
             activityAttachmentType === ATTACHMENT_TYPE.DOCUMENT ? (
               <LMIcon
-                assetPath={require('../../assets/images/notification_doc3x.png')}
+                assetPath={require("../../assets/images/notification_doc3x.png")}
                 type="png"
                 boxStyle={styles.notificationTypeIcon}
                 height={35}
@@ -75,25 +76,26 @@ const LMNotificationFeedItem = ({
 
         {/* activity content text */}
         <View style={styles.contentView}>
-          <LMText
-            textStyle={StyleSheet.flatten([activityTextStyle])}
-          >{activity.activityText.replace(/<<([^|]+)\|[^>]+>>/g, '$1')}</LMText>
-          <LMText
-            textStyle={StyleSheet.flatten([activityDateStyle])}
-          >{timeStamp(Number(activity.createdAt))} ago</LMText>
+          <LMText textStyle={StyleSheet.flatten([activityTextStyle])}>
+            {activity.activityText.replace(/<<([^|]+)\|[^>]+>>/g, "$1")}
+          </LMText>
+          <LMText textStyle={StyleSheet.flatten([activityDateStyle])}>
+            {timeStamp(Number(activity.createdAt))} ago
+          </LMText>
         </View>
       </TouchableOpacity>
       {/* menu icon section */}
       <TouchableOpacity
         activeOpacity={0.8}
-        hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
-        onPress={onMenuTap}>
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        onPress={onMenuTap}
+      >
         <>
           {menuIcon ? (
             menuIcon
           ) : (
             <LMIcon
-              assetPath={require('../../assets/images/three_dots3x.png')}
+              assetPath={require("../../assets/images/three_dots3x.png")}
               type="png"
               iconStyle={styles.iconSize}
             />
@@ -103,30 +105,5 @@ const LMNotificationFeedItem = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    padding: 10,
-  },
-  iconSize: {
-    width: layout.normalize(22),
-    height: layout.normalize(22),
-    resizeMode: 'contain',
-  },
-  postedDetail: {
-    color: STYLES.$COLORS.BLACK,
-    fontSize: 14,
-  },
-  flexView: {
-    flexDirection: 'row',
-  },
-  notificationTypeIcon: {
-    position: 'absolute',
-    bottom: -10,
-    right: -8,
-  },
-  contentView: {width: '75%', marginLeft: 10},
-});
 
 export default LMNotificationFeedItem;
