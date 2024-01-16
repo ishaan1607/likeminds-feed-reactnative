@@ -4,12 +4,12 @@ import {
   Pressable,
   TouchableOpacity,
   Platform,
-} from 'react-native';
-import React from 'react';
-import STYLES from '../../../constants/constants';
-import {LMPostMenuProps} from './types';
-import layout from '../../../utils/layout';
-import LMText from '../../LMText';
+} from "react-native";
+import React from "react";
+import { LMPostMenuProps } from "./types";
+import layout from "../../../utils/layout";
+import LMText from "../../LMText";
+import { styles } from "./styles";
 
 const LMPostMenu = ({
   postId,
@@ -27,14 +27,16 @@ const LMPostMenu = ({
       visible={modalVisible}
       animationType="fade"
       transparent={true}
-      onRequestClose={onCloseModal}>
+      onRequestClose={onCloseModal}
+    >
       {/* modal backdrop section */}
       <Pressable
         style={StyleSheet.flatten([
           styles.modal,
-          {backgroundColor: backdropColor},
+          { backgroundColor: backdropColor },
         ])}
-        onPress={onCloseModal}>
+        onPress={onCloseModal}
+      >
         {/* Menu list View */}
         <Pressable
           style={StyleSheet.flatten([
@@ -43,14 +45,15 @@ const LMPostMenu = ({
             {
               top:
                 modalPosition.y > layout.window.height / 2
-                  ? Platform.OS === 'ios'
+                  ? Platform.OS === "ios"
                     ? menuItems.length > 1
                       ? modalPosition.y - 110
                       : modalPosition.y - 65
                     : modalPosition.y - 15
                   : modalPosition.y - 10,
             },
-          ])}>
+          ])}
+        >
           {/* Menu List Items */}
           {menuItems &&
             menuItems?.map((item, index) => {
@@ -61,13 +64,16 @@ const LMPostMenu = ({
                   onPress={() => {
                     onSelected(postId, item.id);
                     onCloseModal();
-                  }}>
+                  }}
+                >
                   <LMText
                     textStyle={StyleSheet.flatten([
                       styles.listText,
                       menuItemTextStyle,
                     ])}
-                  >{item.title}</LMText>
+                  >
+                    {item.title}
+                  </LMText>
                 </TouchableOpacity>
               );
             })}
@@ -76,30 +82,5 @@ const LMPostMenu = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  modal: {
-    flex: 1,
-  },
-  modalContainer: {
-    backgroundColor: STYLES.$BACKGROUND_COLORS.LIGHT,
-    elevation: 8,
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    minWidth: '55%',
-    position: 'absolute',
-    right: 15,
-    shadowOffset: {width: 2, height: 2},
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    borderRadius: 5,
-  },
-  listText: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: STYLES.$COLORS.TEXT_COLOR,
-    marginVertical: 12,
-  },
-});
 
 export default LMPostMenu;

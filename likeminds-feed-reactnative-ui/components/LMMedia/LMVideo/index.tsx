@@ -5,16 +5,15 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
-} from 'react-native';
-import React, {useState} from 'react';
+} from "react-native";
+import React, { useState } from "react";
 // @ts-ignore the lib do not have TS declarations yet
-import Video from 'react-native-video';
-import {LMVideoProps} from './types';
-import layout from '../../../utils/layout';
-import STYLES from '../../../constants/constants';
-import {MEDIA_FETCH_ERROR} from '../../../constants/strings';
-import LMLoader from '../../LMLoader';
-import LMButton from '../../LMButton';
+import Video from "react-native-video";
+import { LMVideoProps } from "./types";
+import { MEDIA_FETCH_ERROR } from "../../../constants/strings";
+import LMLoader from "../../LMLoader";
+import LMButton from "../../LMButton";
+import { defaultStyles } from "./styles";
 
 const LMVideo = ({
   videoUrl,
@@ -43,7 +42,7 @@ const LMVideo = ({
   // this throw error and ask for currentVideoUrl if auto play is set true
   if (autoPlay && !currentVideoUrl) {
     throw new Error(
-      "Property 'currentVideoUrl' is missing in type '{ videoUrl: string; autoPlay: true; }' but required in type 'LMVideoProps'.",
+      "Property 'currentVideoUrl' is missing in type '{ videoUrl: string; autoPlay: true; }' but required in type 'LMVideoProps'."
     );
   }
 
@@ -70,7 +69,7 @@ const LMVideo = ({
       {/* this renders the video */}
       <TouchableWithoutFeedback onPress={() => setViewController(true)}>
         <Video
-          source={{uri: videoUrl}}
+          source={{ uri: videoUrl }}
           key={videoUrl}
           onReadyForDisplay={() => setLoading(false)}
           onError={() => setError(true)}
@@ -111,8 +110,8 @@ const LMVideo = ({
             onTap={onCancel ? () => onCancel(videoUrl) : () => null}
             buttonStyle={defaultStyles.cancelButtonStyle}
             icon={{
-              assetPath: require('../../../assets/images/crossCircle_icon3x.png'),
-              type: 'png',
+              assetPath: require("../../../assets/images/crossCircle_icon3x.png"),
+              type: "png",
               height: 22,
               width: 22,
             }}
@@ -125,13 +124,15 @@ const LMVideo = ({
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => setViewController(false)}
-          style={[defaultStyles.videoStyle, defaultStyles.videoControllerView]}>
+          style={[defaultStyles.videoStyle, defaultStyles.videoControllerView]}
+        >
           <TouchableOpacity
             activeOpacity={0.8}
             style={defaultStyles.controllerZIndex}
             onPress={() => {
               setPlayingStatus(!playingStatus);
-            }}>
+            }}
+          >
             <>
               {/* this handles the toggle of play pause icon */}
               {playingStatus ? (
@@ -139,7 +140,7 @@ const LMVideo = ({
                   playButton
                 ) : (
                   <Image
-                    source={require('../../../assets/images/play_icon3x.png')}
+                    source={require("../../../assets/images/play_icon3x.png")}
                     style={defaultStyles.playPauseIconSize}
                   />
                 )
@@ -147,7 +148,7 @@ const LMVideo = ({
                 pauseButton
               ) : (
                 <Image
-                  source={require('../../../assets/images/pause_icon3x.png')}
+                  source={require("../../../assets/images/pause_icon3x.png")}
                   style={defaultStyles.playPauseIconSize}
                 />
               )}
@@ -158,47 +159,5 @@ const LMVideo = ({
     </View>
   );
 };
-
-const defaultStyles = StyleSheet.create({
-  videoContainer: {
-    width: layout.window.width,
-    backgroundColor: STYLES.$BACKGROUND_COLORS.DARK,
-  },
-  videoStyle: {
-    width: layout.window.width,
-    height: 325,
-    resizeMode: 'contain',
-  },
-  loaderView: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  errorView: {
-    backgroundColor: STYLES.$COLORS.LIGHT_GREY,
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  errorText: {
-    color: STYLES.$COLORS.RED,
-  },
-  cancelVideoView: {position: 'absolute', right: 15, top: 15, zIndex: 7000},
-  cancelButtonStyle: {
-    borderWidth: 0,
-    backgroundColor: 'transparent',
-  },
-  videoControllerView: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  controllerZIndex: {
-    zIndex: 5000,
-  },
-  playPauseIconSize: {width: 35, height: 35},
-});
 
 export default LMVideo;
