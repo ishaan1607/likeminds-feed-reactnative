@@ -7,13 +7,13 @@ import {
   TextInput,
   Image,
   Keyboard,
-} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import styles from './styles';
+} from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import styles from "./styles";
 import {
   GetReportTagsRequest,
   PostReportRequest,
-} from '@likeminds.community/feed-js-beta';
+} from "@likeminds.community/feed-js";
 import {
   COMMENT_REPORTED_SUCCESSFULLY,
   COMMENT_REPORT_ENTITY_TYPE,
@@ -28,13 +28,13 @@ import {
   REPORT_REASON_VALIDATION,
   REPORT_TAGS_TYPE,
   SOMETHING_WENT_WRONG,
-} from '../../constants/Strings';
-import {LMLoader} from 'likeminds_feed_reactnative_ui';
-import {SafeAreaView} from 'react-native';
-import {LMCommentUI, LMPostUI} from 'likeminds_feed_reactnative_ui';
-import { Client } from '../../client';
-import { useAppDispatch, useAppSelector } from '../../store/AppContext';
-import { REPORT_TAGS_SUCCESS } from '../../store/actions/types';
+} from "../../constants/Strings";
+import { LMLoader } from "likeminds_feed_reactnative_ui";
+import { SafeAreaView } from "react-native";
+import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
+import { Client } from "../../client";
+import { useAppDispatch, useAppSelector } from "../../store/AppContext";
+import { REPORT_TAGS_SUCCESS } from "../../store/actions/types";
 
 // interface for post report api request
 interface ReportRequest {
@@ -62,12 +62,12 @@ const ReportModal = ({
   commentDetail,
 }: ReportModalProps) => {
   const myClient = Client.myClient;
-  const dispatch  = useAppDispatch();
-  const state  = useAppSelector();
+  const dispatch = useAppDispatch();
+  const state = useAppSelector();
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const [otherReason, setOtherReason] = useState('');
+  const [otherReason, setOtherReason] = useState("");
   const [selectedId, setSelectedId] = useState(-1);
-  const reportTags = state.feed.reportTags
+  const reportTags = state.feed.reportTags;
 
   // this function calls the get report tags api for reporting a post
   const fetchReportTags = useCallback(async () => {
@@ -75,12 +75,12 @@ const ReportModal = ({
       type: REPORT_TAGS_TYPE, // type 3 for report tags
     };
     const reportTagsResponse = await myClient?.getReportTags(
-        GetReportTagsRequest.builder().settype(payload.type).build(),
+      GetReportTagsRequest.builder().settype(payload.type).build()
     );
     dispatch({
       type: REPORT_TAGS_SUCCESS,
-      payload: reportTagsResponse.getData()
-    })
+      payload: reportTagsResponse.getData(),
+    });
     return reportTagsResponse;
   }, [dispatch]);
 
@@ -92,7 +92,7 @@ const ReportModal = ({
     tagId,
     uuid,
   }: ReportRequest) => {
-    if (selectedIndex === 5 && otherReason === '') {
+    if (selectedIndex === 5 && otherReason === "") {
       // showToast();
     } else {
       const payload = {
@@ -106,16 +106,17 @@ const ReportModal = ({
       setSelectedIndex(-1);
       closeModal();
       const postReportResponse = await myClient?.postReport(
-          PostReportRequest.builder()
-            .setEntityId(payload.entityId)
-            .setEntityType(payload.entityType)
-            .setReason(payload.reason)
-            .setTagId(payload.tagId)
-            .setUuid(payload.uuid)
-            .build(),
+        PostReportRequest.builder()
+          .setEntityId(payload.entityId)
+          .setEntityType(payload.entityType)
+          .setReason(payload.reason)
+          .setTagId(payload.tagId)
+          .setUuid(payload.uuid)
+          .build()
       );
       // toast message action
       if (postReportResponse) {
+        // todo: handle toast later
         // dispatch(
         //   showToastMessage({
         //     isToast: true,
@@ -126,6 +127,7 @@ const ReportModal = ({
         //   }) as any,
         // );
       } else {
+        // todo: handle toast later
         // dispatch(
         //   showToastMessage({
         //     isToast: true,
@@ -137,6 +139,7 @@ const ReportModal = ({
     }
   };
 
+  // todo: handle toast later
   // this functions make the toast visible
   // const showToast = () => {
   //   Toast.show({
@@ -146,7 +149,7 @@ const ReportModal = ({
   //     visibilityTime: 1500,
   //   });
   // };
-
+  // todo: handle toast later
   // const renderToastView = () => {
   //   return (
   //     <View style={styles.toastViewStyle}>
@@ -179,36 +182,37 @@ const ReportModal = ({
         setSelectedId(-1);
         setSelectedIndex(-1);
         closeModal();
-      }}>
+      }}
+    >
       <SafeAreaView style={styles.page}>
         <TouchableOpacity
           activeOpacity={1}
           style={styles.contentBox}
-          onPress={() => Keyboard.dismiss()}>
+          onPress={() => Keyboard.dismiss()}
+        >
           {/* header section */}
           <View style={styles.titleView}>
             <Text style={styles.titleText}>Report Abuse</Text>
             <TouchableOpacity
               activeOpacity={0.8}
-              hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               onPress={() => {
                 setSelectedId(-1);
                 setSelectedIndex(-1);
                 closeModal();
-              }}>
+              }}
+            >
               <Image
-                source={require('../../assets/images/close_icon3x.png')}
+                source={require("../../assets/images/close_icon3x.png")}
                 style={styles.dropdownIcon}
               />
             </TouchableOpacity>
           </View>
-
           {/* modal content */}
           <View style={styles.contentView}>
             <Text style={styles.textHeading}>{REPORT_PROBLEM}</Text>
             <Text style={styles.text}>{REPORT_INSTRUSTION(reportType)}</Text>
           </View>
-
           {/* report tags list section */}
           <View style={styles.tagView}>
             {reportTags.length > 0 ? (
@@ -219,21 +223,24 @@ const ReportModal = ({
                     onPress={() => {
                       setSelectedIndex(index);
                       setSelectedId(res.id);
-                    }}>
+                    }}
+                  >
                     <View
                       style={[
                         styles.reasonsBtn,
                         index === selectedIndex
                           ? styles.selectedReasonItemView
                           : styles.defaultReasonItemView,
-                      ]}>
+                      ]}
+                    >
                       <Text
                         style={[
                           styles.btnText,
                           selectedIndex === index
                             ? styles.selectedReasonText
                             : styles.defaultReasonText,
-                        ]}>
+                        ]}
+                      >
                         {res.name}
                       </Text>
                     </View>
@@ -246,22 +253,21 @@ const ReportModal = ({
               </View>
             )}
           </View>
-
           {/* text input view for other reason text*/}
           {selectedIndex === 5 ? (
             <View style={styles.otherSection}>
               <TextInput
-                onChangeText={e => {
+                onChangeText={(e) => {
                   setOtherReason(e);
                 }}
                 style={styles.otherTextInput}
                 placeholder={REASON_FOR_DELETION_PLACEHOLDER}
                 value={otherReason}
-                placeholderTextColor={'#999999'}
+                placeholderTextColor={"#999999"}
               />
             </View>
           ) : null}
-
+          // todo: handle toast later
           {/* toast component */}
           {/* <Toast config={toastConfig} /> */}
           {/* report button */}
@@ -282,7 +288,7 @@ const ReportModal = ({
                             ? postDetail?.id
                             : commentDetail
                             ? commentDetail?.id
-                            : '',
+                            : "",
                         entityType:
                           reportType === POST_TYPE
                             ? POST_REPORT_ENTITY_TYPE
@@ -296,11 +302,12 @@ const ReportModal = ({
                             ? postDetail?.uuid
                             : commentDetail
                             ? commentDetail?.uuid
-                            : '',
+                            : "",
                       });
                     }
                   : () => null
-              }>
+              }
+            >
               <Text style={styles.reportBtnText}>REPORT</Text>
             </TouchableOpacity>
           </View>

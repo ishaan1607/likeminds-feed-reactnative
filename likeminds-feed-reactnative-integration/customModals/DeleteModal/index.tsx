@@ -12,9 +12,8 @@ import styles from './styles';
 import {
   DeleteCommentRequest,
   DeletePostRequest,
-} from '@likeminds.community/feed-js-beta';
+} from '@likeminds.community/feed-js';
 import DeleteReasonsModal from '../DeleteReasonsModal';
-// import {showToastMessage} from '../../store/actions/toast';
 import {
   COMMENT_DELETE,
   CONFIRM_DELETE,
@@ -25,7 +24,6 @@ import {
   SOMETHING_WENT_WRONG,
 } from '../../constants/Strings';
 import STYLES from '../../constants/Styles';
-// import Toast from 'react-native-toast-message';
 import {NavigationService} from '../../navigation';
 import {LMCommentUI, LMPostUI} from 'likeminds_feed_reactnative_ui';
 import { useAppDispatch, useAppSelector } from '../../store/AppContext';
@@ -61,6 +59,7 @@ const DeleteModal = ({
   // this function calls the delete post api
   const postDelete = async () => {
     if (!deletionReason && loggedInUser.userUniqueId !== postDetail?.userId) {
+      // todo: handle toast later
       // showToast();
     } else {
       const payload = {
@@ -82,6 +81,7 @@ const DeleteModal = ({
       if (deletePostResponse) {
         setDeletionReason('');
         NavigationService.goBack();
+        // todo: handle toast later
         // dispatch(
         //   showToastMessage({
         //     isToast: true,
@@ -89,6 +89,7 @@ const DeleteModal = ({
         //   }) as any,
         // );
       } else {
+       // todo: handle toast later
         // dispatch(
         //   showToastMessage({
         //     isToast: true,
@@ -102,46 +103,7 @@ const DeleteModal = ({
 
   // this function calls the delete comment api
   const commentDelete = async () => {
-    if (
-      !deletionReason &&
-      loggedInUser.userUniqueId !== commentDetail?.userId
-    ) {
-      // showToast();
-    } else {
-      const payload = {
-        deleteReason: otherReason ? otherReason : deletionReason,
-        commentId: commentDetail?.id ? commentDetail.id : '',
-        postId: commentDetail?.postId ? commentDetail.postId : '',
-      };
-      displayModal(false);
-      // dispatch(deleteCommentStateHandler(payload) as any);
-      try {
-        const deleteCommentResponse = await dispatch(
-          // deleteComment(
-          //   DeleteCommentRequest.builder()
-          //     .setcommentId(payload.commentId)
-          //     .setpostId(payload.postId)
-          //     .setreason(payload.deleteReason)
-          //     .build(),
-          // ) as any,
-        );
-        setDeletionReason('');
-        // await dispatch(
-        //   showToastMessage({
-        //     isToast: true,
-        //     message: COMMENT_DELETE,
-        //   }) as any,
-        // );
-        return deleteCommentResponse;
-      } catch (error) {
-        // dispatch(
-        //   showToastMessage({
-        //     isToast: true,
-        //     message: SOMETHING_WENT_WRONG,
-        //   }) as any,
-        // );
-      }
-    }
+ 
   };
 
   // this callback function gets the reason of deletion from the reasons modal
@@ -149,6 +111,7 @@ const DeleteModal = ({
     setDeletionReason(val);
   };
 
+  // todo: handle toast later
   // this show the toast message over the modal
   // const showToast = () => {
   //   Toast.show({
@@ -158,7 +121,7 @@ const DeleteModal = ({
   //     visibilityTime: 1500,
   //   });
   // };
-
+// todo: handle toast later
   // const renderToastView = () => {
   //   return (
   //     <View>
@@ -205,6 +168,7 @@ const DeleteModal = ({
                   },
                 ]}
                 onPress={() => displayModal(false)}>
+                  // todo: handle toast later
                 {/* toast component */}
                 {/* <Toast config={toastConfig} /> */}
                 {/* main modal section */}

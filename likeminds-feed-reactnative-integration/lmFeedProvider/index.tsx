@@ -8,7 +8,7 @@ import React, {
 import STYLES from "../constants/Styles";
 import { StyleSheet, View } from "react-native";
 import { Credentials } from "../credentials";
-import { LMFeedClient } from "@likeminds.community/feed-js-beta";
+import { LMFeedClient } from "@likeminds.community/feed-js";
 import { Client } from "../client";
 import { LMFeedProviderProps, ThemeContextProps } from "./types";
 import { useAppDispatch, useAppSelector } from "../store/AppContext";

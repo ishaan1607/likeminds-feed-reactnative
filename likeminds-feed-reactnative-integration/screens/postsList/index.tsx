@@ -11,7 +11,7 @@ import {
   LikePostRequest,
   PinPostRequest,
   SavePostRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import { styles } from "./styles";
 import { LMPost, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { NavigationService } from "../../navigation";
@@ -155,7 +155,7 @@ const PostsList = React.memo(() => {
       const savePostResponse = await myClient?.savePost(
         SavePostRequest.builder().setpostId(payload.postId).build()
       );
-      // todo
+      // todo: handle toast later
       // await dispatch(
       //   showToastMessage({
       //     isToast: true,
@@ -164,7 +164,7 @@ const PostsList = React.memo(() => {
       // );
       return savePostResponse;
     } catch (error) {
-      // todo
+      // todo: handle toast later
       // dispatch(
       //   showToastMessage({
       //     isToast: true,
@@ -203,7 +203,7 @@ const PostsList = React.memo(() => {
       PinPostRequest.builder().setpostId(payload.postId).build()
     );
     if (pinPostResponse) {
-      // todo
+      // todo: handle toast later
       // dispatch(
       //   showToastMessage({
       //     isToast: true,
@@ -285,7 +285,7 @@ const PostsList = React.memo(() => {
                 activeOpacity={0.8}
                 style={{ marginBottom: 10, backgroundColor: "#e0e0e0" }}
                 onPress={() => {
-                  // todo
+                  // todo: handle later
                   // dispatch(clearPostDetail() as any);
                   NavigationService.navigate(POST_DETAIL, [
                     item?.id,
@@ -359,7 +359,7 @@ const PostsList = React.memo(() => {
                     likeTextButton: {
                       ...postListStyle?.footer?.likeTextButton,
                       onTap: () => {
-                        // todo
+                        // todo: handle later
                         //   dispatch(postLikesClear() as any);
                         NavigationService.navigate(LIKES_LIST, [
                           POST_LIKES,
@@ -371,7 +371,7 @@ const PostsList = React.memo(() => {
                     commentButton: {
                       ...postListStyle?.footer?.commentButton,
                       onTap: () => {
-                        // todo
+                        // todo: handle later
                         //   dispatch(clearPostDetail() as any);
                         NavigationService.navigate(POST_DETAIL, [
                           item?.id,

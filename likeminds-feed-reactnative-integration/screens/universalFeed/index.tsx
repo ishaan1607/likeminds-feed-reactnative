@@ -31,7 +31,7 @@ const UniversalFeed = React.memo(() => {
   const listRef = useRef<FlashList<LMPostUI>>(null);
   const LMFeedContextStyles = useLMFeedStyles();
   const { universalFeedStyle, loaderStyle } = LMFeedContextStyles;
-  // todo
+  // todo: handle later
   // const {mediaAttachmemnts, linkAttachments, postContent} = useAppSelector(
   //   state => state.createPost,
   //   );
@@ -77,14 +77,14 @@ const UniversalFeed = React.memo(() => {
             showCreatePost
               ? postUploading
                 ? dispatch()
-                : // todo
+                : // todo: handle toast later
                   // showToastMessage({
                   //   isToast: true,
                   //   message: POST_UPLOAD_INPROGRESS,
                   // }) as any,
                   NavigationService.navigate(CREATE_POST)
               : dispatch()
-          // todo
+          // todo: handle toast later
           //   showToastMessage({
           //     isToast: true,
           //     message: CREATE_POST_PERMISSION,
