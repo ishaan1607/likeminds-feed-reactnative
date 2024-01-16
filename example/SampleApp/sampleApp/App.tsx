@@ -7,7 +7,7 @@ import {myClient} from '.';
 import {Text, ViewStyle} from 'react-native';
 const App = () => {
   // custom style of new post button
-  const newPostStyle: ViewStyle = {
+  const newPostButtonStyle: ViewStyle = {
     backgroundColor: 'red',
     width: '40%',
     padding: '10%',
@@ -24,7 +24,7 @@ const App = () => {
         userName="user123"
         userUniqueId="0e53748a-969b-44c6-b8fa-a4c8e1eb1208"
         universalFeedStyle={{
-          newPostButtonStyle: newPostStyle,
+          newPostButtonStyle: newPostButtonStyle,
           screenHeader: {headingViewStyle: {display: 'none'}},
         }}
         postListStyle={{
