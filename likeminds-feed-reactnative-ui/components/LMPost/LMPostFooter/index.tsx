@@ -1,9 +1,8 @@
-import {View, StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import STYLES from '../../../constants/constants';
-import layout from '../../../utils/layout';
-import {LMPostFooterProps} from './types';
-import LMButton from '../../LMButton'
+import { View, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { LMPostFooterProps } from "./types";
+import LMButton from "../../LMButton";
+import { styles } from "./styles";
 
 const LMPostFooter = ({
   isLiked,
@@ -48,11 +47,11 @@ const LMPostFooter = ({
               assetPath: liked
                 ? likeIconButton?.activeIcon?.assetPath
                   ? likeIconButton.activeIcon.assetPath
-                  : require('../../../assets/images/heart_red_icon3x.png')
+                  : require("../../../assets/images/heart_red_icon3x.png")
                 : likeIconButton?.icon?.assetPath
                 ? likeIconButton.icon.assetPath
-                : require('../../../assets/images/heart_icon3x.png'),
-              type: 'png',
+                : require("../../../assets/images/heart_icon3x.png"),
+              type: "png",
               iconUrl: likeIconButton?.icon?.iconUrl,
               iconStyle: likeIconButton?.icon?.iconStyle,
               color: likeIconButton?.icon?.color,
@@ -86,14 +85,14 @@ const LMPostFooter = ({
                 ? likeCount > 1
                   ? `${likeCount} Likes`
                   : `${likeCount} Like`
-                : 'Like',
+                : "Like",
               textStyle: likeTextButton?.text?.textStyle
                 ? likeTextButton.text.textStyle
                 : {
                     fontSize: 14.5,
-                    fontWeight: '400',
-                    color: '#504B4B',
-                    textAlign: 'left',
+                    fontWeight: "400",
+                    color: "#504B4B",
+                    textAlign: "left",
                     width: 55,
                   },
             }}
@@ -116,21 +115,21 @@ const LMPostFooter = ({
                   ? commentsCount > 1
                     ? `${commentsCount} Comments`
                     : `${commentsCount} Comment`
-                  : 'Add Comment',
+                  : "Add Comment",
               textStyle: commentButton?.text?.textStyle
                 ? commentButton.text.textStyle
                 : {
                     marginLeft: 8,
                     fontSize: 14.5,
-                    fontWeight: '400',
-                    color: '#504B4B',
+                    fontWeight: "400",
+                    color: "#504B4B",
                   },
             }}
             icon={{
               assetPath: commentButton?.icon?.assetPath
                 ? commentButton.icon.assetPath
-                : require('../../../assets/images/comment_icon3x.png'),
-              type: 'png',
+                : require("../../../assets/images/comment_icon3x.png"),
+              type: "png",
               iconUrl: commentButton?.icon?.iconUrl,
               iconStyle: commentButton?.icon?.iconStyle,
               color: commentButton?.icon?.color,
@@ -159,8 +158,9 @@ const LMPostFooter = ({
         style={StyleSheet.flatten([
           styles.alignRow,
           showBookMarkIcon &&
-            showShareIcon && {width: '16%', justifyContent: 'space-between'},
-        ])}>
+            showShareIcon && { width: "16%", justifyContent: "space-between" },
+        ])}
+      >
         {/* save section */}
         {showBookMarkIcon && (
           <LMButton
@@ -169,8 +169,8 @@ const LMPostFooter = ({
             icon={{
               assetPath: saveButton?.icon?.assetPath
                 ? saveButton.icon.assetPath
-                : require('../../../assets/images/bookmark_icon3x.png'),
-              type: 'png',
+                : require("../../../assets/images/bookmark_icon3x.png"),
+              type: "png",
               iconUrl: saveButton?.icon?.iconUrl,
               iconStyle: saveButton?.icon?.iconStyle,
               color: saveButton?.icon?.color,
@@ -184,8 +184,8 @@ const LMPostFooter = ({
             activeIcon={{
               assetPath: saveButton?.activeIcon?.assetPath
                 ? saveButton.activeIcon.assetPath
-                : require('../../../assets/images/saved_bookmark_icon3x.png'),
-              type: 'png',
+                : require("../../../assets/images/saved_bookmark_icon3x.png"),
+              type: "png",
               iconUrl: saveButton?.activeIcon?.iconUrl,
               iconStyle: saveButton?.activeIcon?.iconStyle,
               color: saveButton?.activeIcon?.color,
@@ -215,8 +215,8 @@ const LMPostFooter = ({
             icon={{
               assetPath: shareButton?.icon?.assetPath
                 ? shareButton.icon.assetPath
-                : require('../../../assets/images/share_icon3x.png'),
-              type: 'png',
+                : require("../../../assets/images/share_icon3x.png"),
+              type: "png",
               iconUrl: shareButton?.icon?.iconUrl,
               iconStyle: shareButton?.icon?.iconStyle,
               color: shareButton?.icon?.color,
@@ -240,57 +240,5 @@ const LMPostFooter = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  postFooter: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-  },
-  alignRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  postFooterText: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: STYLES.$COLORS.BLACK,
-    marginLeft: 8,
-  },
-  likeIconSize: {
-    width: layout.normalize(21),
-    height: layout.normalize(21),
-  },
-  commentIconSize: {
-    width: layout.normalize(21),
-    height: layout.normalize(21),
-  },
-  iconSize: {
-    width: layout.normalize(19),
-    height: layout.normalize(19),
-  },
-  defaultLikeIconView: {
-    borderWidth: 0,
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-  },
-  defaultLikeTextView: {
-    borderWidth: 0,
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    marginLeft: 8,
-  },
-  defaultCommentView: {
-    borderWidth: 0,
-    alignItems: 'center',
-    marginLeft: 5,
-  },
-  buttonWithoutBorder: {
-    borderWidth: 0,
-  },
-});
 
 export default LMPostFooter;
