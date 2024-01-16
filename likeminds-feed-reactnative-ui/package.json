@@ -10,8 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "diff": "5.1.0",
-    "react": "^18.2.0",
-    "react-native": "^0.73.1",
-    "react-native-swiper-flatlist": "^3.2.3"
+    "react": "18.2.0",
+    "react-native": "0.73.1",
+    "react-native-swiper-flatlist": "3.2.3"
   }
 }

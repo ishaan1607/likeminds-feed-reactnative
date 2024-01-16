@@ -1,13 +1,12 @@
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
-import STYLES from '../../../constants/constants';
-import layout from '../../../utils/layout';
-import {LMPostHeaderProps} from './types';
-import {timeStamp} from '../../../utils';
-import LMPostMenu from '../LMPostMenu';
-import LMProfilePicture from '../../LMProfilePicture'
-import LMText from '../../LMText';
-import LMIcon from '../../LMIcon';
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { LMPostHeaderProps } from "./types";
+import { timeStamp } from "../../../utils";
+import LMPostMenu from "../LMPostMenu";
+import LMProfilePicture from "../../LMProfilePicture";
+import LMText from "../../LMText";
+import LMIcon from "../../LMIcon";
+import { styles } from "./styles";
 
 const LMPostHeader = ({
   post,
@@ -27,7 +26,7 @@ const LMPostHeader = ({
 }: LMPostHeaderProps) => {
   const [modalPosition, setModalPosition] = useState(postMenu?.modalPosition);
   const [showPostMenuModal, setShowPostMenuModal] = useState(
-    postMenu?.modalVisible,
+    postMenu?.modalVisible
   );
 
   // this function closes the menu list modal
@@ -38,11 +37,11 @@ const LMPostHeader = ({
 
   // this function is executed on the click of menu icon & handles the position and visibility of the modal
   const onThreedotsClick = (event: {
-    nativeEvent: {pageX: number; pageY: number};
+    nativeEvent: { pageX: number; pageY: number };
   }) => {
-    const {pageX, pageY} = event.nativeEvent;
+    const { pageX, pageY } = event.nativeEvent;
     setShowPostMenuModal(true);
-    setModalPosition({x: pageX, y: pageY});
+    setModalPosition({ x: pageX, y: pageY });
   };
 
   return (
@@ -51,7 +50,7 @@ const LMPostHeader = ({
       <TouchableOpacity activeOpacity={0.8} onPress={() => onTap(post?.user)}>
         <View style={styles.alignRow}>
           <LMProfilePicture
-            fallbackText={{children:post?.user?.name}}
+            fallbackText={{ children: post?.user?.name }}
             imageUrl={post?.user?.imageUrl}
             onTap={profilePicture?.onTap}
             size={profilePicture?.size}
@@ -69,14 +68,17 @@ const LMPostHeader = ({
                   styles.postAuthorName,
                   titleText?.textStyle,
                 ])}
-              >{titleText?.children ? titleText.children : ''}</LMText>
+              >
+                {titleText?.children ? titleText.children : ""}
+              </LMText>
               {/* member state label view */}
               {showMemberStateLabel && memberState === 1 && (
                 <View
                   style={StyleSheet.flatten([
                     styles.labelView,
                     memberStateViewStyle,
-                  ])}>
+                  ])}
+                >
                   <LMText
                     textStyle={StyleSheet.flatten([
                       styles.labelText,
@@ -96,16 +98,16 @@ const LMPostHeader = ({
                   styles.postedDetail,
                   createdAt?.textStyle,
                 ])}
-              >{
-                timeStamp(Number(createdAt?.children)) === undefined
-                  ? 'now'
-                  : `${timeStamp(Number(createdAt?.children))}`
-              }</LMText>
+              >
+                {timeStamp(Number(createdAt?.children)) === undefined
+                  ? "now"
+                  : `${timeStamp(Number(createdAt?.children))}`}
+              </LMText>
               {/* checks if the post is edited or not */}
               {post?.isEdited && (
                 <>
                   <LMIcon
-                    assetPath={require('../../../assets/images/single_dot3x.png')}
+                    assetPath={require("../../../assets/images/single_dot3x.png")}
                     type="png"
                     width={styles.dotImageSize.width}
                     height={styles.dotImageSize.height}
@@ -130,7 +132,8 @@ const LMPostHeader = ({
         style={[
           styles.topRightView,
           post?.isPinned && styles.topRightViewIfPinned,
-        ]}>
+        ]}
+      >
         {/* pin icon section */}
         {post?.isPinned && (
           <>
@@ -139,7 +142,7 @@ const LMPostHeader = ({
                 assetPath={
                   pinIcon?.assetPath
                     ? pinIcon.assetPath
-                    : require('../../../assets/images/pin_icon3x.png')
+                    : require("../../../assets/images/pin_icon3x.png")
                 }
                 type="png"
                 iconStyle={styles.iconSize}
@@ -157,14 +160,15 @@ const LMPostHeader = ({
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={onThreedotsClick}
-          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
           <>
             {showMenuIcon && (
               <LMIcon
                 assetPath={
                   menuIcon?.assetPath
                     ? menuIcon.assetPath
-                    : require('../../../assets/images/three_dots3x.png')
+                    : require("../../../assets/images/three_dots3x.png")
                 }
                 type="png"
                 iconStyle={styles.iconSize}
@@ -195,66 +199,5 @@ const LMPostHeader = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  postHeader: {
-    width: '100%',
-    paddingHorizontal: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  alignRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  postAuthorName: {
-    color: '#222020',
-    fontSize: 16.5,
-    fontWeight: '500',
-    lineHeight: 20,
-  },
-  postedDetail: {
-    color: '#0F1E3D66',
-    fontSize: 14,
-    fontWeight: '400',
-  },
-  labelText: {
-    color: STYLES.$COLORS.WHITE,
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  labelView: {
-    backgroundColor: '#5046E5',
-    marginLeft: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 2,
-    borderRadius: 5,
-  },
-  iconSize: {
-    width: layout.normalize(22),
-    height: layout.normalize(22),
-    resizeMode: 'contain',
-  },
-  dotImageSize: {
-    width: layout.normalize(5),
-    height: layout.normalize(5),
-    marginHorizontal: 5,
-    resizeMode: 'contain',
-  },
-  topRightView: {
-    width: '16%',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  topRightViewIfPinned: {
-    width: '16%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  autherDetailView: {
-    marginLeft: 12,
-  },
-});
 
 export default LMPostHeader;

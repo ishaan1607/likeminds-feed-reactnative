@@ -1,12 +1,12 @@
-import {StyleSheet} from 'react-native';
-import React, {useState} from 'react';
-import SwiperFlatList from 'react-native-swiper-flatlist';
-import {LMCarouselProps} from './types';
-import LMImage from '../LMImage';
-import LMVideo from '../LMVideo';
-import layout from '../../../utils/layout';
-import STYLES from '../../../constants/constants';
-import { ATTACHMENT_TYPE } from '../../../constants/strings';
+import { StyleSheet } from "react-native";
+import React, { useState } from "react";
+import SwiperFlatList from "react-native-swiper-flatlist";
+import { LMCarouselProps } from "./types";
+import LMImage from "../LMImage";
+import LMVideo from "../LMVideo";
+import STYLES from "../../../constants/constants";
+import { ATTACHMENT_TYPE } from "../../../constants/strings";
+import { styles } from "./styles";
 
 const LMCarousel = ({
   attachments,
@@ -38,7 +38,7 @@ const LMCarousel = ({
       autoplayDelay={0}
       data={attachments}
       showPagination
-      onChangeIndex={({index}) => {
+      onChangeIndex={({ index }) => {
         setActiveIndex(index);
         // conditon for stopping the autoplay
         if (attachments.length - 2 === activeIndex - 1) {
@@ -54,16 +54,16 @@ const LMCarousel = ({
       // handling custom style of active pagination item
       paginationStyleItemActive={StyleSheet.flatten([
         styles.paginationItemStyle,
-        {backgroundColor: STYLES.$COLORS.THEME},
+        { backgroundColor: STYLES.$COLORS.THEME },
         activeIndicatorStyle,
       ])}
       // handling custom style of inactive pagination item
       paginationStyleItemInactive={StyleSheet.flatten([
         styles.paginationItemStyle,
-        {backgroundColor: STYLES.$COLORS.LIGHT_GREY},
+        { backgroundColor: STYLES.$COLORS.LIGHT_GREY },
         inactiveIndicatorStyle,
       ])}
-      renderItem={({item, index}) => (
+      renderItem={({ item, index }) => (
         <>
           {/* this section render image */}
           {item?.attachmentType === ATTACHMENT_TYPE.IMAGE && (
@@ -124,26 +124,5 @@ const LMCarousel = ({
     />
   );
 };
-
-const styles = StyleSheet.create({
-  mediaDimensions: {
-    width: layout.window.width,
-    height: 325,
-    backgroundColor: STYLES.$BACKGROUND_COLORS.DARK,
-  },
-  swiperView: {
-    marginBottom: 30,
-    backgroundColor: STYLES.$BACKGROUND_COLORS.DARK,
-  },
-  paginationView: {
-    position: 'absolute',
-    bottom: -5,
-  },
-  paginationItemStyle: {
-    width: 8,
-    height: 8,
-    marginHorizontal: 4,
-  },
-});
 
 export default LMCarousel;
