@@ -6,7 +6,7 @@ import STYLES from '../../constants/Styles';
 import {DELETE_TAGS_TYPE, DELETION_REASON} from '../../constants/Strings';
 import {LMLoader} from 'likeminds_feed_reactnative_ui';
 import { Client } from '../../client';
-import { useAppContext } from '../../store/AppContext';
+import { useAppDispatch, useAppSelector } from '../../store/AppContext';
 import { REPORT_TAGS_SUCCESS } from '../../store/actions/types';
 
 // delete reason's modal props
@@ -26,7 +26,8 @@ const DeleteReasonsModal = ({
   modalBackdropColor,
 }: DeleteReasonsModalProps) => {
   const myClient = Client.myClient;
-  const {state, dispatch } = useAppContext();
+  const dispatch  = useAppDispatch();
+  const state  = useAppSelector();
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const deleteTags = state.feed.reportTags
 

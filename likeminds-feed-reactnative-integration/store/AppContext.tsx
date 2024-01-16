@@ -51,13 +51,21 @@ const AppProvider: React.FC<AppProviderProps> = ({
   );
 };
 
-// Create a custom hook to use the context
-const useAppContext = () => {
+// Create custom hooks to use the context
+const useAppSelector = () => {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error("useAppContext must be used within an AppProvider");
+    throw new Error("useAppSelector must be used within an AppProvider");
   }
-  return context;
+  return context.state;
 };
 
-export { AppProvider, useAppContext };
+const useAppDispatch = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error("useAppDispatch must be used within an AppProvider");
+  }
+  return context.dispatch;
+};
+
+export { AppProvider, useAppSelector, useAppDispatch };

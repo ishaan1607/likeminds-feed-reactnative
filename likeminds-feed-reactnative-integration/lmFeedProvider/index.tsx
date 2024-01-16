@@ -11,7 +11,7 @@ import { Credentials } from "../credentials";
 import { LMFeedClient } from "@likeminds.community/feed-js-beta";
 import { Client } from "../client";
 import { LMFeedProviderProps, ThemeContextProps } from "./types";
-import { useAppContext } from "../store/AppContext";
+import { useAppDispatch, useAppSelector } from "../store/AppContext";
 import { INIT_API_SUCCESS, PROFILE_DATA_SUCCESS } from "../store/actions/types";
 import { UniversalFeed} from "../screens";
 
@@ -51,7 +51,8 @@ export const LMFeedProvider = ({
   loaderStyle
 }: LMFeedProviderProps): React.JSX.Element => {
   const [isInitiated, setIsInitiated] = useState(false);
-  const {state, dispatch } = useAppContext();
+  const dispatch  = useAppDispatch();
+  const state  = useAppSelector();
 
   useEffect(() => {
     //setting client in Client class

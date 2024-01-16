@@ -36,7 +36,7 @@ import {
 } from "../../constants/screenNames";
 // @ts-ignore the lib do not have TS declarations yet
 import _ from "lodash";
-import { useAppContext } from "../../store/AppContext";
+import { useAppDispatch, useAppSelector } from "../../store/AppContext";
 import { Client } from "../../client";
 import {
   PIN_POST_STATE,
@@ -50,7 +50,8 @@ import { useLMFeedStyles } from "../../lmFeedProvider";
 
 const PostsList = React.memo(() => {
   const myClient = Client.myClient;
-  const { state, dispatch } = useAppContext();
+  const dispatch  = useAppDispatch();
+  const state  = useAppSelector();
   const feedData = state.feed.feed;
   const accessToken = state.login.community.accessToken;
   const showLoader = state.loader.count;

@@ -28,7 +28,7 @@ import STYLES from '../../constants/Styles';
 // import Toast from 'react-native-toast-message';
 import {NavigationService} from '../../navigation';
 import {LMCommentUI, LMPostUI} from 'likeminds_feed_reactnative_ui';
-import { useAppContext } from '../../store/AppContext';
+import { useAppDispatch, useAppSelector } from '../../store/AppContext';
 import { DELETE_POST_STATE } from '../../store/actions/types';
 import { Client } from '../../client';
 
@@ -51,7 +51,8 @@ const DeleteModal = ({
   commentDetail,
 }: DeleteModalProps) => {
   const myClient = Client.myClient;
-  const {state, dispatch } = useAppContext();
+  const dispatch  = useAppDispatch();
+  const state  = useAppSelector();
   const loggedInUser = state.login.member
   const [deletionReason, setDeletionReason] = useState('');
   const [otherReason, setOtherReason] = useState('');

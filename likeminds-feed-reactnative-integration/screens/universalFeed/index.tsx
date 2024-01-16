@@ -13,14 +13,15 @@ import { APP_TITLE } from "../../constants/Strings";
 import { CREATE_POST } from "../../constants/screenNames";
 // @ts-ignore the lib do not have TS declarations yet
 import _ from "lodash";
-import { useAppContext } from "../../store/AppContext";
+import { useAppDispatch, useAppSelector } from "../../store/AppContext";
 import { Client } from "../../client";
 import PostsList from "../postsList";
 import { useLMFeedStyles } from "../../lmFeedProvider";
 
 const UniversalFeed = React.memo(() => {
   const myClient = Client.myClient;
-  const { state, dispatch } = useAppContext();
+  const dispatch  = useAppDispatch();
+  const state  = useAppSelector();
   const feedData = state.feed.feed;
   const accessToken = state.login.community.accessToken;
   const memberData = state.login.member;
