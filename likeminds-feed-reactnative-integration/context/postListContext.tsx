@@ -8,6 +8,7 @@ import React, {
   useState,
   useRef,
   useCallback,
+  MutableRefObject,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { LMLoader, LMPostUI } from "likeminds_feed_reactnative_ui";
@@ -51,7 +52,7 @@ export interface PostListContextValues {
   accessToken: string;
   showLoader: number;
   feedPageNumber: number;
-  modalPosition: {};
+  modalPosition: {x:number, y:number};
   showActionListModal: boolean;
   selectedMenuItemPostId: string;
   showDeleteModal: boolean;
@@ -59,7 +60,7 @@ export interface PostListContextValues {
   refreshing: boolean;
   localRefresh: boolean;
   feedFetching: boolean;
-  listRef: null;
+  listRef: MutableRefObject<FlatList<LMPostUI> | null>;
   setFeedFetching: Dispatch<SetStateAction<boolean>>;
   setLocalRefresh: Dispatch<SetStateAction<boolean>>;
   setRefreshing: Dispatch<SetStateAction<boolean>>;
