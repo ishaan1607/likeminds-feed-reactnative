@@ -246,6 +246,10 @@ interface postDetailStyleProps {
 
 export interface ThemeContextProps {
   textStyle?: TextStyles;
+  universalFeedStyle?: universalFeedStyleProps;
+  postListStyle?: postListStyleProps;
+  loaderStyle?: loaderStyleProps;
+  postDetailStyle?: postDetailStyleProps;
 }
 
 export interface LMFeedProviderProps {
