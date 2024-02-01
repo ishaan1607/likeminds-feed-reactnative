@@ -6,14 +6,14 @@ import {
   Image,
   TextInput,
   TouchableWithoutFeedback,
-} from 'react-native';
-import React, {useState} from 'react';
-import styles from './styles';
+} from "react-native";
+import React, { useState } from "react";
+import styles from "./styles";
 import {
   DeleteCommentRequest,
   DeletePostRequest,
-} from '@likeminds.community/feed-js';
-import DeleteReasonsModal from '../DeleteReasonsModal';
+} from "@likeminds.community/feed-js";
+import DeleteReasonsModal from "../DeleteReasonsModal";
 import {
   COMMENT_DELETE,
   CONFIRM_DELETE,
@@ -22,13 +22,13 @@ import {
   POST_TYPE,
   REASON_FOR_DELETION_PLACEHOLDER,
   SOMETHING_WENT_WRONG,
-} from '../../constants/Strings';
-import STYLES from '../../constants/Styles';
-import {NavigationService} from '../../navigation';
-import {LMCommentUI, LMPostUI} from 'likeminds_feed_reactnative_ui';
-import { useAppDispatch, useAppSelector } from '../../store/AppContext';
-import { DELETE_POST_STATE } from '../../store/actions/types';
-import { Client } from '../../client';
+} from "../../constants/Strings";
+import STYLES from "../../constants/Styles";
+import { NavigationService } from "../../navigation";
+import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { deletePost, deletePostStateHandler } from "../../store/actions/feed";
+import { deleteComment, deleteCommentStateHandler } from "../../store/actions/postDetail";
 
 // delete modal's props
 interface DeleteModalProps {
@@ -48,12 +48,10 @@ const DeleteModal = ({
   modalBackdropColor,
   commentDetail,
 }: DeleteModalProps) => {
-  const myClient = Client.myClient;
-  const dispatch  = useAppDispatch();
-  const state  = useAppSelector();
-  const loggedInUser = state.login.member
-  const [deletionReason, setDeletionReason] = useState('');
-  const [otherReason, setOtherReason] = useState('');
+  const dispatch = useAppDispatch();
+  const loggedInUser = useAppSelector(state => state.login.member);
+  const [deletionReason, setDeletionReason] = useState("");
+  const [otherReason, setOtherReason] = useState("");
   const [showReasons, setShowReasons] = useState(false);
 
   // this function calls the delete post api
@@ -67,19 +65,18 @@ const DeleteModal = ({
         postId: postDetail?.id,
       };
       displayModal(false);
-      dispatch({
-        type: DELETE_POST_STATE,
-        payload: payload.postId
-      });
-      const deletePostResponse = await myClient?.deletePost(
+      dispatch(deletePostStateHandler(payload.postId) as any);
+      const deletePostResponse = await dispatch(
+        deletePost(
           DeletePostRequest.builder()
             .setdeleteReason(payload.deleteReason)
             .setpostId(payload.postId)
-            .build(),
-        )
+            .build(),true
+        ),
+      );
       // toast message action
       if (deletePostResponse) {
-        setDeletionReason('');
+        setDeletionReason("");
         NavigationService.goBack();
         // todo: handle toast later
         // dispatch(
@@ -89,7 +86,7 @@ const DeleteModal = ({
         //   }) as any,
         // );
       } else {
-       // todo: handle toast later
+        // todo: handle toast later
         // dispatch(
         //   showToastMessage({
         //     isToast: true,
@@ -103,7 +100,49 @@ const DeleteModal = ({
 
   // this function calls the delete comment api
   const commentDelete = async () => {
- 
+    if (
+      !deletionReason &&
+      loggedInUser.userUniqueId !== commentDetail?.userId
+    ) {
+      // todo: handle toast later
+      // showToast();
+    } else {
+      const payload = {
+        deleteReason: otherReason ? otherReason : deletionReason,
+        commentId: commentDetail?.id ? commentDetail.id : "",
+        postId: commentDetail?.postId ? commentDetail.postId : "",
+      };
+      displayModal(false);
+      dispatch(deleteCommentStateHandler(payload) as any);
+      try {
+        const deleteCommentResponse = await dispatch(
+          deleteComment(
+            DeleteCommentRequest.builder()
+              .setcommentId(payload.commentId)
+              .setpostId(payload.postId)
+              .setreason(payload.deleteReason)
+              .build(), true
+          ),
+        );
+        setDeletionReason("");
+        // todo: handle toast later
+        // await dispatch(
+        //   showToastMessage({
+        //     isToast: true,
+        //     message: COMMENT_DELETE,
+        //   }) as any,
+        // );
+        return deleteCommentResponse;
+      } catch (error) {
+        // todo: handle toast later
+        // dispatch(
+        //   showToastMessage({
+        //     isToast: true,
+        //     message: SOMETHING_WENT_WRONG,
+        //   }) as any,
+        // );
+      }
+    }
   };
 
   // this callback function gets the reason of deletion from the reasons modal
@@ -121,7 +160,7 @@ const DeleteModal = ({
   //     visibilityTime: 1500,
   //   });
   // };
-// todo: handle toast later
+  // todo: handle toast later
   // const renderToastView = () => {
   //   return (
   //     <View>
@@ -145,7 +184,8 @@ const DeleteModal = ({
         visible={visible}
         animationType="fade"
         transparent={true}
-        onRequestClose={() => displayModal(false)}>
+        onRequestClose={() => displayModal(false)}
+      >
         <>
           {/* conditonal render of delete reason's modal and delete modal */}
           {showReasons ? (
@@ -167,8 +207,9 @@ const DeleteModal = ({
                       : STYLES.$BACKGROUND_COLORS.DARKTRANSPARENT,
                   },
                 ]}
-                onPress={() => displayModal(false)}>
-                  // todo: handle toast later
+                onPress={() => displayModal(false)}
+              >
+                // todo: handle toast later
                 {/* toast component */}
                 {/* <Toast config={toastConfig} /> */}
                 {/* main modal section */}
@@ -186,7 +227,8 @@ const DeleteModal = ({
                           activeOpacity={0.8}
                           onPress={() => {
                             setShowReasons(true);
-                          }}>
+                          }}
+                        >
                           <View style={styles.reasonsSelectionView}>
                             {deletionReason ? (
                               <Text style={styles.text}>{deletionReason}</Text>
@@ -197,7 +239,7 @@ const DeleteModal = ({
                               </Text>
                             )}
                             <Image
-                              source={require('../../assets/images/dropdown_icon3x.png')}
+                              source={require("../../assets/images/dropdown_icon3x.png")}
                               style={styles.dropdownIcon}
                             />
                           </View>
@@ -205,9 +247,9 @@ const DeleteModal = ({
                       )}
 
                     {/* text input view for other reason text*/}
-                    {deletionReason === 'Others' ? (
+                    {deletionReason === "Others" ? (
                       <TextInput
-                        onChangeText={e => {
+                        onChangeText={(e) => {
                           setOtherReason(e);
                         }}
                         style={styles.otherTextInput}
@@ -222,8 +264,9 @@ const DeleteModal = ({
                         activeOpacity={0.8}
                         onPress={() => {
                           displayModal(false);
-                          setDeletionReason('');
-                        }}>
+                          setDeletionReason("");
+                        }}
+                      >
                         <Text style={styles.cancelTextBtn}>CANCEL</Text>
                       </TouchableOpacity>
                       {/* delete button section  */}
@@ -233,7 +276,8 @@ const DeleteModal = ({
                           deleteType === POST_TYPE
                             ? postDelete()
                             : commentDelete()
-                        }>
+                        }
+                      >
                         <Text style={styles.deleteTextBtn}>DELETE</Text>
                       </TouchableOpacity>
                     </View>

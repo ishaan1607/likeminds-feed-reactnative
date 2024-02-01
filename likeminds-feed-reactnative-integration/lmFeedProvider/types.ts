@@ -4,6 +4,7 @@ import {
   LMButtonProps,
   LMHeaderProps,
   LMIconProps,
+  LMInputTextProps,
   LMLoaderProps,
   LMProfilePictureProps,
   LMTextProps,
@@ -32,7 +33,7 @@ interface universalFeedStyleProps {
   screenHeader?: LMHeaderProps;
 }
 
-// custom style interface for post's lis
+// custom style interface for post's list
 interface postListStyleProps {
   header?: {
     profilePicture?: LMProfilePictureProps;
@@ -155,7 +156,7 @@ interface postListStyleProps {
         autoPlay?: boolean;
         showCancel?: boolean;
         onCancel?: () => void;
-      }
+      };
       showCancel?: boolean;
       onCancel?: () => void;
     };
@@ -197,6 +198,52 @@ interface loaderStyleProps {
   loader?: LMLoaderProps;
 }
 
+// custom style interface for post detail screen
+interface postDetailStyleProps {
+  screenHeader?: LMHeaderProps;
+  commentItemStyle?: {
+    likeIconButton?: LMButtonProps;
+    likeTextButton?: LMButtonProps;
+    onTapViewMore?: () => void;
+    menuIcon?: LMButtonProps;
+    commentUserNameStyle?: TextStyle;
+    commentContentProps?: LMTextProps;
+    showMoreProps?: LMTextProps;
+    replyTextProps?: LMButtonProps;
+    repliesCountTextStyle?: TextStyle;
+    timeStampStyle?: TextStyle;
+    viewMoreRepliesProps?: LMTextProps;
+    onTapReplies?: () => void;
+  };
+  commentCountHeadingText?: TextStyle;
+  noCommentViewStyle?: ViewStyle;
+  noCommentHeadingTextStyle?: TextStyle;
+  noCommentSubHeadingTextStyle?: TextStyle;
+  replyingViewStyle?: {
+    replyingView?: ViewStyle;
+    replyingText?: LMTextProps;
+    cancelReplyIcon?: LMIconProps;
+  };
+  userTaggingListStyle?: {
+    taggingListView?: ViewStyle;
+    userTagView?: ViewStyle;
+    userTagProfileImageStyle?: LMProfilePictureProps;
+    userTagNameStyle?: TextStyle;
+  };
+  commentTextInputStyle?: {
+    containerStyle?: ViewStyle;
+    inputTextStyle?: TextStyle;
+    placeholderText?: string;
+    placeholderTextColor?: string;
+    disabled?: boolean;
+    rightIcon?: LMButtonProps;
+    autoFocus?: boolean;
+    plainTextStyle?: TextStyle;
+    mentionTextStyle?: TextStyle;
+    multilineField?: boolean
+  };
+}
+
 export interface ThemeContextProps {
   textStyle?: TextStyles;
 }
@@ -210,4 +257,5 @@ export interface LMFeedProviderProps {
   universalFeedStyle?: universalFeedStyleProps;
   postListStyle?: postListStyleProps;
   loaderStyle?: loaderStyleProps;
+  postDetailStyle?: postDetailStyleProps;
 }

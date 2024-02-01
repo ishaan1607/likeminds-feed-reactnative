@@ -1,11 +1,12 @@
 import { LMFeedProvider } from "./lmFeedProvider";
 import {initMyClient} from './setup'
-import { AppProvider } from "./store/AppContext";
-import { UniversalFeed, PostsList } from "./screens";
+import { ContextProvider } from "./store/contextStore";
+import { UniversalFeed, PostsList, PostDetail } from "./screens";
 export {
     LMFeedProvider,
     initMyClient,
-    AppProvider,
+    ContextProvider,
     UniversalFeed,
-    PostsList
+    PostsList,
+    PostDetail
 }

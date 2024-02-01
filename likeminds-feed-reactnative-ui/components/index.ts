@@ -27,7 +27,8 @@ import { LMButtonProps } from "./LMButton/types";
 import { LMCommentProps } from "./LMCommentItem/types";
 import { LMHeaderProps } from "./LMHeader/types";
 import { LMIconProps } from "./LMIcon/types";
-import { LMInputTextProps } from "./LMInputText/types";
+import { LMInputTextProps, MentionData } from "./LMInputText/types";
+import {convertToMentionValues} from "./LMInputText/utils"
 import { LMLoaderProps } from "./LMLoader/types";
 import { LMMemberListItemProps } from "./LMMemberListItem/types";
 import { LMNotificationFeedItemProps } from "./LMNotificationFeedItem/types";
@@ -70,6 +71,7 @@ export {
   LMCommentItem,
   LMMemberListItem,
   LMNotificationFeedItem,
+  convertToMentionValues
 };
 export type {
   LMButtonProps,
@@ -93,4 +95,5 @@ export type {
   LMProfilePictureProps,
   LMTextProps,
   LMVideoProps,
+  MentionData
 };

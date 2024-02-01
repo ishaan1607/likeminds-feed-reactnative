@@ -1,34 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, ReactNode } from "react";
 import {
   Image,
   SafeAreaView,
   Text,
   TouchableOpacity,
 } from "react-native";
-import { FlashList } from "@shopify/flash-list";
 import { styles } from "./styles";
-import { LMHeader, LMPostUI } from "likeminds_feed_reactnative_ui";
-import { NavigationService } from "../../navigation";
+import { LMHeader } from "likeminds_feed_reactnative_ui";
 import { APP_TITLE } from "../../constants/Strings";
 import { CREATE_POST } from "../../constants/screenNames";
 // @ts-ignore the lib do not have TS declarations yet
 import _ from "lodash";
-import { useAppDispatch, useAppSelector } from "../../store/AppContext";
-import { Client } from "../../client";
-import PostsList from "../postsList";
+import {PostsList} from "../postsList";
 import { useLMFeedStyles } from "../../lmFeedProvider";
+import { useAppDispatch } from "../../store/store";
+import { UniversalFeedContextProvider, UniversalFeedContextValues, useUniversalFeedContext } from "../../context";
 
-const UniversalFeed = React.memo(() => {
-  const myClient = Client.myClient;
-  const dispatch  = useAppDispatch();
-  const state  = useAppSelector();
-  const feedData = state.feed.feed;
-  const accessToken = state.login.community.accessToken;
-  const memberData = state.login.member;
-  const memberRight = state.login.memberRights;
-  const [postUploading, setPostUploading] = useState(false);
-  const [showCreatePost, setShowCreatePost] = useState(true);
-  const listRef = useRef<FlashList<LMPostUI>>(null);
+const UniversalFeed = ({ navigation, route ,children}: any) => {
+  return (
+    <UniversalFeedContextProvider navigation={navigation} route={route} children={children}>
+      <UniversalFeedComponent />
+    </UniversalFeedContextProvider>
+  );
+};
+
+const UniversalFeedComponent = React.memo(() => {
+  const dispatch = useAppDispatch()
+  const {feedData, showCreatePost, postUploading,navigation }: UniversalFeedContextValues = useUniversalFeedContext()
   const LMFeedContextStyles = useLMFeedStyles();
   const { universalFeedStyle, loaderStyle } = LMFeedContextStyles;
   // todo: handle later
@@ -39,20 +37,7 @@ const UniversalFeed = React.memo(() => {
   // const uploadingMediaAttachment = mediaAttachmemnts[0]?.attachmentMeta.url;
 
   // this calls the getFeed api whenever the page number gets changed
-  useEffect(() => {
-    if (accessToken) {
-      // handles members right
-      if (memberData?.state !== 1) {
-        const members_right = memberRight?.find(
-          (item: any) => item?.state === 9
-        );
-
-        if (members_right?.isSelected === false) {
-          setShowCreatePost(false);
-        }
-      }
-    }
-  }, [accessToken]);
+  
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -77,12 +62,13 @@ const UniversalFeed = React.memo(() => {
             showCreatePost
               ? postUploading
                 ? dispatch()
-                : // todo: handle toast later
+                // todo: handle toast later
                   // showToastMessage({
                   //   isToast: true,
                   //   message: POST_UPLOAD_INPROGRESS,
                   // }) as any,
-                  NavigationService.navigate(CREATE_POST)
+                : 
+                  navigation.navigate(CREATE_POST)
               : dispatch()
           // todo: handle toast later
           //   showToastMessage({
@@ -107,4 +93,4 @@ const UniversalFeed = React.memo(() => {
   );
 });
 
-export default UniversalFeed;
+export {UniversalFeed};

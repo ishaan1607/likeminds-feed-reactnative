@@ -75,11 +75,17 @@ const LMCommentItem = ({
   const updatedContentProps = commentContentProps
     ? commentContentProps
     : {
-        text: comment?.text,
-        onTextLayout: (event: NativeSyntheticEvent<TextLayoutEventData>) =>
-          onTextLayout(event),
-        maxLines: numberOfLines,
-        textStyle: { color: "#222020" },
+        children: <Text>{comment?.text}</Text>,
+        onTextLayout: (event: NativeSyntheticEvent<TextLayoutEventData>) => {
+          onTextLayout(event);
+          commentContentProps?.onTextLayout(event);
+        },
+        maxLines: commentContentProps?.maxLines
+          ? commentContentProps?.maxLines
+          : numberOfLines,
+        textStyle: commentContentProps?.textStyle
+          ? commentContentProps?.textStyle
+          : { color: "#222020" },
       };
 
   //creating show more props as per customization

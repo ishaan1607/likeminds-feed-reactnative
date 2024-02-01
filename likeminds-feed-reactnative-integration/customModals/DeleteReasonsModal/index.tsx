@@ -1,13 +1,12 @@
-import {View, Text, Modal, Pressable} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import styles from './styles';
-import {GetReportTagsRequest} from '@likeminds.community/feed-js';
-import STYLES from '../../constants/Styles';
-import {DELETE_TAGS_TYPE, DELETION_REASON} from '../../constants/Strings';
-import {LMLoader} from 'likeminds_feed_reactnative_ui';
-import { Client } from '../../client';
-import { useAppDispatch, useAppSelector } from '../../store/AppContext';
-import { REPORT_TAGS_SUCCESS } from '../../store/actions/types';
+import { View, Text, Modal, Pressable } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import styles from "./styles";
+import { GetReportTagsRequest } from "@likeminds.community/feed-js";
+import STYLES from "../../constants/Styles";
+import { DELETE_TAGS_TYPE, DELETION_REASON } from "../../constants/Strings";
+import { LMLoader } from "likeminds_feed_reactnative_ui";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { getReportTags } from "../../store/actions/feed";
 
 // delete reason's modal props
 interface DeleteReasonsModalProps {
@@ -25,25 +24,22 @@ const DeleteReasonsModal = ({
   handleDeleteModal,
   modalBackdropColor,
 }: DeleteReasonsModalProps) => {
-  const myClient = Client.myClient;
-  const dispatch  = useAppDispatch();
-  const state  = useAppSelector();
+  const dispatch = useAppDispatch();
+  const deleteTags = useAppSelector((state) => state.feed.reportTags);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const deleteTags = state.feed.reportTags
 
   // this function calls the get reason tags api for deletion
   const fetchReasonTags = useCallback(async () => {
     const payload = {
       type: DELETE_TAGS_TYPE, // type 0 for delete reason tags
     };
-    const reasonsTagsResponse = await myClient?.getReportTags(
+    const reportTagsResponse = await dispatch(
+      getReportTags(
         GetReportTagsRequest.builder().settype(payload.type).build(),
+        true
+      )
     );
-    dispatch({
-      type: REPORT_TAGS_SUCCESS,
-      payload: reasonsTagsResponse.getData()
-    })
-    return reasonsTagsResponse;
+    return reportTagsResponse;
   }, [dispatch]);
 
   // this calls the fetchReportTags api when the modal gets visible
@@ -69,7 +65,8 @@ const DeleteReasonsModal = ({
       onRequestClose={() => {
         setSelectedIndex(-1);
         closeModal();
-      }}>
+      }}
+    >
       {/* backdrop view */}
       <Pressable
         style={[
@@ -80,7 +77,8 @@ const DeleteReasonsModal = ({
               : STYLES.$BACKGROUND_COLORS.DARKTRANSPARENT,
           },
         ]}
-        onPress={() => closeModal()}>
+        onPress={() => closeModal()}
+      >
         {/* modal view */}
         <View style={styles.modalContainer}>
           <View>
@@ -96,7 +94,8 @@ const DeleteReasonsModal = ({
                     onPress={() => {
                       setSelectedIndex(index);
                       reasonSelection(res.name);
-                    }}>
+                    }}
+                  >
                     {/* radio button view */}
                     <View style={styles.radioBtnView}>
                       <View style={[styles.reasonsBtn]}>
