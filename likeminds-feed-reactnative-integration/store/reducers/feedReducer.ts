@@ -1,5 +1,5 @@
 import { LMPostUI } from "likeminds_feed_reactnative_ui";
-import { convertUniversalFeedPosts } from "../../viewDataModels";
+import { convertToLMPostUI, convertUniversalFeedPosts } from "../../viewDataModels";
 import { PIN_POST_ID, PIN_THIS_POST, UNPIN_POST_ID, UNPIN_THIS_POST } from "../../constants/Strings";
 import {
   UNIVERSAL_FEED_SUCCESS,
@@ -8,7 +8,8 @@ import {
   DELETE_POST_STATE,
   UNIVERSAL_FEED_REFRESH_SUCCESS,
   LIKE_POST_STATE,
-  SAVE_POST_STATE
+  SAVE_POST_STATE,
+  EDIT_POST_SUCCESS
 } from '../types/types';
 
 export interface FeedReducerState {
@@ -117,6 +118,16 @@ export const feedReducer = (
       updatedFeed[savedPostIndex].isSaved =
         !updatedFeed[savedPostIndex].isSaved;
 
+      return {...state, feed: updatedFeed};
+    }
+    case EDIT_POST_SUCCESS: {
+      const {post = {}, users = {}} = action.body;
+      const updatedFeed = [...state.feed];
+      const postData = convertToLMPostUI(post, users);
+      const index = updatedFeed.findIndex(item => item.id === postData.id);
+      if (index !== -1) {
+        updatedFeed[index] = postData;
+      }
       return {...state, feed: updatedFeed};
     }
     default:

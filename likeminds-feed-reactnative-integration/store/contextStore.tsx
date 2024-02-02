@@ -5,13 +5,15 @@ import {  initialState as LoaderInitialState, LoaderReducerState } from "./reduc
 import { initialState as PostDetailInitialState, PostDetailReducerState, postDetailReducer } from "./reducers/postDetailReducer";
 import { useReducerWithMiddleware } from "../hooks/useReducerWithMiddleware";
 import { rootReducer } from "./store";
+import { CreatePostReducerState , initialState as CreatePostInitialState} from "./reducers/createPostReducer";
 
 // Define your state type
 export interface ContextState {
   login: LoginReducerState;
   feed: FeedReducerState;
   loader: LoaderReducerState;
-  postDetail: PostDetailReducerState
+  postDetail: PostDetailReducerState;
+  createPost: CreatePostReducerState
 }
 interface AppContextProps {
   state: ContextState;
@@ -21,19 +23,14 @@ interface AppContextProps {
 // Create your context
 const Context = createContext<AppContextProps | undefined>(undefined);
 
-const defaultState = {
-  login: {},
-  feed: [],
-  loader: { count: 0 },
-  postDetail: {}
-};
 
 export const ContextProvider = ({ children }) => {
   const initialState: ContextState = {
     login: LoginInitialState,
     feed: FeedInitialState,
     loader: LoaderInitialState,
-    postDetail: PostDetailInitialState
+    postDetail: PostDetailInitialState,
+    createPost: CreatePostInitialState
   };
 
   const [state, dispatch] = useReducerWithMiddleware(rootReducer as any, initialState);

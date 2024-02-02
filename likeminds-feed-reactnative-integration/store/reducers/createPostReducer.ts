@@ -1,13 +1,20 @@
 import {DECODE_URL_SUCCESS, UPLOAD_ATTACHMENTS} from '../types/types';
 
-const initialState = {
+export interface CreatePostReducerState {
+  ogTags: {},
+  mediaAttachmemnts: [],
+  linkAttachments: [],
+  postContent: ''
+}
+
+export const initialState: CreatePostReducerState = {
   ogTags: {},
   mediaAttachmemnts: [],
   linkAttachments: [],
   postContent: '',
 };
 
-export function createPostReducer(state = initialState, action: any) {
+export function createPostReducer(state = initialState, action) {
   switch (action.type) {
     case DECODE_URL_SUCCESS: {
       const {og_tags = {}} = action.body;

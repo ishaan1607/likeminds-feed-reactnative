@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LMPostContentProps } from "./types";
 import { MAX_DEFAULT_POST_CONTENT_LINES } from "../../../constants/strings";
 import LMText from "../../LMText";
@@ -25,15 +25,14 @@ const LMPostContent = ({
   const [showMoreButton, setShowMoreButton] = useState(false);
 
   // this handles the show more functionality
-  const onTextLayout = useCallback(
-    (event: { nativeEvent: { lines: string | TextLayoutLine[] } }) => {
-      if (event.nativeEvent.lines.length > MAX_LINES && !showText) {
-        setShowMoreButton(true);
-        setNumberOfLines(MAX_LINES);
-      }
-    },
-    [showText, MAX_LINES]
-  );
+  const onTextLayout = (event: {
+    nativeEvent: { lines: string | TextLayoutLine[] };
+  }) => {
+    if (event.nativeEvent.lines.length > MAX_LINES && !showText) {
+      setShowMoreButton(true);
+      setNumberOfLines(MAX_LINES);
+    }
+  };
 
   // this handles the visiblity of whole post content and trimmed text upto maximum line
   useEffect(() => {

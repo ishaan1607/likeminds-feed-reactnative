@@ -6,20 +6,15 @@ import React, {
   useContext,
   useEffect,
   useState,
-  useRef,
-  useCallback,
-  MutableRefObject,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { LMLoader, LMPostUI } from "likeminds_feed_reactnative_ui";
-import { FlatList } from "react-native";
 import {
   getFeed,
   likePost,
   likePostStateHandler,
   pinPost,
   pinPostStateHandler,
-  refreshFeed,
   savePost,
   savePostStateHandler,
 } from "../store/actions/feed";
@@ -57,13 +52,8 @@ export interface PostListContextValues {
   selectedMenuItemPostId: string;
   showDeleteModal: boolean;
   showReportModal: boolean;
-  refreshing: boolean;
-  localRefresh: boolean;
   feedFetching: boolean;
-  listRef: MutableRefObject<FlatList<LMPostUI> | null>;
   setFeedFetching: Dispatch<SetStateAction<boolean>>;
-  setLocalRefresh: Dispatch<SetStateAction<boolean>>;
-  setRefreshing: Dispatch<SetStateAction<boolean>>;
   setShowReportModal: Dispatch<SetStateAction<boolean>>;
   setDeleteModal: Dispatch<SetStateAction<boolean>>;
   setSelectedMenuItemPostId: Dispatch<SetStateAction<string>>;
@@ -78,7 +68,6 @@ export interface PostListContextValues {
     pinnedValue?: boolean
   ) => void;
   fetchFeed: () => void;
-  onRefresh: () => void;
   postLikeHandler: (id: string) => void;
   debouncedSaveFunction: (id: string, saved?: boolean) => void;
   closePostActionListModal: () => void;
@@ -115,10 +104,7 @@ export const PostListContextProvider = ({
   const [selectedMenuItemPostId, setSelectedMenuItemPostId] = useState("");
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [localRefresh, setLocalRefresh] = useState(false);
   const [feedFetching, setFeedFetching] = useState(false);
-  const listRef = useRef<FlatList<LMPostUI>>(null);
   const LMFeedContextStyles = useLMFeedStyles();
   const { loaderStyle } = LMFeedContextStyles;
 
@@ -141,21 +127,6 @@ export const PostListContextProvider = ({
     setFeedFetching(false);
     return getFeedResponse;
   };
-
-  // this function is executed on pull to refresh
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    setLocalRefresh(true);
-    // calling getFeed API
-    await dispatch(
-      refreshFeed(
-        GetFeedRequest.builder().setpage(1).setpageSize(20).build(),
-        true
-      )
-    );
-    setLocalRefresh(false);
-    setRefreshing(false);
-  }, [dispatch]);
 
   // this functions hanldes the post like functionality
   async function postLikeHandler(id: string) {
@@ -307,13 +278,8 @@ export const PostListContextProvider = ({
     selectedMenuItemPostId,
     showDeleteModal,
     showReportModal,
-    refreshing,
-    localRefresh,
     feedFetching,
-    listRef,
     setFeedFetching,
-    setLocalRefresh,
-    setRefreshing,
     setShowReportModal,
     setDeleteModal,
     setSelectedMenuItemPostId,
@@ -324,7 +290,6 @@ export const PostListContextProvider = ({
     handleDeletePost,
     onMenuItemSelect,
     fetchFeed,
-    onRefresh,
     postLikeHandler,
     debouncedSaveFunction,
     closePostActionListModal,

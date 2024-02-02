@@ -9,97 +9,43 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React from "react";
 import {
   LMCommentItem,
-  LMCommentUI,
   LMHeader,
   LMInputText,
-  LMPost,
   LMProfilePicture,
   LMUserUI,
   LMLoader,
 } from "likeminds_feed_reactnative_ui";
 import {
-  AddCommentRequest,
-  EditCommentRequest,
-  GetCommentRequest,
-  GetPostRequest,
-  GetTaggingListRequest,
-  LikeCommentRequest,
-  LikePostRequest,
-  PinPostRequest,
-  ReplyCommentRequest,
-  SavePostRequest,
-} from "@likeminds.community/feed-js";
-import {
-  CREATE_POST,
   LIKES_LIST,
   UNIVERSAL_FEED,
 } from "../../constants/screenNames";
 import {
   COMMENT_LIKES,
   COMMENT_TYPE,
-  DELETE_COMMENT_MENU_ITEM,
-  DELETE_POST_MENU_ITEM,
-  EDIT_POST_MENU_ITEM,
-  EDIT_COMMENT_MENU_ITEM,
-  NAVIGATED_FROM_COMMENT,
-  PIN_POST_MENU_ITEM,
-  POST_LIKES,
-  POST_TYPE,
-  REPORT_COMMENT_MENU_ITEM,
-  REPORT_POST_MENU_ITEM,
-  UNPIN_POST_MENU_ITEM,
+  POST_TYPE
 } from "../../constants/Strings";
 import { DeleteModal, ReportModal } from "../../customModals";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { styles } from "./styles";
 import Layout from "../../constants/Layout";
 import { FlashList } from "@shopify/flash-list";
-// @ts-ignore the lib do not have TS declarations yet
-import _ from "lodash";
 import {
-  detectMentions,
-  mentionToRouteConverter,
   replaceLastMention,
-  routeToMentionConverter,
 } from "../../utils";
 import { useLMFeedStyles } from "../../lmFeedProvider";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import { useAppDispatch } from "../../store/store";
 import {
-  addComment,
-  addCommentStateHandler,
-  clearComments,
-  editComment,
-  editCommentStateHandler,
-  getComments,
-  getPost,
-  getTaggingList,
-  likeComment,
-  refreshPostDetail,
-  replyComment,
-  replyCommentStateHandler,
+  clearComments
 } from "../../store/actions/postDetail";
-import {
-  likePost,
-  likePostStateHandler,
-  pinPost,
-  pinPostStateHandler,
-  savePost,
-  savePostStateHandler,
-} from "../../store/actions/feed";
 import {
   PostDetailContextProvider,
   PostDetailContextValues,
   usePostDetailContext,
-} from "../../context/postDetailContext";
-import {
-  UniversalFeedContextValues,
-  useUniversalFeedContext,
 } from "../../context";
 
 const PostDetail = ({navigation, route, children }: any) => {

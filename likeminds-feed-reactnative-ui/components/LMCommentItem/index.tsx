@@ -7,7 +7,7 @@ import {
   TextLayoutEventData,
   NativeSyntheticEvent,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import LMText from "../LMText";
 import layout from "../../utils/layout";
 import { LMCommentProps } from "./types";
@@ -54,15 +54,12 @@ const LMCommentItem = ({
   );
 
   // this handles the show more functionality
-  const onTextLayout = useCallback(
-    (event: NativeSyntheticEvent<TextLayoutEventData>) => {
-      if (event.nativeEvent.lines.length > MAX_LINES && !showText) {
-        setShowMoreButton(true);
-        setNumberOfLines(MAX_LINES);
-      }
-    },
-    [showText, MAX_LINES]
-  );
+  const onTextLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) => {
+    if (event.nativeEvent.lines.length > MAX_LINES && !showText) {
+      setShowMoreButton(true);
+      setNumberOfLines(MAX_LINES);
+    }
+  };
 
   // this handles the visiblity of whole comment content and trimmed text upto maximum line
   useEffect(() => {

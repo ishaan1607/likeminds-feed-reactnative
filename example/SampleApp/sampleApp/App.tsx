@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ContextProvider,
+  CreatePost,
   LMFeedProvider,
   PostDetail,
   PostsList,
@@ -11,7 +12,6 @@ import {ViewStyle} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './RootNavigation';
-import * as Navi from './RootNavigation'
 
 const App = () => {
   const Stack = createStackNavigator();
@@ -38,6 +38,7 @@ const App = () => {
             <Stack.Screen name={'UniversalFeed'} component={UniversalFeed} />
             <Stack.Screen name={'PostsList'} component={PostsList} />
             <Stack.Screen name={'PostDetail'} component={PostDetail} />
+            <Stack.Screen name={'CreatePost'} component={CreatePost} />
           </Stack.Navigator>
         </NavigationContainer>
       </LMFeedProvider>

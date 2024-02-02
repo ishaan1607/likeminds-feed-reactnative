@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState, ReactNode } from "react";
 import {
   Image,
+  Platform,
   SafeAreaView,
   Text,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { styles } from "./styles";
-import { LMHeader } from "likeminds_feed_reactnative_ui";
-import { APP_TITLE } from "../../constants/Strings";
+import { LMHeader, LMIcon, LMImage, LMLoader, LMVideo } from "likeminds_feed_reactnative_ui";
+import { APP_TITLE, DOCUMENT_ATTACHMENT_TYPE, IMAGE_ATTACHMENT_TYPE, POST_UPLOADING, VIDEO_ATTACHMENT_TYPE } from "../../constants/Strings";
 import { CREATE_POST } from "../../constants/screenNames";
 // @ts-ignore the lib do not have TS declarations yet
 import _ from "lodash";
@@ -15,6 +17,7 @@ import {PostsList} from "../postsList";
 import { useLMFeedStyles } from "../../lmFeedProvider";
 import { useAppDispatch } from "../../store/store";
 import { UniversalFeedContextProvider, UniversalFeedContextValues, useUniversalFeedContext } from "../../context";
+import STYLES from "../../constants/Styles";
 
 const UniversalFeed = ({ navigation, route ,children}: any) => {
   return (
@@ -26,23 +29,60 @@ const UniversalFeed = ({ navigation, route ,children}: any) => {
 
 const UniversalFeedComponent = React.memo(() => {
   const dispatch = useAppDispatch()
-  const {feedData, showCreatePost, postUploading,navigation }: UniversalFeedContextValues = useUniversalFeedContext()
+  const {feedData, showCreatePost, postUploading,navigation , uploadingMediaAttachment, uploadingMediaAttachmentType}: UniversalFeedContextValues = useUniversalFeedContext()
   const LMFeedContextStyles = useLMFeedStyles();
-  const { universalFeedStyle, loaderStyle } = LMFeedContextStyles;
-  // todo: handle later
-  // const {mediaAttachmemnts, linkAttachments, postContent} = useAppSelector(
-  //   state => state.createPost,
-  //   );
-  // const uploadingMediaAttachmentType = mediaAttachmemnts[0]?.attachmentType;
-  // const uploadingMediaAttachment = mediaAttachmemnts[0]?.attachmentMeta.url;
-
-  // this calls the getFeed api whenever the page number gets changed
-  
+  const { universalFeedStyle, loaderStyle } = LMFeedContextStyles;  
 
   return (
     <SafeAreaView style={styles.mainContainer}>
       {/* header */}
       <LMHeader heading={APP_TITLE} {...universalFeedStyle?.screenHeader} />
+       {/* post uploading section */}
+       {postUploading && (
+        <View style={styles.postUploadingView}>
+          <View style={styles.uploadingPostContentView}>
+            {/* post uploading media preview */}
+            {uploadingMediaAttachmentType === IMAGE_ATTACHMENT_TYPE && (
+              <LMImage
+                imageUrl={uploadingMediaAttachment}
+                imageStyle={styles.uploadingImageStyle}
+                boxStyle={styles.uploadingImageVideoBox}
+                width={styles.uploadingImageVideoBox.width}
+                height={styles.uploadingImageVideoBox.height}
+              />
+            )}
+            {uploadingMediaAttachmentType === VIDEO_ATTACHMENT_TYPE && (
+              <LMVideo
+                videoUrl={uploadingMediaAttachment}
+                videoStyle={styles.uploadingVideoStyle}
+                boxStyle={styles.uploadingImageVideoBox}
+                width={styles.uploadingImageVideoBox.width}
+                height={styles.uploadingImageVideoBox.height}
+                showControls={false}
+                boxFit="contain"
+              />
+            )}
+            {uploadingMediaAttachmentType === DOCUMENT_ATTACHMENT_TYPE && (
+              <LMIcon
+                assetPath={require('../../assets/images/pdf_icon3x.png')}
+                type="png"
+                iconStyle={styles.uploadingDocumentStyle}
+                height={styles.uploadingPdfIconSize.height}
+                width={styles.uploadingPdfIconSize.width}
+              />
+            )}
+            <Text style={styles.postUploadingText}>{POST_UPLOADING}</Text>
+          </View>
+          {/* progress loader */}
+          <LMLoader
+            size={
+              Platform.OS === 'ios'
+                ? STYLES.$LMLoaderSizeiOS
+                : STYLES.$LMLoaderSizeAndroid
+            }
+          />
+        </View>
+      )}
       {/* posts list section */}
       <PostsList />
       {/* create post button section */}

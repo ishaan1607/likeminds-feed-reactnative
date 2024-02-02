@@ -15,6 +15,7 @@ import {
   CREATE_REPLY_SUCCESS,
   DELETE_COMMENT_STATE,
   EDIT_COMMENT_STATE,
+  EDIT_POST_SUCCESS,
   PIN_POST_STATE,
   POST_COMMENTS_SUCCESS,
   POST_DATA_REFRESH_SUCCESS,
@@ -370,6 +371,11 @@ export const postDetailReducer = (state = initialState, action) => {
         }
       }
       return { ...state, postDetail: { ...updatedPostDetail } };
+    }
+    case EDIT_POST_SUCCESS: {
+      const {post = {}, users = {}} = action.body;
+      const converterPostData = convertToLMPostUI(post, users);
+      return {...state, postDetail: converterPostData};
     }
     default:
       return state;

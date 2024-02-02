@@ -13,6 +13,7 @@ import {
   PostDetailContextValues,
   usePostDetailContext,
 } from "./postDetailContext";
+import { CreatePostContextProvider, CreatePostContextValues, useCreatePostContext } from "./createPostContext";
 export {
   UniversalFeedContextProvider,
   UniversalFeedContextValues,
@@ -23,4 +24,7 @@ export {
   PostDetailContextProvider,
   PostDetailContextValues,
   usePostDetailContext,
+  CreatePostContextProvider,
+  CreatePostContextValues,
+  useCreatePostContext
 };
