@@ -21,7 +21,7 @@ import {
   LMLoader,
 } from "likeminds_feed_reactnative_ui";
 import {
-  LIKES_LIST,
+  POST_LIKES_LIST,
   UNIVERSAL_FEED,
 } from "../../constants/screenNames";
 import {
@@ -47,6 +47,7 @@ import {
   PostDetailContextValues,
   usePostDetailContext,
 } from "../../context";
+import { postLikesClear } from "../../store/actions/postLikes";
 
 const PostDetail = ({navigation, route, children }: any) => {
   return (
@@ -302,7 +303,8 @@ const PostDetailComponent = React.memo(() => {
                               ...postDetailStyle?.commentItemStyle
                                 ?.likeTextButton,
                               onTap: (id) => {
-                                navigation.navigate(LIKES_LIST, [
+                                dispatch(postLikesClear())
+                                navigation.navigate(POST_LIKES_LIST, [
                                   COMMENT_LIKES,
                                   id,
                                   item?.postId,

@@ -1,7 +1,7 @@
 import { LMFeedProvider } from "./lmFeedProvider";
 import {initMyClient} from './setup'
 import { ContextProvider } from "./store/contextStore";
-import { UniversalFeed, PostsList, PostDetail , CreatePost} from "./screens";
+import { UniversalFeed, PostsList, PostDetail , CreatePost, PostLikesList} from "./screens";
 export {
     LMFeedProvider,
     initMyClient,
@@ -9,5 +9,6 @@ export {
     UniversalFeed,
     PostsList,
     PostDetail,
-    CreatePost
+    CreatePost,
+    PostLikesList
 }

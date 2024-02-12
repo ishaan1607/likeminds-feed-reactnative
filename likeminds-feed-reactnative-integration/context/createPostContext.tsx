@@ -46,7 +46,7 @@ import {
   EditPostRequest,
   GetPostRequest,
   GetTaggingListRequest,
-} from "@likeminds.community/feed-js";
+} from "@likeminds.community/feed-js-beta";
 import { getPost, getTaggingList } from "../store/actions/postDetail";
 
 interface CreatePostContextProps {

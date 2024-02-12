@@ -53,7 +53,7 @@ import {
   PinPostRequest,
   ReplyCommentRequest,
   SavePostRequest,
-} from "@likeminds.community/feed-js";
+} from "@likeminds.community/feed-js-beta";
 import {
   likePost,
   likePostStateHandler,
@@ -63,12 +63,13 @@ import {
   savePostStateHandler,
 } from "../store/actions/feed";
 import _ from "lodash";
-import { CREATE_POST, LIKES_LIST } from "../constants/screenNames";
+import { CREATE_POST, POST_LIKES_LIST } from "../constants/screenNames";
 import {
   detectMentions,
   mentionToRouteConverter,
   routeToMentionConverter,
 } from "../utils";
+import { postLikesClear } from "../store/actions/postLikes";
 
 interface PostDetailContextProps {
   children: ReactNode;
@@ -631,10 +632,8 @@ export const PostDetailContextProvider = ({
           likeTextButton: {
             ...postListStyle?.footer?.likeTextButton,
             onTap: () => {
-              // todo: handle later
-              // dispatch();
-              // postLikesClear() as any
-              navigation.navigate(LIKES_LIST, [POST_LIKES, postDetail?.id]);
+              dispatch(postLikesClear())
+              navigation.navigate(POST_LIKES_LIST, [POST_LIKES, postDetail?.id]);
               postListStyle?.footer?.likeTextButton?.onTap();
             },
           },

@@ -8,7 +8,7 @@ import {
   MEMBER_STATE_FAILED,
   MEMBER_STATE_SUCCESS,
 } from '../types/types';
-import {InitiateUserRequest} from '@likeminds.community/feed-js';
+import {InitiateUserRequest} from '@likeminds.community/feed-js-beta';
 import { Client } from '../../client';
 
 const myClient = Client.myClient;

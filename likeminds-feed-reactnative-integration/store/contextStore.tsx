@@ -6,6 +6,7 @@ import { initialState as PostDetailInitialState, PostDetailReducerState, postDet
 import { useReducerWithMiddleware } from "../hooks/useReducerWithMiddleware";
 import { rootReducer } from "./store";
 import { CreatePostReducerState , initialState as CreatePostInitialState} from "./reducers/createPostReducer";
+import { PostLikesReducerState, initialState as PostLikesInitialState } from "./reducers/postLikesReducer";
 
 // Define your state type
 export interface ContextState {
@@ -13,7 +14,8 @@ export interface ContextState {
   feed: FeedReducerState;
   loader: LoaderReducerState;
   postDetail: PostDetailReducerState;
-  createPost: CreatePostReducerState
+  createPost: CreatePostReducerState;
+  postLikes: PostLikesReducerState
 }
 interface AppContextProps {
   state: ContextState;
@@ -30,7 +32,8 @@ export const ContextProvider = ({ children }) => {
     feed: FeedInitialState,
     loader: LoaderInitialState,
     postDetail: PostDetailInitialState,
-    createPost: CreatePostInitialState
+    createPost: CreatePostInitialState,
+    postLikes: PostLikesInitialState
   };
 
   const [state, dispatch] = useReducerWithMiddleware(rootReducer as any, initialState);

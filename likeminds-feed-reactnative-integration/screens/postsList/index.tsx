@@ -11,7 +11,7 @@ import {
   LikePostRequest,
   PinPostRequest,
   SavePostRequest,
-} from "@likeminds.community/feed-js";
+} from "@likeminds.community/feed-js-beta";
 import { styles } from "./styles";
 import { LMPost, LMPostUI, LMLoader } from "likeminds_feed_reactnative_ui";
 import {
@@ -29,7 +29,7 @@ import {
 } from "../../constants/Strings";
 import {
   CREATE_POST,
-  LIKES_LIST,
+  POST_LIKES_LIST,
   POST_DETAIL,
 } from "../../constants/screenNames";
 // @ts-ignore the lib do not have TS declarations yet
@@ -53,6 +53,7 @@ import {
   usePostListContext,
   useUniversalFeedContext,
 } from "../../context";
+import { postLikesClear } from "../../store/actions/postLikes";
 
 const PostsList = ({ route, children }: any) => {
   const {
@@ -202,9 +203,8 @@ const PostsListComponent = React.memo(() => {
                     likeTextButton: {
                       ...postListStyle?.footer?.likeTextButton,
                       onTap: () => {
-                        // todo: handle later
-                        //   dispatch(postLikesClear() as any);
-                        navigation.navigate(LIKES_LIST, [POST_LIKES, item?.id]);
+                          dispatch(postLikesClear());
+                        navigation.navigate(POST_LIKES_LIST, [POST_LIKES, item?.id]);
                         postListStyle?.footer?.likeTextButton?.onTap();
                       },
                     },

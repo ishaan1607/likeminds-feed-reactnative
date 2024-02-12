@@ -4,6 +4,7 @@ import {
   CreatePost,
   LMFeedProvider,
   PostDetail,
+  PostLikesList,
   PostsList,
   UniversalFeed,
 } from 'likeminds-feed-reactnative-integration';
@@ -39,6 +40,7 @@ const App = () => {
             <Stack.Screen name={'PostsList'} component={PostsList} />
             <Stack.Screen name={'PostDetail'} component={PostDetail} />
             <Stack.Screen name={'CreatePost'} component={CreatePost} />
+            <Stack.Screen name={'PostLikesList'} component={PostLikesList} />
           </Stack.Navigator>
         </NavigationContainer>
       </LMFeedProvider>

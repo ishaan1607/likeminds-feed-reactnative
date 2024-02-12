@@ -1,5 +1,5 @@
 import React from "react";
-import { LMFeedClient } from "@likeminds.community/feed-js";
+import { LMFeedClient } from "@likeminds.community/feed-js-beta";
 import {
   LMButtonProps,
   LMHeaderProps,
