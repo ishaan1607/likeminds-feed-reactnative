@@ -7,10 +7,7 @@ import {
   Pressable,
 } from "react-native";
 import React from "react";
-import {
-  nameInitials,
-  replaceLastMention
-} from "../../utils";
+import { nameInitials, replaceLastMention } from "../../utils";
 import { useAppDispatch } from "../../store/store";
 import {
   LMButton,
@@ -41,14 +38,22 @@ import {
   SELECT_VIDEO,
   VIDEO_ATTACHMENT_TYPE,
 } from "../../constants/Strings";
-import {
-  setUploadAttachments,
-} from "../../store/actions/createPost";
+import { setUploadAttachments } from "../../store/actions/createPost";
 import { styles } from "./styles";
 import { FlashList } from "@shopify/flash-list";
-import { CreatePostContextProvider, CreatePostContextValues, useCreatePostContext } from "../../context";
+import {
+  CreatePostContextProvider,
+  CreatePostContextValues,
+  useCreatePostContext,
+} from "../../context";
 
-const CreatePost = ({ navigation, route, children }: any) => {
+interface CreatPostProps {
+  navigation: any;
+  route: any;
+  children: any;
+}
+
+const CreatePost = ({ navigation, route, children }: CreatPostProps) => {
   return (
     <CreatePostContextProvider
       navigation={navigation}
@@ -94,7 +99,7 @@ const CreatePostComponent = React.memo(() => {
     showLinkPreview,
     setShowLinkPreview,
     postDetail,
-    postEdit
+    postEdit,
   }: CreatePostContextValues = useCreatePostContext();
   // this renders the post detail UI
   const uiRenderForPost = () => {
@@ -113,7 +118,9 @@ const CreatePostComponent = React.memo(() => {
         <View style={styles.profileContainer}>
           {/* profile image */}
           <LMProfilePicture
-            fallbackText={{ children: <Text>{nameInitials(memberData.name)}</Text> }}
+            fallbackText={{
+              children: <Text>{nameInitials(memberData.name)}</Text>,
+            }}
             imageUrl={memberData.imageUrl}
           />
           {/* user name */}
@@ -347,7 +354,7 @@ const CreatePostComponent = React.memo(() => {
                         linkAttachmentData: formattedLinkAttachments,
                         postContentData: postContentText.trim(),
                       })
-                    );                    
+                    );
                     navigation.goBack();
                   }
             }
@@ -385,7 +392,10 @@ const CreatePostComponent = React.memo(() => {
                 type="png"
                 assetPath={require("../../assets/images/gallery_icon3x.png")}
               />
-              <LMText children={<Text>{ADD_IMAGES}</Text>} textStyle={styles.selectionOptionstext} />
+              <LMText
+                children={<Text>{ADD_IMAGES}</Text>}
+                textStyle={styles.selectionOptionstext}
+              />
             </TouchableOpacity>
             {/* add video button */}
             <TouchableOpacity
