@@ -4,7 +4,7 @@ import { LMProfilePictureProps } from "./types";
 import LMText from "../LMText";
 import { defaultStyles } from "./styles";
 
-const LMProfilePicture = ({
+const LMProfilePicture = React.memo(({
   fallbackText,
   imageUrl,
   size,
@@ -58,7 +58,7 @@ const LMProfilePicture = ({
       )}
     </TouchableOpacity>
   );
-};
+})
 
 
 export default LMProfilePicture;

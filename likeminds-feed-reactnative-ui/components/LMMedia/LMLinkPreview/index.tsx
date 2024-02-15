@@ -11,7 +11,7 @@ import LMImage from "../LMImage";
 import LMButton from "../../LMButton";
 import { styles } from "./styles";
 
-const LMLinkPreview = ({
+const LMLinkPreview = React.memo(({
   attachments,
   onTap,
   showLinkUrl,
@@ -143,6 +143,6 @@ const LMLinkPreview = ({
       </View>
     </TouchableOpacity>
   );
-};
+})
 
 export default LMLinkPreview;

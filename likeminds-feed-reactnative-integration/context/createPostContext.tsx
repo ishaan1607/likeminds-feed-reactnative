@@ -14,7 +14,7 @@ import {
   LMAttachmentUI,
   LMOGTagsUI,
   LMPostUI,
-  LMUserUI
+  LMUserUI,
 } from "likeminds_feed_reactnative_ui";
 import { Platform, TextInput } from "react-native";
 import {
@@ -28,8 +28,10 @@ import {
 } from "../utils";
 import {
   DOCUMENT_ATTACHMENT_TYPE,
+  FILE_UPLOAD_SIZE_VALIDATION,
   IMAGE_ATTACHMENT_TYPE,
   MAX_FILE_SIZE,
+  MEDIA_UPLOAD_COUNT_VALIDATION,
   MIN_FILE_SIZE,
   VIDEO_ATTACHMENT_TYPE,
 } from "../constants/Strings";
@@ -48,6 +50,7 @@ import {
   GetTaggingListRequest,
 } from "@likeminds.community/feed-js-beta";
 import { getPost, getTaggingList } from "../store/actions/postDetail";
+import { showToastMessage } from "../store/actions/toast";
 
 interface CreatePostContextProps {
   children: ReactNode;
@@ -172,12 +175,12 @@ export const CreatePostContextProvider = ({
               media.fileSize > MAX_FILE_SIZE ||
               media.fileSize < MIN_FILE_SIZE
             ) {
-              dispatch();
-              // todo: handle toast later
-              // showToastMessage({
-              //   isToast: true,
-              //   message: FILE_UPLOAD_SIZE_VALIDATION,
-              // }) as any,
+              dispatch(
+                showToastMessage({
+                  isToast: true,
+                  message: FILE_UPLOAD_SIZE_VALIDATION,
+                })
+              );
             } else {
               mediaWithSizeCheck.push(media);
             }
@@ -192,12 +195,12 @@ export const CreatePostContextProvider = ({
         ) {
           setFormattedMediaAttachments([...formattedMediaAttachments]);
           setShowSelecting(false);
-          dispatch();
-          // todo: handle toast later
-          // showToastMessage({
-          //   isToast: true,
-          //   message: MEDIA_UPLOAD_COUNT_VALIDATION,
-          // }) as any,
+          dispatch(
+            showToastMessage({
+              isToast: true,
+              message: MEDIA_UPLOAD_COUNT_VALIDATION,
+            })
+          );
         } else {
           if (
             selectedImagesVideos.length > 0 ||
@@ -224,12 +227,12 @@ export const CreatePostContextProvider = ({
       // checks the size of the files
       for (const media of res) {
         if (media.size > MAX_FILE_SIZE || media.size < MIN_FILE_SIZE) {
-          dispatch();
-          // todo: handle toast later
-          // showToastMessage({
-          //   isToast: true,
-          //   message: FILE_UPLOAD_SIZE_VALIDATION,
-          // }) as any,
+          dispatch(
+            showToastMessage({
+              isToast: true,
+              message: FILE_UPLOAD_SIZE_VALIDATION,
+            })
+          );
         } else {
           mediaWithSizeCheck.push(media);
         }
@@ -238,12 +241,12 @@ export const CreatePostContextProvider = ({
       // checks the count of the files attached
       if (selectedDocuments.length + formattedDocumentAttachments.length > 10) {
         setFormattedDocumentAttachments([...formattedDocumentAttachments]);
-        dispatch();
-        // todo: handle toast later
-        // showToastMessage({
-        //   isToast: true,
-        //   message: MEDIA_UPLOAD_COUNT_VALIDATION,
-        // }) as any,
+        dispatch(
+          showToastMessage({
+            isToast: true,
+            message: MEDIA_UPLOAD_COUNT_VALIDATION,
+          })
+        );
       } else {
         if (
           selectedDocuments.length > 0 ||

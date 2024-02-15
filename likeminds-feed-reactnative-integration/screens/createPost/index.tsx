@@ -5,10 +5,11 @@ import {
   Text,
   ScrollView,
   Pressable,
+  FlatList,
 } from "react-native";
 import React from "react";
 import { nameInitials, replaceLastMention } from "../../utils";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
   LMButton,
   LMCarousel,
@@ -40,12 +41,12 @@ import {
 } from "../../constants/Strings";
 import { setUploadAttachments } from "../../store/actions/createPost";
 import { styles } from "./styles";
-import { FlashList } from "@shopify/flash-list";
 import {
   CreatePostContextProvider,
   CreatePostContextValues,
   useCreatePostContext,
 } from "../../context";
+import { getNameInitials } from "likeminds_feed_reactnative_ui/utils/utils";
 
 interface CreatPostProps {
   navigation: any;
@@ -159,7 +160,7 @@ const CreatePostComponent = React.memo(() => {
               },
             ]}
           >
-            <FlashList
+            <FlatList
               data={[...allTags]}
               renderItem={({ item }: { item: LMUserUI }) => {
                 return (
@@ -177,9 +178,10 @@ const CreatePostComponent = React.memo(() => {
                       setIsUserTagging(false);
                     }}
                     style={styles.taggingListItem}
+                    key={item?.id}
                   >
                     <LMProfilePicture
-                      fallbackText={{ children: <Text>{item?.name}</Text> }}
+                      fallbackText={{ children: <Text>{getNameInitials(item?.name)}</Text> }}
                       fallbackTextBoxStyle={styles.taggingListProfileBoxStyle}
                       size={40}
                     />
@@ -196,7 +198,6 @@ const CreatePostComponent = React.memo(() => {
               extraData={{
                 value: [postContentText, allTags],
               }}
-              estimatedItemSize={75}
               keyboardShouldPersistTaps={"handled"}
               onEndReached={handleLoadMore}
               onEndReachedThreshold={1}
@@ -208,8 +209,8 @@ const CreatePostComponent = React.memo(() => {
                   </View>
                 ) : null
               }
-              keyExtractor={(item: any, index) => {
-                return index?.toString();
+              keyExtractor={(item) => {
+                return item?.id;
               }}
             />
           </View>

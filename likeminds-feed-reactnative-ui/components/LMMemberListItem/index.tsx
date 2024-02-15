@@ -7,7 +7,7 @@ import LMIcon from "../LMIcon";
 import { styles } from "./styles";
 import { getNameInitials } from "../../utils/utils";
 
-const LMMemberListItem = ({
+const LMMemberListItem = React.memo(({
   likes,
   profilePictureProps,
   nameProps,
@@ -76,6 +76,6 @@ const LMMemberListItem = ({
       </View>
     </TouchableOpacity>
   );
-};
+})
 
 export default LMMemberListItem;

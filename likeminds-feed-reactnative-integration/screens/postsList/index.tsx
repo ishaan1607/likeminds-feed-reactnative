@@ -54,6 +54,7 @@ import {
   useUniversalFeedContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
+import { FlashList } from "@shopify/flash-list";
 
 const PostsList = ({ route, children }: any) => {
   const {
@@ -77,6 +78,7 @@ const PostsListComponent = React.memo(() => {
     refreshing,
     onRefresh,
     localRefresh,
+    keyExtractor
   }: UniversalFeedContextValues = useUniversalFeedContext();
   const {
     navigation,
@@ -97,7 +99,7 @@ const PostsListComponent = React.memo(() => {
     getPostDetail,
     setShowReportModal,
     handleDeletePost,
-    
+    debouncedLikeFunction
   }: PostListContextValues = usePostListContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, loaderStyle } = LMFeedContextStyles;
@@ -107,7 +109,7 @@ const PostsListComponent = React.memo(() => {
       {/* posts list section */}
       {!feedFetching ? (
         feedData?.length > 0 ? (
-          <FlatList
+          <FlashList
             ref={listRef}
             refreshing={refreshing}
             style={postListStyle?.listStyle}
@@ -136,6 +138,7 @@ const PostsListComponent = React.memo(() => {
                     NAVIGATED_FROM_POST,
                   ]);
                 }}
+                key={item?.id}
               >
                 <LMPost
                   post={item}
@@ -189,7 +192,7 @@ const PostsListComponent = React.memo(() => {
                     likeIconButton: {
                       ...postListStyle?.footer?.likeIconButton,
                       onTap: () => {
-                        postLikeHandler(item?.id);
+                        debouncedLikeFunction(item?.id);
                         postListStyle?.footer?.likeIconButton?.onTap();
                       },
                     },
@@ -257,6 +260,8 @@ const PostsListComponent = React.memo(() => {
             onEndReached={() => {
               setFeedPageNumber(feedPageNumber + 1);
             }}
+            keyExtractor={item => keyExtractor(item)}
+            estimatedItemSize={500}
             ListFooterComponent={<>{showLoader > 0 && renderLoader()}</>}
           />
         ) : (

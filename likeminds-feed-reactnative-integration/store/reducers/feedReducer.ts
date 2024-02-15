@@ -9,7 +9,8 @@ import {
   UNIVERSAL_FEED_REFRESH_SUCCESS,
   LIKE_POST_STATE,
   SAVE_POST_STATE,
-  EDIT_POST_SUCCESS
+  EDIT_POST_SUCCESS,
+  CREATE_COMMENT_SUCCESS
 } from '../types/types';
 
 export interface FeedReducerState {
@@ -129,6 +130,17 @@ export const feedReducer = (
         updatedFeed[index] = postData;
       }
       return {...state, feed: updatedFeed};
+    }
+    case CREATE_COMMENT_SUCCESS: {
+      const {comment} = action.body;
+      const updatedFeed = state.feed;
+      // finds the post in which new comment is added in post detail and manage its comment count
+      updatedFeed.find((item: LMPostUI) => {
+        if (item.id === comment.postId) {
+          item.commentsCount = item?.commentsCount + 1;
+        }
+      });
+      return {...state};
     }
     default:
       return state;

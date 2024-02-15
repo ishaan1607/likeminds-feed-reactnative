@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from 'react';
+} from "react";
 import {
   NativeSyntheticEvent,
   StyleSheet,
@@ -13,19 +13,19 @@ import {
   TextInput,
   TextInputSelectionChangeEventData,
   View,
-} from 'react-native';
+} from "react-native";
 
 import {
   defaultMentionTextStyle,
   generateValueFromPartsAndChangedText,
   parseValue,
-} from './utils';
-import {LMInputTextProps} from './types';
-import LMButton from '../LMButton';
-import decode from '../../utils/decodeMentions';
-import { defaultStyles } from './styles';
+} from "./utils";
+import { LMInputTextProps } from "./types";
+import LMButton from "../LMButton";
+import decode from "../../utils/decodeMentions";
+import { defaultStyles } from "./styles";
 
-const LMInputText: FC<LMInputTextProps> = ({
+const LMInputText: FC<LMInputTextProps> = React.memo(({
   inputText,
   onType,
   partTypes = [],
@@ -42,13 +42,11 @@ const LMInputText: FC<LMInputTextProps> = ({
   disabled,
   rightIcon,
   autoFocus,
-  plainTextStyle,
-  mentionTextStyle,
 
   ...textInputProps
 }) => {
   const textInput = useRef<TextInput | null>(null);
-  const [selection, setSelection] = useState({start: 0, end: 0});
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [inputLength, setInputLength] = useState(0);
 
   // this handles the autoFocus of textinput
@@ -60,18 +58,16 @@ const LMInputText: FC<LMInputTextProps> = ({
     }
   }, [autoFocus]);
 
-  const {plainText} = useMemo(
+  const { plainText } = useMemo(
     () => parseValue(inputText, partTypes),
-    [inputText, partTypes],
+    [inputText, partTypes]
   );
-  let {parts} = useMemo(
+  let { parts } = useMemo(
     () => parseValue(inputText, partTypes),
-    [inputText, partTypes],
+    [inputText, partTypes]
   );
 
-  const handleSelectionChange = (
-    event: NativeSyntheticEvent<TextInputSelectionChangeEventData>,
-  ) => {
+  const handleSelectionChange = (event) => {
     setSelection(event.nativeEvent.selection);
 
     onSelectionChange && onSelectionChange(event);
@@ -117,8 +113,8 @@ const LMInputText: FC<LMInputTextProps> = ({
         parts,
         plainText,
         changedText,
-        isFirst,
-      ),
+        isFirst
+      )
     );
   };
 
@@ -126,7 +122,7 @@ const LMInputText: FC<LMInputTextProps> = ({
     textInput.current = ref as TextInput;
 
     if (propInputRef) {
-      if (typeof propInputRef === 'function') {
+      if (typeof propInputRef === "function") {
         propInputRef(ref);
       } else {
         (propInputRef as MutableRefObject<TextInput>).current =
@@ -145,7 +141,7 @@ const LMInputText: FC<LMInputTextProps> = ({
         onContentSizeChange={onContentSizeChange}
         onSelectionChange={handleSelectionChange}
         placeholderTextColor={
-          placeholderTextColor ? placeholderTextColor : '#000'
+          placeholderTextColor ? placeholderTextColor : "#000"
         }
         style={
           rightIcon
@@ -153,22 +149,24 @@ const LMInputText: FC<LMInputTextProps> = ({
             : defaultStyles.textInputWithoutRightIcon
         }
         placeholder={placeholderText}
-        autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
-        keyboardType={keyboardType ? keyboardType : 'default'}
+        autoCapitalize={autoCapitalize ? autoCapitalize : "none"}
+        keyboardType={keyboardType ? keyboardType : "default"}
         multiline={multilineField ? multilineField : false}
         secureTextEntry={secureText ? secureText : false}
-        editable={disabled ? disabled : true}>
+        editable={disabled ? disabled : true}
+      >
         <Text>
-          {parts.map(({text, partType, data}, index) =>
+          {parts.map(({ text, partType, data }, index) =>
             partType ? (
               <Text
-                key={`${index}-${data?.trigger ?? 'pattern'}`}
-                style={partType.textStyle ?? mentionTextStyle ? mentionTextStyle : defaultMentionTextStyle}>
+                key={`${index}-${data?.trigger ?? "pattern"}`}
+                style={partType.textStyle ?? defaultMentionTextStyle}
+              >
                 {text}
               </Text>
             ) : (
-              <Text key={index}>{decode(text, true, plainTextStyle)}</Text>
-            ),
+              <Text key={Math.random()}>{decode(text, true)}</Text>
+            )
           )}
         </Text>
       </TextInput>
@@ -179,7 +177,7 @@ const LMInputText: FC<LMInputTextProps> = ({
           onTap={rightIcon.onTap}
           text={rightIcon.text}
           icon={{
-            type: 'png',
+            type: "png",
             assetPath: rightIcon.icon?.assetPath,
             ...rightIcon.icon,
           }}
@@ -189,6 +187,6 @@ const LMInputText: FC<LMInputTextProps> = ({
       )}
     </View>
   );
-};
+})
 
 export default LMInputText;

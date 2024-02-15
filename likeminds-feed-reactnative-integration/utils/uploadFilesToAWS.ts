@@ -1,4 +1,4 @@
-import {LMAttachmentMetaUI} from '../../LikeMinds-ReactNative-Feed-UI';
+import {LMAttachmentMetaUI} from 'likeminds_feed_reactnative_ui';
 import {getAWS} from './AWSConfig';
 
 // this function converts the image/video url to blob
@@ -34,7 +34,7 @@ export const uploadFilesToAWS = async (
   const mediaObject = getAWS()
     .upload({
       Key: `files/post/${userUniqueId}/${media.name}`,
-      Bucket: `${process.env.S3_BUCKET}`,
+      Bucket: 'beta-likeminds-media',
       Body: blob,
       ACL: 'public-read-write',
       ContentType: media.format,

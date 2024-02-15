@@ -15,7 +15,7 @@ import LMLoader from "../../LMLoader";
 import LMButton from "../../LMButton";
 import { defaultStyles } from "./styles";
 
-const LMVideo = ({
+const LMVideo = React.memo(({
   videoUrl,
   height,
   width,
@@ -158,6 +158,6 @@ const LMVideo = ({
       )}
     </View>
   );
-};
+})
 
 export default LMVideo;

@@ -16,6 +16,7 @@ import { addPost, setUploadAttachments } from "../store/actions/createPost";
 import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js-beta";
 import { FlatList } from "react-native";
 import { refreshFeed } from "../store/actions/feed";
+import { FlashList } from "@shopify/flash-list";
 
 interface UniversalFeedContextProps {
   children: ReactNode;
@@ -33,7 +34,7 @@ export interface UniversalFeedContextValues {
   showCreatePost: boolean;
   refreshing: boolean;
   localRefresh: boolean;
-  listRef: MutableRefObject<FlatList<LMPostUI> | null>;
+  listRef: MutableRefObject<FlashList<LMPostUI> | null>;
   mediaAttachmemnts: [];
   linkAttachments: [];
   postContent: string;
@@ -45,6 +46,7 @@ export interface UniversalFeedContextValues {
   setShowCreatePost: Dispatch<SetStateAction<boolean>>;
   onRefresh: () => void;
   postAdd: () => void;
+  keyExtractor:(val) => string
 }
 
 const UniversalFeedContext = createContext<
@@ -81,7 +83,7 @@ export const UniversalFeedContextProvider = ({
 
   const [refreshing, setRefreshing] = useState(false);
   const [localRefresh, setLocalRefresh] = useState(false);
-  const listRef = useRef<FlatList<LMPostUI>>(null);
+  const listRef = useRef<FlashList<LMPostUI>>(null);
 
   useEffect(() => {
     if (accessToken) {
@@ -173,6 +175,18 @@ export const UniversalFeedContextProvider = ({
     }
   }, [mediaAttachmemnts, linkAttachments, postContent]);
 
+   // keyExtractor of feed list
+   const keyExtractor = (item: LMPostUI) => {
+    const id = item?.id;
+    const itemLiked = item?.isLiked;
+    const itemPinned = item?.isPinned;
+    const itemComments = item?.commentsCount;
+    const itemSaved = item?.isSaved;
+    const itemText = item?.text;
+
+    return `${id}${itemLiked}${itemPinned}${itemComments}${itemSaved}${itemText}`;
+  };
+
   const contextValues: UniversalFeedContextValues = {
     navigation,
     feedData,
@@ -194,7 +208,8 @@ export const UniversalFeedContextProvider = ({
     setLocalRefresh,
     setRefreshing,
     onRefresh,
-    postAdd
+    postAdd,
+    keyExtractor
   };
 
   return (

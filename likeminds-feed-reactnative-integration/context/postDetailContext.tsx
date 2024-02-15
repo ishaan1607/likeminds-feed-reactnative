@@ -23,8 +23,13 @@ import {
   NAVIGATED_FROM_COMMENT,
   PIN_POST_MENU_ITEM,
   POST_LIKES,
+  POST_PIN_SUCCESS,
+  POST_SAVED_SUCCESS,
+  POST_UNPIN_SUCCESS,
+  POST_UNSAVED_SUCCESS,
   REPORT_COMMENT_MENU_ITEM,
   REPORT_POST_MENU_ITEM,
+  SOMETHING_WENT_WRONG,
   UNPIN_POST_MENU_ITEM,
 } from "../constants/Strings";
 import { Keyboard, TextInput } from "react-native";
@@ -70,6 +75,7 @@ import {
   routeToMentionConverter,
 } from "../utils";
 import { postLikesClear } from "../store/actions/postLikes";
+import { showToastMessage } from "../store/actions/toast";
 
 interface PostDetailContextProps {
   children: ReactNode;
@@ -311,22 +317,20 @@ export const PostDetailContextProvider = ({
           true
         )
       );
-      // todo: handle toast later
-      // await dispatch(
-      //   showToastMessage({
-      //     isToast: true,
-      //     message: saved ? POST_UNSAVED_SUCCESS : POST_SAVED_SUCCESS,
-      //   }) as any,
-      // );
+      await dispatch(
+        showToastMessage({
+          isToast: true,
+          message: saved ? POST_UNSAVED_SUCCESS : POST_SAVED_SUCCESS,
+        }),
+      );
       return savePostResponse;
     } catch (error) {
-      // todo: handle toast later
-      // dispatch(
-      //   showToastMessage({
-      //     isToast: true,
-      //     message: SOMETHING_WENT_WRONG,
-      //   }) as any,
-      // );
+      dispatch(
+        showToastMessage({
+          isToast: true,
+          message: SOMETHING_WENT_WRONG,
+        }) as any,
+      );
     }
   }
 
@@ -340,13 +344,12 @@ export const PostDetailContextProvider = ({
       pinPost(PinPostRequest.builder().setpostId(payload.postId).build(), true)
     );
     if (pinPostResponse) {
-      // todo: handle toast later
-      // dispatch(
-      //   showToastMessage({
-      //     isToast: true,
-      //     message: pinned ? POST_UNPIN_SUCCESS : POST_PIN_SUCCESS,
-      //   }) as any,
-      // );
+      dispatch(
+        showToastMessage({
+          isToast: true,
+          message: pinned ? POST_UNPIN_SUCCESS : POST_PIN_SUCCESS,
+        }) as any,
+      );
     }
     return pinPostResponse;
   };

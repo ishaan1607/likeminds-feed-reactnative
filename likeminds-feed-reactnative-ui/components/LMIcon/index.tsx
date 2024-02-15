@@ -4,7 +4,7 @@ import {LMIconProps} from './types';
 import { defaultStyles } from './styles';
 import { ICON_PATH_VALIDATION_ERROR } from '../../constants/strings';
 
-const LMIcon = ({
+const LMIcon = React.memo(({
   type,
   iconUrl,
   assetPath,
@@ -49,6 +49,6 @@ const LMIcon = ({
       )}
     </>
   );
-};
+})
 
 export default LMIcon;

@@ -4,7 +4,7 @@ import { LMPostFooterProps } from "./types";
 import LMButton from "../../LMButton";
 import { styles } from "./styles";
 
-const LMPostFooter = ({
+const LMPostFooter = React.memo(({
   isLiked,
   isSaved,
   likesCount,
@@ -239,6 +239,6 @@ const LMPostFooter = ({
       </View>
     </View>
   );
-};
+})
 
 export default LMPostFooter;

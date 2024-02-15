@@ -1,5 +1,5 @@
 import {View, StyleSheet, Text} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {LMPostMediaProps} from './types';
 import {
   LMCarousel,
@@ -10,7 +10,7 @@ import {
 } from '../../LMMedia';
 import { ATTACHMENT_TYPE } from '../../../constants/strings';
 
-const LMPostMedia = ({
+const LMPostMedia = React.memo(({
   attachments,
   postMediaStyle,
   imageProps,
@@ -19,6 +19,29 @@ const LMPostMedia = ({
   carouselProps,
   linkPreviewProps,
 }: LMPostMediaProps) => {
+  const MemoizedChildComponent = useMemo(() => {
+    return <LMVideo
+    videoUrl={
+      attachments[0]?.attachmentMeta.url
+        ? attachments[0]?.attachmentMeta.url
+        : ''
+    }
+    height={videoProps?.height}
+    width={videoProps?.width}
+    videoStyle={videoProps?.videoStyle}
+    boxFit={videoProps?.boxFit}
+    boxStyle={videoProps?.boxStyle}
+    aspectRatio={videoProps?.aspectRatio}
+    showControls={videoProps?.showControls}
+    playButton={videoProps?.playButton}
+    pauseButton={videoProps?.pauseButton}
+    autoPlay={videoProps?.autoPlay}
+    looping={videoProps?.looping}
+    loaderWidget={videoProps?.loaderWidget}
+    errorWidget={videoProps?.errorWidget}
+    currentVideoUrl={videoProps?.currentVideoUrl}
+  />;
+  }, [videoProps, attachments]);
   // this handles the rendering of posts with single attachment
   const renderSingleAttachment = () => {
     switch (attachments[0]?.attachmentType) {
@@ -43,27 +66,7 @@ const LMPostMedia = ({
       }
       case ATTACHMENT_TYPE.VIDEO: {
         return (
-          <LMVideo
-            videoUrl={
-              attachments[0]?.attachmentMeta.url
-                ? attachments[0]?.attachmentMeta.url
-                : ''
-            }
-            height={videoProps?.height}
-            width={videoProps?.width}
-            videoStyle={videoProps?.videoStyle}
-            boxFit={videoProps?.boxFit}
-            boxStyle={videoProps?.boxStyle}
-            aspectRatio={videoProps?.aspectRatio}
-            showControls={videoProps?.showControls}
-            playButton={videoProps?.playButton}
-            pauseButton={videoProps?.pauseButton}
-            autoPlay={videoProps?.autoPlay}
-            looping={videoProps?.looping}
-            loaderWidget={videoProps?.loaderWidget}
-            errorWidget={videoProps?.errorWidget}
-            currentVideoUrl={videoProps?.currentVideoUrl}
-          />
+         <>{MemoizedChildComponent}</>
         );
       }
       case ATTACHMENT_TYPE.DOCUMENT: {
@@ -161,24 +164,24 @@ const LMPostMedia = ({
             )}
             {attachments?.find(
               item => item?.attachmentType === ATTACHMENT_TYPE.VIDEO,
-            ) && (
-              <LMVideo
-                videoUrl={getUrl(ATTACHMENT_TYPE.VIDEO)}
-                height={videoProps?.height}
-                width={videoProps?.width}
-                videoStyle={videoProps?.videoStyle}
-                boxFit={videoProps?.boxFit}
-                boxStyle={videoProps?.boxStyle}
-                aspectRatio={videoProps?.aspectRatio}
-                showControls={videoProps?.showControls}
-                playButton={videoProps?.playButton}
-                pauseButton={videoProps?.pauseButton}
-                autoPlay={videoProps?.autoPlay}
-                looping={videoProps?.looping}
-                loaderWidget={videoProps?.loaderWidget}
-                errorWidget={videoProps?.errorWidget}
-                currentVideoUrl={videoProps?.currentVideoUrl}
-              />
+            ) && ( <></>
+              // <LMVideo
+              //   videoUrl={getUrl(ATTACHMENT_TYPE.VIDEO)}
+              //   height={videoProps?.height}
+              //   width={videoProps?.width}
+              //   videoStyle={videoProps?.videoStyle}
+              //   boxFit={videoProps?.boxFit}
+              //   boxStyle={videoProps?.boxStyle}
+              //   aspectRatio={videoProps?.aspectRatio}
+              //   showControls={videoProps?.showControls}
+              //   playButton={videoProps?.playButton}
+              //   pauseButton={videoProps?.pauseButton}
+              //   autoPlay={videoProps?.autoPlay}
+              //   looping={videoProps?.looping}
+              //   loaderWidget={videoProps?.loaderWidget}
+              //   errorWidget={videoProps?.errorWidget}
+              //   currentVideoUrl={videoProps?.currentVideoUrl}
+              // />
             )}
             {attachments?.find(
               item => item?.attachmentType === ATTACHMENT_TYPE.DOCUMENT,
@@ -221,6 +224,6 @@ const LMPostMedia = ({
       )}
     </View>
   );
-};
+})
 
 export default LMPostMedia;

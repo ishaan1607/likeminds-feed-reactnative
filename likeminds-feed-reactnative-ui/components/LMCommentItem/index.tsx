@@ -19,8 +19,9 @@ import LMPostMenu from "../LMPost/LMPostMenu";
 import LMLoader from "../LMLoader";
 import { LMCommentUI } from "../../models";
 import { styles } from "./styles";
+import decode from "../../utils/decodeMentions";
 
-const LMCommentItem = ({
+const LMCommentItem = React.memo(({
   likeIconButton,
   likeTextButton,
   comment,
@@ -54,7 +55,7 @@ const LMCommentItem = ({
   );
 
   // this handles the show more functionality
-  const onTextLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) => {
+  const onTextLayout = (event) => {
     if (event.nativeEvent.lines.length > MAX_LINES && !showText) {
       setShowMoreButton(true);
       setNumberOfLines(MAX_LINES);
@@ -72,7 +73,7 @@ const LMCommentItem = ({
   const updatedContentProps = commentContentProps
     ? commentContentProps
     : {
-        children: <Text>{comment?.text}</Text>,
+        children: <Text>{decode(comment?.text, true)}</Text>,
         onTextLayout: (event: NativeSyntheticEvent<TextLayoutEventData>) => {
           onTextLayout(event);
           commentContentProps?.onTextLayout(event);
@@ -425,6 +426,6 @@ const LMCommentItem = ({
       />
     </View>
   );
-};
+})
 
 export default LMCommentItem;

@@ -28,6 +28,8 @@ import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { deletePost, deletePostStateHandler } from "../../store/actions/feed";
 import { deleteComment, deleteCommentStateHandler } from "../../store/actions/postDetail";
+import Toast from "react-native-toast-message";
+import { showToastMessage } from "../../store/actions/toast";
 
 // delete modal's props
 interface DeleteModalProps {
@@ -58,8 +60,7 @@ const DeleteModal = ({
   // this function calls the delete post api
   const postDelete = async () => {
     if (!deletionReason && loggedInUser.userUniqueId !== postDetail?.userId) {
-      // todo: handle toast later
-      // showToast();
+      showToast();
     } else {
       const payload = {
         deleteReason: otherReason ? otherReason : deletionReason,
@@ -79,21 +80,19 @@ const DeleteModal = ({
       if (deletePostResponse) {
         setDeletionReason("");
         navigation.goBack();
-        // todo: handle toast later
-        // dispatch(
-        //   showToastMessage({
-        //     isToast: true,
-        //     message: POST_DELETE,
-        //   }) as any,
-        // );
+        dispatch(
+          showToastMessage({
+            isToast: true,
+            message: POST_DELETE,
+          })
+        );
       } else {
-        // todo: handle toast later
-        // dispatch(
-        //   showToastMessage({
-        //     isToast: true,
-        //     message: SOMETHING_WENT_WRONG,
-        //   }) as any,
-        // );
+        dispatch(
+          showToastMessage({
+            isToast: true,
+            message: SOMETHING_WENT_WRONG,
+          })
+        );
       }
       return deletePostResponse;
     }
@@ -105,8 +104,7 @@ const DeleteModal = ({
       !deletionReason &&
       loggedInUser.userUniqueId !== commentDetail?.userId
     ) {
-      // todo: handle toast later
-      // showToast();
+      showToast();
     } else {
       const payload = {
         deleteReason: otherReason ? otherReason : deletionReason,
@@ -126,22 +124,20 @@ const DeleteModal = ({
           ),
         );
         setDeletionReason("");
-        // todo: handle toast later
-        // await dispatch(
-        //   showToastMessage({
-        //     isToast: true,
-        //     message: COMMENT_DELETE,
-        //   }) as any,
-        // );
+        await dispatch(
+          showToastMessage({
+            isToast: true,
+            message: COMMENT_DELETE,
+          })
+        );
         return deleteCommentResponse;
       } catch (error) {
-        // todo: handle toast later
-        // dispatch(
-        //   showToastMessage({
-        //     isToast: true,
-        //     message: SOMETHING_WENT_WRONG,
-        //   }) as any,
-        // );
+        dispatch(
+          showToastMessage({
+            isToast: true,
+            message: SOMETHING_WENT_WRONG,
+          })
+        );
       }
     }
   };
@@ -151,34 +147,32 @@ const DeleteModal = ({
     setDeletionReason(val);
   };
 
-  // todo: handle toast later
   // this show the toast message over the modal
-  // const showToast = () => {
-  //   Toast.show({
-  //     position: 'bottom',
-  //     type: 'deleteToastView',
-  //     autoHide: true,
-  //     visibilityTime: 1500,
-  //   });
-  // };
-  // todo: handle toast later
-  // const renderToastView = () => {
-  //   return (
-  //     <View>
-  //       <View>
-  //         <View style={styles.modalView}>
-  //           <Text style={styles.filterText}>
-  //             {'Please select a reason for deletion'}
-  //           </Text>
-  //         </View>
-  //       </View>
-  //     </View>
-  //   );
-  // };
+  const showToast = () => {
+    Toast.show({
+      position: 'bottom',
+      type: 'deleteToastView',
+      autoHide: true,
+      visibilityTime: 1500,
+    });
+  };
+  const renderToastView = () => {
+    return (
+      <View>
+        <View>
+          <View style={styles.modalView}>
+            <Text style={styles.filterText}>
+              {'Please select a reason for deletion'}
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
   // delete toast message view UI
-  // const toastConfig = {
-  //   deleteToastView: () => renderToastView(),
-  // };
+  const toastConfig = {
+    deleteToastView: () => renderToastView(),
+  };
   return (
     <>
       <Modal
@@ -210,9 +204,8 @@ const DeleteModal = ({
                 ]}
                 onPress={() => displayModal(false)}
               >
-                {/* // todo: handle toast later */}
                 {/* toast component */}
-                {/* <Toast config={toastConfig} /> */}
+                <Toast config={toastConfig} />
                 {/* main modal section */}
                 <TouchableWithoutFeedback>
                   <View style={styles.modalContainer}>

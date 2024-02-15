@@ -2,13 +2,13 @@ import AWS from 'aws-sdk';
 
 // aws configuration
 export function getAWS() {
-  AWS.config.region = process.env.AWS_REGION;
+  AWS.config.region = 'ap-south-1';
   AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: `${process.env.AWS_IDENTITY_POOL_ID}`,
+    IdentityPoolId: `ap-south-1:181963ba-f2db-450b-8199-964a941b38c2`,
   });
   const s3 = new AWS.S3({
-    apiVersion: process.env.S3_API_VERSION,
-    params: {Bucket: process.env.S3_BUCKET},
+    apiVersion: '2006-03-01',
+    params: {Bucket: 'beta-likeminds-media'},
   });
   return s3;
 }

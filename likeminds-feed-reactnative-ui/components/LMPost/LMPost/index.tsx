@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React from "react";
+import React , {useMemo}from "react";
 import LMPostHeader from "../LMPostHeader";
 import LMPostContent from "../LMPostContent";
 import LMPostMedia from "../LMPostMedia";
@@ -9,7 +9,7 @@ import { ATTACHMENT_TYPE } from "../../../constants/strings";
 import { getNameInitials } from "../../../utils/utils";
 import { styles } from "./styles";
 
-const LMPost = ({
+const LMPost = React.memo(({
   post,
   headerProps,
   contentProps,
@@ -103,6 +103,15 @@ const LMPost = ({
     documentProps: mediaProps?.documentProps,
     linkPreviewProps: mediaProps?.linkPreviewProps,
   };
+  const MemoizedChildComponentOne = useMemo(() => {
+    return <LMPostMedia  attachments= {post?.attachments ? post?.attachments : []}
+    postMediaStyle = {mediaProps?.postMediaStyle}
+    imageProps={ mediaProps?.imageProps}
+    videoProps= {mediaProps?.videoProps}
+    carouselProps ={mediaProps?.carouselProps}
+    documentProps ={ mediaProps?.documentProps}
+    linkPreviewProps ={mediaProps?.linkPreviewProps} />;
+  }, [mediaProps,post?.attachments]);
   return (
     <View style={styles.mainContainer}>
       {/* post header */}
@@ -116,12 +125,12 @@ const LMPost = ({
       )}
       {/* post media */}
       {post?.attachments && post?.attachments.length > 0 && (
-        <LMPostMedia {...updatedMediaProps} />
+        MemoizedChildComponentOne
       )}
       {/* post footer */}
       <LMPostFooter {...updatedFooterProps} />
     </View>
   );
-};
+})
 
 export default LMPost;

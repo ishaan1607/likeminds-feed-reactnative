@@ -29,11 +29,17 @@ import {
   DELETE_POST_MENU_ITEM,
   EDIT_POST_MENU_ITEM,
   PIN_POST_MENU_ITEM,
+  POST_PIN_SUCCESS,
+  POST_SAVED_SUCCESS,
+  POST_UNPIN_SUCCESS,
+  POST_UNSAVED_SUCCESS,
   REPORT_POST_MENU_ITEM,
+  SOMETHING_WENT_WRONG,
   UNPIN_POST_MENU_ITEM,
 } from "../constants/Strings";
 import { CREATE_POST } from "../constants/screenNames";
 import { useLMFeedStyles } from "../lmFeedProvider";
+import { showToastMessage } from "../store/actions/toast";
 
 interface PostListContextProps {
   children: ReactNode;
@@ -70,6 +76,7 @@ export interface PostListContextValues {
   fetchFeed: () => void;
   postLikeHandler: (id: string) => void;
   debouncedSaveFunction: (id: string, saved?: boolean) => void;
+  debouncedLikeFunction:(id: string) => void;
   closePostActionListModal: () => void;
   handlePinPost: (id: string, pinned?: boolean) => void;
   handleReportPost: () => void;
@@ -128,12 +135,22 @@ export const PostListContextProvider = ({
     return getFeedResponse;
   };
 
+  // debounce on like post function
+  const debouncedLikeFunction = _.debounce(postLikeHandler, 500); // Adjust the debounce time (in milliseconds) as needed
+
+  // useEffect hook to clean up the debounced function
+  useEffect(() => {
+    return () => {
+      debouncedLikeFunction.cancel(); // Cancel any pending debounced executions when the component unmounts
+    };
+  }, [debouncedLikeFunction]);
+
   // this functions hanldes the post like functionality
   async function postLikeHandler(id: string) {
     const payload = {
       postId: id,
     };
-    dispatch(likePostStateHandler(payload.postId));
+    // dispatch(likePostStateHandler(payload.postId));
     // calling like post api
     const postLikeResponse = await dispatch(
       likePost(
@@ -168,22 +185,20 @@ export const PostListContextProvider = ({
           true
         )
       );
-      // todo: handle toast later
-      // await dispatch(
-      //   showToastMessage({
-      //     isToast: true,
-      //     message: saved ? POST_UNSAVED_SUCCESS : POST_SAVED_SUCCESS,
-      //   }) as any,
-      // );
+      await dispatch(
+        showToastMessage({
+          isToast: true,
+          message: saved ? POST_UNSAVED_SUCCESS : POST_SAVED_SUCCESS,
+        }) as any,
+      );
       return savePostResponse;
     } catch (error) {
-      // todo: handle toast later
-      // dispatch(
-      //   showToastMessage({
-      //     isToast: true,
-      //     message: SOMETHING_WENT_WRONG,
-      //   }) as any,
-      // );
+      dispatch(
+        showToastMessage({
+          isToast: true,
+          message: SOMETHING_WENT_WRONG,
+        }) as any,
+      );
     }
   }
 
@@ -213,13 +228,12 @@ export const PostListContextProvider = ({
       pinPost(PinPostRequest.builder().setpostId(payload.postId).build(), true)
     );
     if (pinPostResponse) {
-      // todo: handle toast later
-      // dispatch(
-      //   showToastMessage({
-      //     isToast: true,
-      //     message: pinned ? POST_UNPIN_SUCCESS : POST_PIN_SUCCESS,
-      //   }) as any,
-      // );
+      dispatch(
+        showToastMessage({
+          isToast: true,
+          message: pinned ? POST_UNPIN_SUCCESS : POST_PIN_SUCCESS,
+        }) as any,
+      );
     }
     return pinPostResponse;
   };
@@ -291,6 +305,7 @@ export const PostListContextProvider = ({
     onMenuItemSelect,
     fetchFeed,
     postLikeHandler,
+    debouncedLikeFunction,
     debouncedSaveFunction,
     closePostActionListModal,
     handlePinPost,
