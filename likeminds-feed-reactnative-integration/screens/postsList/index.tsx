@@ -11,7 +11,7 @@ import {
   LikePostRequest,
   PinPostRequest,
   SavePostRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import { styles } from "./styles";
 import { LMPost, LMPostUI, LMLoader } from "likeminds_feed_reactnative_ui";
 import {

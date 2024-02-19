@@ -38,7 +38,7 @@ import {
 import STYLES from "../../constants/Styles";
 import { showToastMessage } from "../../store/actions/toast";
 
-const UniversalFeed = ({ navigation, route, children }: any) => {
+const UniversalFeed = ({ navigation, route ,children}) => {
   return (
     <UniversalFeedContextProvider
       navigation={navigation}

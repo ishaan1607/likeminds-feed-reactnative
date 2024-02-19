@@ -23,7 +23,7 @@ import {
   LikePostRequest,
   PinPostRequest,
   SavePostRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import _ from "lodash";
 import {
   DELETE_POST_MENU_ITEM,
@@ -40,15 +40,22 @@ import {
 import { CREATE_POST } from "../constants/screenNames";
 import { useLMFeedStyles } from "../lmFeedProvider";
 import { showToastMessage } from "../store/actions/toast";
+import { RootStackParamList } from "../models/RootStackParamsList";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface PostListContextProps {
   children: ReactNode;
-  navigation: any;
-  route: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList' | 'UniversalFeed'>;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
 }
 
 export interface PostListContextValues {
-  navigation: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList' | 'UniversalFeed'>;
   feedData: Array<LMPostUI>;
   accessToken: string;
   showLoader: number;
@@ -99,7 +106,6 @@ export const usePostListContext = () => {
 export const PostListContextProvider = ({
   children,
   navigation,
-  route,
 }: PostListContextProps) => {
   const dispatch = useAppDispatch();
   const feedData = useAppSelector((state) => state.feed.feed);
@@ -189,7 +195,7 @@ export const PostListContextProvider = ({
         showToastMessage({
           isToast: true,
           message: saved ? POST_UNSAVED_SUCCESS : POST_SAVED_SUCCESS,
-        }) as any,
+        }),
       );
       return savePostResponse;
     } catch (error) {
@@ -197,7 +203,7 @@ export const PostListContextProvider = ({
         showToastMessage({
           isToast: true,
           message: SOMETHING_WENT_WRONG,
-        }) as any,
+        }),
       );
     }
   }
@@ -232,7 +238,7 @@ export const PostListContextProvider = ({
         showToastMessage({
           isToast: true,
           message: pinned ? POST_UNPIN_SUCCESS : POST_PIN_SUCCESS,
-        }) as any,
+        }),
       );
     }
     return pinPostResponse;
@@ -265,7 +271,7 @@ export const PostListContextProvider = ({
       handleDeletePost(true);
     }
     if (itemId === EDIT_POST_MENU_ITEM) {
-      navigation.navigate(CREATE_POST, postId);
+      navigation.navigate(CREATE_POST, {postId});
     }
   };
 

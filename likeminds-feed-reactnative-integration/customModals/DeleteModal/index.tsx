@@ -12,7 +12,7 @@ import styles from "./styles";
 import {
   DeleteCommentRequest,
   DeletePostRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import DeleteReasonsModal from "../DeleteReasonsModal";
 import {
   COMMENT_DELETE,
@@ -30,6 +30,8 @@ import { deletePost, deletePostStateHandler } from "../../store/actions/feed";
 import { deleteComment, deleteCommentStateHandler } from "../../store/actions/postDetail";
 import Toast from "react-native-toast-message";
 import { showToastMessage } from "../../store/actions/toast";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../models/RootStackParamsList";
 
 // delete modal's props
 interface DeleteModalProps {
@@ -39,7 +41,7 @@ interface DeleteModalProps {
   postDetail: LMPostUI;
   commentDetail?: LMCommentUI;
   modalBackdropColor?: string;
-  navigation?: any
+  navigation?: NativeStackNavigationProp<RootStackParamList, "PostDetail" | "UniversalFeed" | "PostsList">;
 }
 
 const DeleteModal = ({
@@ -67,7 +69,7 @@ const DeleteModal = ({
         postId: postDetail?.id,
       };
       displayModal(false);
-      dispatch(deletePostStateHandler(payload.postId) as any);
+      dispatch(deletePostStateHandler(payload.postId));
       const deletePostResponse = await dispatch(
         deletePost(
           DeletePostRequest.builder()
@@ -112,7 +114,7 @@ const DeleteModal = ({
         postId: commentDetail?.postId ? commentDetail.postId : "",
       };
       displayModal(false);
-      dispatch(deleteCommentStateHandler(payload) as any);
+      dispatch(deleteCommentStateHandler(payload));
       try {
         const deleteCommentResponse = await dispatch(
           deleteComment(

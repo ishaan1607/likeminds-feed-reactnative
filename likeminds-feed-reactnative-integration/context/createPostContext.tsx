@@ -48,18 +48,25 @@ import {
   EditPostRequest,
   GetPostRequest,
   GetTaggingListRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import { getPost, getTaggingList } from "../store/actions/postDetail";
 import { showToastMessage } from "../store/actions/toast";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../models/RootStackParamsList";
 
 interface CreatePostContextProps {
   children: ReactNode;
-  navigation: any;
-  route: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, "CreatePost">;
+  route: {
+    key: string;
+    name: string;
+    params: { postId: string };
+    path: undefined;
+  };
 }
 
 export interface CreatePostContextValues {
-  navigation: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, "CreatePost">;
   memberData: LMUserUI;
   formattedDocumentAttachments: Array<LMAttachmentUI>;
   formattedMediaAttachments: Array<LMAttachmentUI>;
@@ -145,7 +152,7 @@ export const CreatePostContextProvider = ({
   const [closedOnce, setClosedOnce] = useState(false);
   const [showOptions, setShowOptions] = useState(true);
   const [showSelecting, setShowSelecting] = useState(false);
-  const postToEdit = route?.params;
+  const postToEdit = route?.params?.postId;
   const [postDetail, setPostDetail] = useState({} as LMPostUI);
   const [postContentText, setPostContentText] = useState("");
   const myRef = useRef<TextInput>(null);

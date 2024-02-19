@@ -13,19 +13,27 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 import { LMAttachmentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { mentionToRouteConverter, uploadFilesToAWS } from "../utils";
 import { addPost, setUploadAttachments } from "../store/actions/createPost";
-import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js-beta";
-import { FlatList } from "react-native";
+import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js";
 import { refreshFeed } from "../store/actions/feed";
 import { FlashList } from "@shopify/flash-list";
+import { POST_UPLOADED, RIGHT_CREATE_POST, STATE_ADMIN } from "../constants/Strings";
+import { RootStackParamList } from "../models/RootStackParamsList";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { showToastMessage } from "../store/actions/toast";
 
 interface UniversalFeedContextProps {
   children: ReactNode;
-  navigation: any;
-  route: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
 }
 
 export interface UniversalFeedContextValues {
-  navigation: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
   feedData: Array<LMPostUI>;
   accessToken: string;
   memberData: {};
@@ -66,7 +74,6 @@ export const useUniversalFeedContext = () => {
 export const UniversalFeedContextProvider = ({
   children,
   navigation,
-  route,
 }: UniversalFeedContextProps) => {
   const dispatch = useAppDispatch();
   const feedData = useAppSelector((state) => state.feed.feed);
@@ -88,9 +95,9 @@ export const UniversalFeedContextProvider = ({
   useEffect(() => {
     if (accessToken) {
       // handles members right
-      if (memberData?.state !== 1) {
+      if (memberData?.state !== STATE_ADMIN) {
         const members_right = memberRight?.find(
-          (item: any) => item?.state === 9
+          (item) => item?.state === RIGHT_CREATE_POST
         );
 
         if (members_right?.isSelected === false) {
@@ -153,11 +160,10 @@ export const UniversalFeedContextProvider = ({
       );
       await onRefresh();
       listRef.current?.scrollToIndex({ animated: true, index: 0 });
-      dispatch();
-      // showToastMessage({
-      //   isToast: true,
-      //   message: POST_UPLOADED,
-      // }) as any,
+      dispatch(showToastMessage({
+        isToast: true,
+        message: POST_UPLOADED,
+      }));
     }
     return addPostResponse;
   };

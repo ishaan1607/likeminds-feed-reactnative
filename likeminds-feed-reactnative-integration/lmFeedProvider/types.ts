@@ -1,5 +1,5 @@
 import React from "react";
-import { LMFeedClient } from "@likeminds.community/feed-js-beta";
+import { LMFeedClient } from "@likeminds.community/feed-js";
 import {
   LMButtonProps,
   LMHeaderProps,
@@ -26,7 +26,7 @@ interface ThemeStyles {
 }
 
 // custom style interface for universal feed screen
-interface universalFeedStyleProps {
+interface UniversalFeedStyleProps {
   newPostButtonStyle?: ViewStyle;
   newPostButtonText?: TextStyle;
   newPostIcon?: ImageProps;
@@ -34,7 +34,7 @@ interface universalFeedStyleProps {
 }
 
 // custom style interface for post's list
-interface postListStyleProps {
+interface PostListStyleProps {
   header?: {
     profilePicture?: LMProfilePictureProps;
     titleText?: LMTextProps;
@@ -194,12 +194,12 @@ interface postListStyleProps {
 }
 
 // custom style interface for loader
-interface loaderStyleProps {
+interface LoaderStyleProps {
   loader?: LMLoaderProps;
 }
 
 // custom style interface for post detail screen
-interface postDetailStyleProps {
+interface PostDetailStyleProps {
   screenHeader?: LMHeaderProps;
   commentItemStyle?: {
     likeIconButton?: LMButtonProps;
@@ -246,10 +246,10 @@ interface postDetailStyleProps {
 
 export interface ThemeContextProps {
   textStyle?: TextStyles;
-  universalFeedStyle?: universalFeedStyleProps;
-  postListStyle?: postListStyleProps;
-  loaderStyle?: loaderStyleProps;
-  postDetailStyle?: postDetailStyleProps;
+  universalFeedStyle?: UniversalFeedStyleProps;
+  postListStyle?: PostListStyleProps;
+  loaderStyle?: LoaderStyleProps;
+  postDetailStyle?: PostDetailStyleProps;
 }
 
 export interface LMFeedProviderProps {
@@ -258,8 +258,8 @@ export interface LMFeedProviderProps {
   userName: string;
   userUniqueId: string;
   themeStyles?: ThemeStyles;
-  universalFeedStyle?: universalFeedStyleProps;
-  postListStyle?: postListStyleProps;
-  loaderStyle?: loaderStyleProps;
-  postDetailStyle?: postDetailStyleProps;
+  universalFeedStyle?: UniversalFeedStyleProps;
+  postListStyle?: PostListStyleProps;
+  loaderStyle?: LoaderStyleProps;
+  postDetailStyle?: PostDetailStyleProps;
 }

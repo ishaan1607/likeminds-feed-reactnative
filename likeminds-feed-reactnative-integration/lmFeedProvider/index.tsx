@@ -8,7 +8,10 @@ import React, {
 import STYLES from "../constants/Styles";
 import { StyleSheet, View } from "react-native";
 import { Credentials } from "../credentials";
-import { LMFeedClient } from "@likeminds.community/feed-js-beta";
+import {
+  InitiateUserRequest,
+  LMFeedClient,
+} from "@likeminds.community/feed-js";
 import { Client } from "../client";
 import { LMFeedProviderProps, ThemeContextProps } from "./types";
 import { useAppDispatch, useAppSelector } from "../store/store";
@@ -49,7 +52,7 @@ export const LMFeedProvider = ({
   universalFeedStyle,
   postListStyle,
   loaderStyle,
-  postDetailStyle
+  postDetailStyle,
 }: LMFeedProviderProps): React.JSX.Element => {
   const [isInitiated, setIsInitiated] = useState(false);
   const dispatch  = useAppDispatch();
@@ -62,17 +65,20 @@ export const LMFeedProvider = ({
 
     // storing myClient followed by community details
     const callInitApi = async () => {
-      const payload = {
-        uuid: Credentials.userUniqueId, // uuid
-        userName: Credentials.username, // user name
-        isGuest: false,
-      };
-
-      const initiateResponse = await dispatch(initiateUser(payload, true));
-    if (initiateResponse) {
-      // calling getMemberState API
-      await dispatch(getMemberState());
-    }
+      const initiateResponse = await dispatch(
+        initiateUser(
+          InitiateUserRequest.builder()
+            .setUUID(Credentials.userUniqueId)
+            .setIsGuest(false)
+            .setUserName(Credentials.username)
+            .build(),
+          true
+        )
+      );
+      if (initiateResponse) {
+        // calling getMemberState API
+        await dispatch(getMemberState());
+      }
       setIsInitiated(true);
     };
     callInitApi();
@@ -86,7 +92,14 @@ export const LMFeedProvider = ({
 
   return isInitiated ? (
     <LMFeedContext.Provider value={myClient}>
-      <LMFeedStylesContext.Provider value={{ universalFeedStyle, postListStyle, loaderStyle, postDetailStyle }}>
+      <LMFeedStylesContext.Provider
+        value={{
+          universalFeedStyle,
+          postListStyle,
+          loaderStyle,
+          postDetailStyle,
+        }}
+      >
         <View style={styles.flexStyling}>{children}</View>
       {showToast && <LMToast />}
       </LMFeedStylesContext.Provider>

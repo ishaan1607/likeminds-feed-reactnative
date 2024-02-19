@@ -49,7 +49,7 @@ import {
 import { postLikesClear } from "../../store/actions/postLikes";
 import { getNameInitials } from "likeminds_feed_reactnative_ui/utils/utils";
 
-const PostDetail = ({navigation, route, children }: any) => {
+const PostDetail = ({navigation, route, children }) => {
   return (
     <PostDetailContextProvider
       navigation={navigation}

@@ -102,3 +102,8 @@ export const MIN_FILE_SIZE = 100000; // 100KB in bytes
 
 export const NAVIGATED_FROM_POST = 'FROM_POST';
 export const NAVIGATED_FROM_COMMENT = 'FROM_COMMENTS';
+
+// member state
+export const STATE_ADMIN = 1
+export const STATE_MEMBER = 4
+export const RIGHT_CREATE_POST = 9

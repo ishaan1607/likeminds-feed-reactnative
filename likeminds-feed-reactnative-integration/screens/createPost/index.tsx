@@ -48,13 +48,8 @@ import {
 } from "../../context";
 import { getNameInitials } from "likeminds_feed_reactnative_ui/utils/utils";
 
-interface CreatPostProps {
-  navigation: any;
-  route: any;
-  children: any;
-}
 
-const CreatePost = ({ navigation, route, children }: CreatPostProps) => {
+const CreatePost = ({ navigation, route, children }) => {
   return (
     <CreatePostContextProvider
       navigation={navigation}

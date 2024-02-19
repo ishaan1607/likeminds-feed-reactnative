@@ -13,7 +13,7 @@ import {
   usePostLikesListContext,
 } from "../../context";
 
-const PostLikesList = ({ navigation, route, children }: any) => {
+const PostLikesList = ({ navigation, route, children }) => {
   return (
     <PostLikesListContextProvider
       navigation={navigation}
