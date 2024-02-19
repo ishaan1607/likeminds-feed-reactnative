@@ -13,11 +13,12 @@ import {
 } from '../types/types';
 import {CALL_API} from '../apiMiddleware';
 import { Client } from '../../client';
+import { AddPostRequest, DecodeURLRequest, EditPostRequest } from '@likeminds.community/feed-js';
 
 const myClient = Client.myClient;
 
 // get decoded url data api action
-export const getDecodedUrl = (payload: any, showLoader: boolean) => () => {
+export const getDecodedUrl = (payload: DecodeURLRequest, showLoader: boolean) => () => {
   try {
     return {
       type: DECODE_URL_SUCCESS,
@@ -34,7 +35,7 @@ export const getDecodedUrl = (payload: any, showLoader: boolean) => () => {
 };
 
 // add post api action
-export const addPost = (payload: any, showLoader: boolean) => () => {
+export const addPost = (payload: AddPostRequest, showLoader: boolean) => () => {
   try {
     return {
       type: CREATE_POST_SUCCESS,
@@ -52,7 +53,7 @@ export const addPost = (payload: any, showLoader: boolean) => () => {
 
 // selected media to be uploaded action
 export const setUploadAttachments =
-(payload: any) => () => {
+(payload: {}) => () => {
     try {
       return {
         type: UPLOAD_ATTACHMENTS,
@@ -64,7 +65,7 @@ export const setUploadAttachments =
   };
 
 // edit post api action
-export const editPost = (payload: any, showLoader: boolean) => () => {
+export const editPost = (payload: EditPostRequest, showLoader: boolean) => () => {
   try {
     return {
       type: EDIT_POST_SUCCESS,
