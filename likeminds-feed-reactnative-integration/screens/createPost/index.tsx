@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React from "react";
 import { nameInitials, replaceLastMention } from "../../utils";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import { useAppDispatch } from "../../store/store";
 import {
   LMButton,
   LMCarousel,

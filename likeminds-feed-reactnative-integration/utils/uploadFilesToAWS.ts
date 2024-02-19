@@ -34,7 +34,7 @@ export const uploadFilesToAWS = async (
   const mediaObject = getAWS()
     .upload({
       Key: `files/post/${userUniqueId}/${media.name}`,
-      Bucket: 'beta-likeminds-media',
+      Bucket: `${process.env.S3_BUCKET}`,
       Body: blob,
       ACL: 'public-read-write',
       ContentType: media.format,

@@ -37,7 +37,7 @@ import {
   replaceLastMention,
 } from "../../utils";
 import { useLMFeedStyles } from "../../lmFeedProvider";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import { useAppDispatch } from "../../store/store";
 import {
   clearComments
 } from "../../store/actions/postDetail";

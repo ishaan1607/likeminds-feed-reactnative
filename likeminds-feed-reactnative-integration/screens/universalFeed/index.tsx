@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, ReactNode } from "react";
+import React from "react";
 import {
   Image,
   Platform,
@@ -29,7 +29,7 @@ import { CREATE_POST } from "../../constants/screenNames";
 import _ from "lodash";
 import { PostsList } from "../postsList";
 import { useLMFeedStyles } from "../../lmFeedProvider";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import { useAppDispatch } from "../../store/store";
 import {
   UniversalFeedContextProvider,
   UniversalFeedContextValues,
