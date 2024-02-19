@@ -24,11 +24,12 @@ import {
   SOMETHING_WENT_WRONG,
 } from "../../constants/Strings";
 import STYLES from "../../constants/Styles";
-import { NavigationService } from "../../navigation";
 import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { deletePost, deletePostStateHandler } from "../../store/actions/feed";
 import { deleteComment, deleteCommentStateHandler } from "../../store/actions/postDetail";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../models/RootStackParamsList";
 
 // delete modal's props
 interface DeleteModalProps {
@@ -38,6 +39,7 @@ interface DeleteModalProps {
   postDetail: LMPostUI;
   commentDetail?: LMCommentUI;
   modalBackdropColor?: string;
+  navigation?: NativeStackNavigationProp<RootStackParamList, "PostDetail" | "UniversalFeed">;
 }
 
 const DeleteModal = ({
@@ -47,6 +49,7 @@ const DeleteModal = ({
   postDetail,
   modalBackdropColor,
   commentDetail,
+  navigation
 }: DeleteModalProps) => {
   const dispatch = useAppDispatch();
   const loggedInUser = useAppSelector(state => state.login.member);
@@ -77,7 +80,7 @@ const DeleteModal = ({
       // toast message action
       if (deletePostResponse) {
         setDeletionReason("");
-        NavigationService.goBack();
+        navigation.goBack();
         // todo: handle toast later
         // dispatch(
         //   showToastMessage({
@@ -209,7 +212,7 @@ const DeleteModal = ({
                 ]}
                 onPress={() => displayModal(false)}
               >
-                // todo: handle toast later
+                {/* // todo: handle toast later */}
                 {/* toast component */}
                 {/* <Toast config={toastConfig} /> */}
                 {/* main modal section */}

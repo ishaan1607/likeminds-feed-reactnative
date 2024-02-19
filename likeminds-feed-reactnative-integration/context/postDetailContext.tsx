@@ -7,7 +7,6 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useCallback,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import {
@@ -253,7 +252,7 @@ export const PostDetailContextProvider = ({
   const { postListStyle } = LMFeedContextStyles;
 
   // this function is executed on pull to refresh
-  const onRefresh = useCallback(async () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     setLocalRefresh(true);
     // calling getPost API
@@ -269,7 +268,7 @@ export const PostDetailContextProvider = ({
     );
     setLocalRefresh(false);
     setRefreshing(false);
-  }, [dispatch, route.params]);
+  }
 
   // this function closes the post action list modal
   const closePostActionListModal = () => {
@@ -389,7 +388,7 @@ export const PostDetailContextProvider = ({
       handleDeletePost(true);
     }
     if (itemId === EDIT_POST_MENU_ITEM) {
-      navigation.navigate(CREATE_POST, postId);
+      navigation.navigate(CREATE_POST, {postId});
     }
   };
 

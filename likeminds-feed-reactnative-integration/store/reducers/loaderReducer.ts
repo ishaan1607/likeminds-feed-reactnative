@@ -7,7 +7,7 @@ export const initialState: LoaderReducerState = {
   count: 0,
 };
 
-export function loaderReducer(state = initialState, action: any) {
+export function loaderReducer(state = initialState, action) {
   switch (action.type) {
     case START_LOADING: {
       return { ...state, count: ++state.count };

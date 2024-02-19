@@ -8,7 +8,7 @@ import {
   Image,
   Keyboard,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles";
 import {
   GetReportTagsRequest,
@@ -67,7 +67,7 @@ const ReportModal = ({
   const [selectedId, setSelectedId] = useState(-1);
 
   // this function calls the get report tags api for reporting a post
-  const fetchReportTags = useCallback(async () => {
+  const fetchReportTags = async () => {
     const payload = {
       type: REPORT_TAGS_TYPE, // type 3 for report tags
     };
@@ -78,7 +78,7 @@ const ReportModal = ({
       )
     );
     return reportTagsResponse;
-  }, [dispatch]);
+  };
 
   // this function calls the report post api
   const reportPost = async ({
@@ -171,7 +171,7 @@ const ReportModal = ({
     if (visible) {
       fetchReportTags();
     }
-  }, [visible, fetchReportTags]);
+  }, [visible]);
 
   return (
     <Modal
@@ -267,7 +267,7 @@ const ReportModal = ({
               />
             </View>
           ) : null}
-          // todo: handle toast later
+          {/* // todo: handle toast later */}
           {/* toast component */}
           {/* <Toast config={toastConfig} /> */}
           {/* report button */}

@@ -1,5 +1,5 @@
 import { View, Text, Modal, Pressable } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles";
 import { GetReportTagsRequest } from "@likeminds.community/feed-js";
 import STYLES from "../../constants/Styles";
@@ -29,7 +29,7 @@ const DeleteReasonsModal = ({
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   // this function calls the get reason tags api for deletion
-  const fetchReasonTags = useCallback(async () => {
+  const fetchReasonTags = async () => {
     const payload = {
       type: DELETE_TAGS_TYPE, // type 0 for delete reason tags
     };
@@ -40,14 +40,14 @@ const DeleteReasonsModal = ({
       )
     );
     return reportTagsResponse;
-  }, [dispatch]);
+  }
 
   // this calls the fetchReportTags api when the modal gets visible
   useEffect(() => {
     if (visible) {
       fetchReasonTags();
     }
-  }, [visible, fetchReasonTags]);
+  }, [visible]);
 
   // this is the callback function that takes the selected reason tag to the delete modal
   const reasonSelection = (selectedId: string) => {

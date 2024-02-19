@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   RefreshControl,
@@ -54,8 +54,10 @@ import {
   useUniversalFeedContext,
 } from "../../context";
 
-const PostsList = ({ route, children }) => {
-  const {navigation}: UniversalFeedContextValues = useUniversalFeedContext()
+const PostsList = ({ route, children }: any) => {
+  const {
+    navigation
+  }: UniversalFeedContextValues = useUniversalFeedContext();
   return (
     <PostListContextProvider
       navigation={navigation}
@@ -70,12 +72,15 @@ const PostsList = ({ route, children }) => {
 const PostsListComponent = React.memo(() => {
   const dispatch = useAppDispatch();
   const {
-    navigation,
-    feedData,
-    feedFetching,
     listRef,
     refreshing,
     onRefresh,
+    localRefresh,
+  }: UniversalFeedContextValues = useUniversalFeedContext();
+  const {
+    navigation,
+    feedData,
+    feedFetching,
     modalPosition,
     showActionListModal,
     closePostActionListModal,
@@ -90,8 +95,8 @@ const PostsListComponent = React.memo(() => {
     showReportModal,
     getPostDetail,
     setShowReportModal,
-    localRefresh,
-    handleDeletePost
+    handleDeletePost,
+    
   }: PostListContextValues = usePostListContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, loaderStyle } = LMFeedContextStyles;
@@ -122,7 +127,7 @@ const PostsListComponent = React.memo(() => {
                     : false
                 }
                 activeOpacity={0.8}
-                style={{backgroundColor: "#e0e0e0" }}
+                style={{ backgroundColor: "#e0e0e0" }}
                 onPress={() => {
                   dispatch(clearPostDetail() as any);
                   navigation.navigate(POST_DETAIL, [
@@ -272,6 +277,7 @@ const PostsListComponent = React.memo(() => {
           displayModal={(visible) => handleDeletePost(visible)}
           deleteType={POST_TYPE}
           postDetail={getPostDetail()}
+          navigation={navigation}
         />
       )}
       {/* report post modal */}

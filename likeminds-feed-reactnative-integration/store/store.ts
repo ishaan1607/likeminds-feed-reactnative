@@ -1,4 +1,5 @@
 import { useContextState } from "./contextStore";
+import { createPostReducer } from "./reducers/createPostReducer";
 import { feedReducer } from "./reducers/feedReducer";
 import { loaderReducer } from "./reducers/loaderReducer";
 import { loginReducer } from "./reducers/loginReducer";
@@ -16,7 +17,8 @@ export const rootReducer = combineReducers({
     feed: feedReducer,
     login: loginReducer,
     loader: loaderReducer,
-    postDetail: postDetailReducer
+    postDetail: postDetailReducer,
+    createPost: createPostReducer
 });
 
 export const useAppSelector = (selector) => {

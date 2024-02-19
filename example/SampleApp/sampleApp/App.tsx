@@ -1,13 +1,15 @@
 import React from 'react';
 import {
   ContextProvider,
+  CreatePost,
   LMFeedProvider,
   PostDetail,
   PostsList,
   UniversalFeed,
   UNIVERSAL_FEED,
   POSTS_LIST,
-  POST_DETAIL
+  POST_DETAIL,
+  CREATE_POST
 } from 'likeminds-feed-reactnative-integration';
 import {myClient} from '.';
 import {ViewStyle} from 'react-native';
@@ -40,6 +42,7 @@ const App = () => {
             <Stack.Screen name={UNIVERSAL_FEED} component={UniversalFeed} />
             <Stack.Screen name={POSTS_LIST} component={PostsList} />
             <Stack.Screen name={POST_DETAIL} component={PostDetail} />
+            <Stack.Screen name={CREATE_POST} component={CreatePost} />
           </Stack.Navigator>
         </NavigationContainer>
       </LMFeedProvider>
