@@ -16,15 +16,23 @@ import { addPost, setUploadAttachments } from "../store/actions/createPost";
 import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js";
 import { FlatList } from "react-native";
 import { refreshFeed } from "../store/actions/feed";
+import { RIGHT_CREATE_POST, STATE_ADMIN } from "../constants/Strings";
+import { RootStackParamList } from "../models/RootStackParamsList";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface UniversalFeedContextProps {
   children: ReactNode;
-  navigation: any;
-  route: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
 }
 
 export interface UniversalFeedContextValues {
-  navigation: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
   feedData: Array<LMPostUI>;
   accessToken: string;
   memberData: {};
@@ -64,7 +72,6 @@ export const useUniversalFeedContext = () => {
 export const UniversalFeedContextProvider = ({
   children,
   navigation,
-  route,
 }: UniversalFeedContextProps) => {
   const dispatch = useAppDispatch();
   const feedData = useAppSelector((state) => state.feed.feed);
@@ -86,9 +93,9 @@ export const UniversalFeedContextProvider = ({
   useEffect(() => {
     if (accessToken) {
       // handles members right
-      if (memberData?.state !== 1) {
+      if (memberData?.state !== STATE_ADMIN) {
         const members_right = memberRight?.find(
-          (item: any) => item?.state === 9
+          (item) => item?.state === RIGHT_CREATE_POST
         );
 
         if (members_right?.isSelected === false) {

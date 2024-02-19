@@ -69,15 +69,22 @@ import {
   mentionToRouteConverter,
   routeToMentionConverter,
 } from "../utils";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../models/RootStackParamsList";
 
 interface PostDetailContextProps {
   children: ReactNode;
-  navigation: any;
-  route: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, "PostDetail">;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
 }
 
 export interface PostDetailContextValues {
-  navigation: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, "PostDetail">;
   postDetail: LMPostUI;
   modalPosition: {};
   showActionListModal: false;
@@ -193,6 +200,9 @@ export const PostDetailContextProvider = ({
   navigation,
   route,
 }: PostDetailContextProps) => {
+  console.log("rrrr", JSON.stringify(route));
+  console.log("re", route);
+
   const dispatch = useAppDispatch();
   const postDetail = useAppSelector((state) => state.postDetail.postDetail);
   const modalPosition = { x: 0, y: 0 };
@@ -334,7 +344,7 @@ export const PostDetailContextProvider = ({
     const payload = {
       postId: id,
     };
-    dispatch(pinPostStateHandler(payload.postId) as any);
+    dispatch(pinPostStateHandler(payload.postId));
     const pinPostResponse = await dispatch(
       pinPost(PinPostRequest.builder().setpostId(payload.postId).build(), true)
     );
@@ -378,7 +388,7 @@ export const PostDetailContextProvider = ({
       handleDeletePost(true);
     }
     if (itemId === EDIT_POST_MENU_ITEM) {
-      navigation.navigate(CREATE_POST, postId);
+      navigation.navigate(CREATE_POST, {postId});
     }
   };
 
@@ -545,7 +555,7 @@ export const PostDetailContextProvider = ({
     };
     setCommentToAdd("");
     setReplyOnComment({ textInputFocus: false, commentId: "" });
-    dispatch(replyCommentStateHandler({ payload, loggedInUser }) as any);
+    dispatch(replyCommentStateHandler({ payload, loggedInUser }));
     // call reply on comment api
     const replyAddResponse = await dispatch(
       replyComment(

@@ -66,7 +66,7 @@ const DeleteModal = ({
         postId: postDetail?.id,
       };
       displayModal(false);
-      dispatch(deletePostStateHandler(payload.postId) as any);
+      dispatch(deletePostStateHandler(payload.postId));
       const deletePostResponse = await dispatch(
         deletePost(
           DeletePostRequest.builder()
@@ -114,7 +114,7 @@ const DeleteModal = ({
         postId: commentDetail?.postId ? commentDetail.postId : "",
       };
       displayModal(false);
-      dispatch(deleteCommentStateHandler(payload) as any);
+      dispatch(deleteCommentStateHandler(payload));
       try {
         const deleteCommentResponse = await dispatch(
           deleteComment(
