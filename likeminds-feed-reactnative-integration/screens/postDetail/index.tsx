@@ -49,7 +49,7 @@ import {
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
 
-const PostDetail = ({navigation, route, children }: any) => {
+const PostDetail = ({navigation, route, children }) => {
   return (
     <PostDetailContextProvider
       navigation={navigation}

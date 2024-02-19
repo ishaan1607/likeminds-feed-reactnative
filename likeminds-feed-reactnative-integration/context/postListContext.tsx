@@ -34,15 +34,16 @@ import {
 } from "../constants/Strings";
 import { CREATE_POST } from "../constants/screenNames";
 import { useLMFeedStyles } from "../lmFeedProvider";
+import { RootStackParamList } from "../models/RootStackParamsList";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface PostListContextProps {
   children: ReactNode;
-  navigation: any;
-  route: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList'>;
 }
 
 export interface PostListContextValues {
-  navigation: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList'>;
   feedData: Array<LMPostUI>;
   accessToken: string;
   showLoader: number;
@@ -92,7 +93,6 @@ export const usePostListContext = () => {
 export const PostListContextProvider = ({
   children,
   navigation,
-  route,
 }: PostListContextProps) => {
   const dispatch = useAppDispatch();
   const feedData = useAppSelector((state) => state.feed.feed);

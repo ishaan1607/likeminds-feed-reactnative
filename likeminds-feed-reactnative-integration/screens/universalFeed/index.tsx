@@ -19,7 +19,7 @@ import { useAppDispatch } from "../../store/store";
 import { UniversalFeedContextProvider, UniversalFeedContextValues, useUniversalFeedContext } from "../../context";
 import STYLES from "../../constants/Styles";
 
-const UniversalFeed = ({ navigation, route ,children}: any) => {
+const UniversalFeed = ({ navigation, route ,children}) => {
   return (
     <UniversalFeedContextProvider navigation={navigation} route={route} children={children}>
       <UniversalFeedComponent />

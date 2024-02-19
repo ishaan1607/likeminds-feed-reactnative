@@ -14,19 +14,13 @@ import { Client } from '../../client';
 const myClient = Client.myClient;
 
 // initiateUser API action
-export const initiateUser = (payload: any, showLoader: boolean) => () => {
-  const {uuid, userName, isGuest} = payload;
+export const initiateUser = (payload: InitiateUserRequest, showLoader: boolean) => () => {
   try {
-    const initiateUserRequest = InitiateUserRequest.builder()
-    .setUUID(uuid)
-    .setIsGuest(isGuest)
-    .setUserName(userName)
-    .build();
     return {
       type: INITIATE_API_SUCCESS,
       [CALL_API]: {
-        func: myClient?.initiateUser(initiateUserRequest),
-        body: initiateUserRequest,
+        func: myClient?.initiateUser(payload),
+        body: payload,
         types: [INITIATE_API, INITIATE_API_SUCCESS, INITIATE_API_FAILED],
         showLoader: showLoader,
       },
@@ -37,13 +31,13 @@ export const initiateUser = (payload: any, showLoader: boolean) => () => {
 };
 
 // get memberState API action
-export const getMemberState = (payload?: any) =>  () => {
+export const getMemberState = () =>  () => {
   try {
     return {
       type: MEMBER_STATE_SUCCESS,
       [CALL_API]: {
         func: myClient?.getMemberState(),
-        body: payload,
+        body: null,
         types: [MEMBER_STATE_DATA, MEMBER_STATE_SUCCESS, MEMBER_STATE_FAILED],
         showLoader: true,
       },
