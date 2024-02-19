@@ -12,7 +12,7 @@ import styles from "./styles";
 import {
   DeleteCommentRequest,
   DeletePostRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import DeleteReasonsModal from "../DeleteReasonsModal";
 import {
   COMMENT_DELETE,
@@ -28,6 +28,8 @@ import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { deletePost, deletePostStateHandler } from "../../store/actions/feed";
 import { deleteComment, deleteCommentStateHandler } from "../../store/actions/postDetail";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../models/RootStackParamsList";
 
 // delete modal's props
 interface DeleteModalProps {
@@ -37,7 +39,7 @@ interface DeleteModalProps {
   postDetail: LMPostUI;
   commentDetail?: LMCommentUI;
   modalBackdropColor?: string;
-  navigation?: any
+  navigation?: NativeStackNavigationProp<RootStackParamList, "PostDetail" | "UniversalFeed" | "PostsList">;
 }
 
 const DeleteModal = ({

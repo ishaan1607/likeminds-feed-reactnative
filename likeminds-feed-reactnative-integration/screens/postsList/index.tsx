@@ -11,7 +11,7 @@ import {
   LikePostRequest,
   PinPostRequest,
   SavePostRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import { styles } from "./styles";
 import { LMPost, LMPostUI, LMLoader } from "likeminds_feed_reactnative_ui";
 import {
@@ -55,8 +55,10 @@ import {
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
 
-const PostsList = ({ route, children }) => {
-  const {navigation}: UniversalFeedContextValues = useUniversalFeedContext()
+const PostsList = ({ route, children }: any) => {
+  const {
+    navigation
+  }: UniversalFeedContextValues = useUniversalFeedContext();
   return (
     <PostListContextProvider
       navigation={navigation}

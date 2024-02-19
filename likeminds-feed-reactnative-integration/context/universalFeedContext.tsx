@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 import { LMAttachmentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { mentionToRouteConverter, uploadFilesToAWS } from "../utils";
 import { addPost, setUploadAttachments } from "../store/actions/createPost";
-import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js-beta";
+import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js";
 import { FlatList } from "react-native";
 import { refreshFeed } from "../store/actions/feed";
 import { RIGHT_CREATE_POST, STATE_ADMIN } from "../constants/Strings";
@@ -23,6 +23,12 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 interface UniversalFeedContextProps {
   children: ReactNode;
   navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
 }
 
 export interface UniversalFeedContextValues {

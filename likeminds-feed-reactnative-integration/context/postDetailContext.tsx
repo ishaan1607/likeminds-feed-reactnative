@@ -53,7 +53,7 @@ import {
   PinPostRequest,
   ReplyCommentRequest,
   SavePostRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import {
   likePost,
   likePostStateHandler,
@@ -389,7 +389,7 @@ export const PostDetailContextProvider = ({
       handleDeletePost(true);
     }
     if (itemId === EDIT_POST_MENU_ITEM) {
-      navigation.navigate(CREATE_POST, postId);
+      navigation.navigate(CREATE_POST, {postId});
     }
   };
 

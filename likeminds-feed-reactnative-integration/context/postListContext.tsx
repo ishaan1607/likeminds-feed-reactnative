@@ -23,7 +23,7 @@ import {
   LikePostRequest,
   PinPostRequest,
   SavePostRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import _ from "lodash";
 import {
   DELETE_POST_MENU_ITEM,
@@ -39,11 +39,17 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface PostListContextProps {
   children: ReactNode;
-  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList'>;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList' | 'UniversalFeed'>;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
 }
 
 export interface PostListContextValues {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList'>;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList' | 'UniversalFeed'>;
   feedData: Array<LMPostUI>;
   accessToken: string;
   showLoader: number;
@@ -251,7 +257,7 @@ export const PostListContextProvider = ({
       handleDeletePost(true);
     }
     if (itemId === EDIT_POST_MENU_ITEM) {
-      navigation.navigate(CREATE_POST, postId);
+      navigation.navigate(CREATE_POST, {postId});
     }
   };
 

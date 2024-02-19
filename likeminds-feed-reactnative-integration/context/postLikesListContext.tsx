@@ -8,18 +8,25 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 import {
   GetCommentLikesRequest,
   GetPostLikesRequest,
-} from "@likeminds.community/feed-js-beta";
+} from "@likeminds.community/feed-js";
 import { commentLikes, postLikes } from "../store/actions/postLikes";
 import { COMMENT_LIKES, POST_LIKES } from "../constants/Strings";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../models/RootStackParamsList";
 
 interface PostLikesListContextProps {
   children: ReactNode;
-  navigation: any;
-  route: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'PostLikesList'>;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
 }
 
 export interface PostLikesListContextValues {
-  navigation: any;
+  navigation:  NativeStackNavigationProp<RootStackParamList, 'PostLikesList'>;
   postLike: [];
   totalLikes: number;
   postLikesList: (id: string) => void;

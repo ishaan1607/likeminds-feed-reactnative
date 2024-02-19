@@ -10,11 +10,12 @@ import {
 } from '../types/types';
 import {CALL_API} from '../apiMiddleware';
 import { Client } from '../../client';
+import {GetPostLikesRequest, GetCommentLikesRequest} from '@likeminds.community/feed-js'
 
 const myClient = Client.myClient;
 
 // get post likes api action
-export const postLikes = (payload: any, showLoader: boolean) => () => {
+export const postLikes = (payload: GetPostLikesRequest, showLoader: boolean) => () => {
   try {
     return {
       type: POST_LIKES_SUCCESS,
@@ -42,7 +43,7 @@ export const postLikesClear = () => () => {
 };
 
 // get comment likes api action
-export const commentLikes = (payload: any, showLoader: boolean) => () => {
+export const commentLikes = (payload: GetCommentLikesRequest, showLoader: boolean) => () => {
   try {
     return {
       type: COMMENT_LIKES_SUCCESS,
