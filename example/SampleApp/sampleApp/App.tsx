@@ -14,7 +14,6 @@ import {ViewStyle} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './RootNavigation';
-import * as Navi from './RootNavigation'
 
 const App = () => {
   const Stack = createStackNavigator();

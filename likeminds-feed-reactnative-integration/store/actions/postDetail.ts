@@ -177,7 +177,7 @@ export const addComment =
   };
 
 // add comment state handler action
-export const addCommentStateHandler = (payload?: AddCommentState) => () => {
+export const addCommentStateHandler = (payload: AddCommentState) => () => {
   try {
     return {
       type: CREATE_COMMENT_STATE,
@@ -207,7 +207,7 @@ export const replyComment =
   };
 
 // add reply state handler action
-export const replyCommentStateHandler = (payload?: ReplyCommentState) => () => {
+export const replyCommentStateHandler = (payload: ReplyCommentState) => () => {
   try {
     return {
       type: CREATE_REPLY_STATE,
@@ -242,7 +242,7 @@ export const deleteComment =
 
 // delete post state handler action
 export const deleteCommentStateHandler =
-  (payload?: DeleteCommentState) => () => {
+  (payload: DeleteCommentState) => () => {
     try {
       return {
         type: DELETE_COMMENT_STATE,
@@ -272,7 +272,7 @@ export const editComment =
   };
 
 // delete post state handler action
-export const editCommentStateHandler = (payload?: EditCommentState) => () => {
+export const editCommentStateHandler = (payload: EditCommentState) => () => {
   try {
     return {
       type: EDIT_COMMENT_STATE,
