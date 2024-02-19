@@ -36,8 +36,8 @@ const App = () => {
     <ContextProvider>
       <LMFeedProvider
         myClient={myClient}
-        userName="user123"
-        userUniqueId="0e53748a-969b-44c6-b8fa-a4c8e1eb1208"
+        userName=''
+        userUniqueId=''
         >
         <NavigationContainer ref={navigationRef} independent={true}>
           <Stack.Navigator screenOptions={{headerShown: false}}>

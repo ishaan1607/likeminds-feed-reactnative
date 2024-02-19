@@ -165,6 +165,7 @@ const LMPostMedia = React.memo(({
             {attachments?.find(
               item => item?.attachmentType === ATTACHMENT_TYPE.VIDEO,
             ) && ( <></>
+            // todo: handle later
               // <LMVideo
               //   videoUrl={getUrl(ATTACHMENT_TYPE.VIDEO)}
               //   height={videoProps?.height}

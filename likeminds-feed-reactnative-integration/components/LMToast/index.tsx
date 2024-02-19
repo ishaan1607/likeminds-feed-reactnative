@@ -30,6 +30,7 @@ const LMToast = () => {
     showToast();
   }, [showToast]);
 
+  // toast UI
   const renderToastView = () => {
     return (
       <View>

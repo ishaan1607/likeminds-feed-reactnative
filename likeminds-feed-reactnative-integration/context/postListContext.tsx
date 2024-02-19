@@ -156,7 +156,6 @@ export const PostListContextProvider = ({
     const payload = {
       postId: id,
     };
-    // dispatch(likePostStateHandler(payload.postId));
     // calling like post api
     const postLikeResponse = await dispatch(
       likePost(

@@ -17,6 +17,7 @@ import DeleteReasonsModal from "../DeleteReasonsModal";
 import {
   COMMENT_DELETE,
   CONFIRM_DELETE,
+  DELETE_REASON_SELECTION,
   DELETION_REASON,
   POST_DELETE,
   POST_TYPE,
@@ -158,13 +159,15 @@ const DeleteModal = ({
       visibilityTime: 1500,
     });
   };
+
+  // toast view UI
   const renderToastView = () => {
     return (
       <View>
         <View>
           <View style={styles.modalView}>
             <Text style={styles.filterText}>
-              {'Please select a reason for deletion'}
+              {DELETE_REASON_SELECTION}
             </Text>
           </View>
         </View>

@@ -147,6 +147,8 @@ const ReportModal = ({
       visibilityTime: 1500,
     });
   };
+
+  // toast view UI
   const renderToastView = () => {
     return (
       <View style={styles.toastViewStyle}>

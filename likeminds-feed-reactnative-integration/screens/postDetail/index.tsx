@@ -119,13 +119,6 @@ const PostDetailComponent = React.memo(() => {
       <KeyboardAvoidingView
         enabled={Platform.OS === "android" ? true : false}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        // keyboardVerticalOffset={
-        //   Platform.OS === "android"
-        //     ? keyboardIsVisible
-        //       ? 0
-        //       : Layout.normalize(32)
-        //     : 0
-        // }
         style={styles.flexView}
       >
         {/* header view */}
