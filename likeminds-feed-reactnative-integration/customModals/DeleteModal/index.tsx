@@ -39,7 +39,7 @@ interface DeleteModalProps {
   postDetail: LMPostUI;
   commentDetail?: LMCommentUI;
   modalBackdropColor?: string;
-  navigation?: NativeStackNavigationProp<RootStackParamList, "PostDetail" | "UniversalFeed">;
+  navigation?: NativeStackNavigationProp<RootStackParamList, "PostDetail" | "UniversalFeed" | "PostsList">;
 }
 
 const DeleteModal = ({

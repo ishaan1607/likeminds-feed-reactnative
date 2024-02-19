@@ -49,7 +49,7 @@ interface PostListContextProps {
 }
 
 export interface PostListContextValues {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList'>;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList' | 'UniversalFeed'>;
   feedData: Array<LMPostUI>;
   accessToken: string;
   showLoader: number;

@@ -49,7 +49,7 @@ import {
 } from "@likeminds.community/feed-js";
 import { getPost, getTaggingList } from "../store/actions/postDetail";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "models/RootStackParamsList";
+import { RootStackParamList } from "../models/RootStackParamsList";
 
 interface CreatePostContextProps {
   children: ReactNode;

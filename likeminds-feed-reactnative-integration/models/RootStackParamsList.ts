@@ -3,4 +3,5 @@ export type RootStackParamList = {
     PostsList: undefined;
     PostDetail: Array<string> | undefined;
     CreatePost: {postId: string} | undefined;
+    PostLikesList: Array<string> | undefined;
   };

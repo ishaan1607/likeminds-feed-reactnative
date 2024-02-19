@@ -11,15 +11,13 @@ import {
 import {InitiateUserRequest} from '@likeminds.community/feed-js';
 import { Client } from '../../client';
 
-const myClient = Client.myClient;
-
 // initiateUser API action
 export const initiateUser = (payload: InitiateUserRequest, showLoader: boolean) => () => {
   try {
     return {
       type: INITIATE_API_SUCCESS,
       [CALL_API]: {
-        func: myClient?.initiateUser(payload),
+        func: Client.myClient.initiateUser(payload),
         body: payload,
         types: [INITIATE_API, INITIATE_API_SUCCESS, INITIATE_API_FAILED],
         showLoader: showLoader,
@@ -36,7 +34,7 @@ export const getMemberState = () =>  () => {
     return {
       type: MEMBER_STATE_SUCCESS,
       [CALL_API]: {
-        func: myClient?.getMemberState(),
+        func: Client.myClient.getMemberState(),
         body: null,
         types: [MEMBER_STATE_DATA, MEMBER_STATE_SUCCESS, MEMBER_STATE_FAILED],
         showLoader: true,

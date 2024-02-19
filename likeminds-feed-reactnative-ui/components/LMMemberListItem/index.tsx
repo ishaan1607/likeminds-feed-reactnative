@@ -5,6 +5,7 @@ import LMText from "../LMText";
 import { LMMemberListItemProps } from "./types";
 import LMIcon from "../LMIcon";
 import { styles } from "./styles";
+import { getNameInitials } from "../../utils/utils";
 
 const LMMemberListItem = ({
   likes,
@@ -18,7 +19,7 @@ const LMMemberListItem = ({
   const updatedProfilePictureProps = {
     fallbackText: {
       textStyle: profilePictureProps?.fallbackText?.textStyle,
-      children: <Text>{likes.user.name}</Text>,
+      children: <Text>{getNameInitials(likes.user.name)}</Text>,
     },
     size: profilePictureProps?.size ? profilePictureProps.size : 50,
     imageUrl: likes.user.imageUrl,
@@ -28,12 +29,12 @@ const LMMemberListItem = ({
   };
   //creating user name props as per customization
   const updatedNameProps = {
-    text: likes.user.name,
+    children: <Text>{likes.user.name}</Text>,
     textStyle: nameProps?.textStyle,
   };
   //creating custom title props as per customization
   const updatedCustomTitleProps = {
-    text: likes.user.customTitle,
+    children: <Text>{likes.user.customTitle}</Text>,
     textStyle: customTitleProps?.textStyle,
   };
 

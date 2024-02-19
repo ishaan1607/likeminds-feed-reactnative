@@ -4,6 +4,7 @@ import { feedReducer } from "./reducers/feedReducer";
 import { loaderReducer } from "./reducers/loaderReducer";
 import { loginReducer } from "./reducers/loginReducer";
 import { postDetailReducer } from "./reducers/postDetailReducer";
+import { postLikesReducer } from "./reducers/postLikesReducer";
 
 // Combine multiple reducers into one
 const combineReducers = (reducers) => (state, action) => {
@@ -18,7 +19,8 @@ export const rootReducer = combineReducers({
     login: loginReducer,
     loader: loaderReducer,
     postDetail: postDetailReducer,
-    createPost: createPostReducer
+    createPost: createPostReducer,
+    postLikes: postLikesReducer
 });
 
 export const useAppSelector = (selector) => {
