@@ -8,12 +8,14 @@ import React, {
 import STYLES from "../constants/Styles";
 import { StyleSheet, View } from "react-native";
 import { Credentials } from "../credentials";
-import { LMFeedClient } from "@likeminds.community/feed-js";
+import {
+  InitiateUserRequest,
+  LMFeedClient,
+} from "@likeminds.community/feed-js";
 import { Client } from "../client";
 import { LMFeedProviderProps, ThemeContextProps } from "./types";
-import { useAppDispatch, useAppSelector } from "../store/AppContext";
-import { INIT_API_SUCCESS, PROFILE_DATA_SUCCESS } from "../store/actions/types";
-import { UniversalFeed} from "../screens";
+import { useAppDispatch } from "../store/store";
+import { getMemberState, initiateUser } from "../store/actions/login";
 
 // Create the theme context
 export const LMFeedStylesContext = createContext<ThemeContextProps | undefined>(
@@ -48,42 +50,33 @@ export const LMFeedProvider = ({
   themeStyles,
   universalFeedStyle,
   postListStyle,
-  loaderStyle
+  loaderStyle,
+  postDetailStyle,
 }: LMFeedProviderProps): React.JSX.Element => {
   const [isInitiated, setIsInitiated] = useState(false);
-  const dispatch  = useAppDispatch();
-  const state  = useAppSelector();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     //setting client in Client class
     Client.setMyClient(myClient);
+    Credentials.setCredentials(userName, userUniqueId);
 
     // storing myClient followed by community details
     const callInitApi = async () => {
-      const payload = {
-        uuid: userUniqueId, // uuid
-        userName: userName, // user name
-        isGuest: false,
-      };
-
-      Credentials.setCredentials(userName, userUniqueId);
-
-      const initiateApiResponse = await myClient?.initiateUser(payload);
-
-      dispatch({
-        type: INIT_API_SUCCESS,
-        payload: { community: initiateApiResponse.getData() },
-      });
-
-      const getMemberStateResponse = await myClient?.getMemberState();
-
-      dispatch({
-        type: PROFILE_DATA_SUCCESS,
-        payload: {
-          member: getMemberStateResponse.getData()?.member,
-          memberRights: getMemberStateResponse.getData()?.member_rights,
-        },
-      });
+      const initiateResponse = await dispatch(
+        initiateUser(
+          InitiateUserRequest.builder()
+            .setUUID(Credentials.userUniqueId)
+            .setIsGuest(false)
+            .setUserName(Credentials.username)
+            .build(),
+          true
+        )
+      );
+      if (initiateResponse) {
+        // calling getMemberState API
+        await dispatch(getMemberState());
+      }
       setIsInitiated(true);
     };
     callInitApi();
@@ -97,8 +90,14 @@ export const LMFeedProvider = ({
 
   return isInitiated ? (
     <LMFeedContext.Provider value={myClient}>
-      <LMFeedStylesContext.Provider value={{ universalFeedStyle, postListStyle, loaderStyle }}>
-        <UniversalFeed />
+      <LMFeedStylesContext.Provider
+        value={{
+          universalFeedStyle,
+          postListStyle,
+          loaderStyle,
+          postDetailStyle,
+        }}
+      >
         <View style={styles.flexStyling}>{children}</View>
       </LMFeedStylesContext.Provider>
     </LMFeedContext.Provider>

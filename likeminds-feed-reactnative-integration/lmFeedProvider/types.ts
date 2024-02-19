@@ -4,6 +4,7 @@ import {
   LMButtonProps,
   LMHeaderProps,
   LMIconProps,
+  LMInputTextProps,
   LMLoaderProps,
   LMProfilePictureProps,
   LMTextProps,
@@ -25,15 +26,15 @@ interface ThemeStyles {
 }
 
 // custom style interface for universal feed screen
-interface universalFeedStyleProps {
+interface UniversalFeedStyleProps {
   newPostButtonStyle?: ViewStyle;
   newPostButtonText?: TextStyle;
   newPostIcon?: ImageProps;
   screenHeader?: LMHeaderProps;
 }
 
-// custom style interface for post's lis
-interface postListStyleProps {
+// custom style interface for post's list
+interface PostListStyleProps {
   header?: {
     profilePicture?: LMProfilePictureProps;
     titleText?: LMTextProps;
@@ -155,7 +156,7 @@ interface postListStyleProps {
         autoPlay?: boolean;
         showCancel?: boolean;
         onCancel?: () => void;
-      }
+      };
       showCancel?: boolean;
       onCancel?: () => void;
     };
@@ -193,12 +194,62 @@ interface postListStyleProps {
 }
 
 // custom style interface for loader
-interface loaderStyleProps {
+interface LoaderStyleProps {
   loader?: LMLoaderProps;
+}
+
+// custom style interface for post detail screen
+interface PostDetailStyleProps {
+  screenHeader?: LMHeaderProps;
+  commentItemStyle?: {
+    likeIconButton?: LMButtonProps;
+    likeTextButton?: LMButtonProps;
+    onTapViewMore?: () => void;
+    menuIcon?: LMButtonProps;
+    commentUserNameStyle?: TextStyle;
+    commentContentProps?: LMTextProps;
+    showMoreProps?: LMTextProps;
+    replyTextProps?: LMButtonProps;
+    repliesCountTextStyle?: TextStyle;
+    timeStampStyle?: TextStyle;
+    viewMoreRepliesProps?: LMTextProps;
+    onTapReplies?: () => void;
+  };
+  commentCountHeadingText?: TextStyle;
+  noCommentViewStyle?: ViewStyle;
+  noCommentHeadingTextStyle?: TextStyle;
+  noCommentSubHeadingTextStyle?: TextStyle;
+  replyingViewStyle?: {
+    replyingView?: ViewStyle;
+    replyingText?: LMTextProps;
+    cancelReplyIcon?: LMIconProps;
+  };
+  userTaggingListStyle?: {
+    taggingListView?: ViewStyle;
+    userTagView?: ViewStyle;
+    userTagProfileImageStyle?: LMProfilePictureProps;
+    userTagNameStyle?: TextStyle;
+  };
+  commentTextInputStyle?: {
+    containerStyle?: ViewStyle;
+    inputTextStyle?: TextStyle;
+    placeholderText?: string;
+    placeholderTextColor?: string;
+    disabled?: boolean;
+    rightIcon?: LMButtonProps;
+    autoFocus?: boolean;
+    plainTextStyle?: TextStyle;
+    mentionTextStyle?: TextStyle;
+    multilineField?: boolean
+  };
 }
 
 export interface ThemeContextProps {
   textStyle?: TextStyles;
+  universalFeedStyle?: UniversalFeedStyleProps;
+  postListStyle?: PostListStyleProps;
+  loaderStyle?: LoaderStyleProps;
+  postDetailStyle?: PostDetailStyleProps;
 }
 
 export interface LMFeedProviderProps {
@@ -207,7 +258,8 @@ export interface LMFeedProviderProps {
   userName: string;
   userUniqueId: string;
   themeStyles?: ThemeStyles;
-  universalFeedStyle?: universalFeedStyleProps;
-  postListStyle?: postListStyleProps;
-  loaderStyle?: loaderStyleProps;
+  universalFeedStyle?: UniversalFeedStyleProps;
+  postListStyle?: PostListStyleProps;
+  loaderStyle?: LoaderStyleProps;
+  postDetailStyle?: PostDetailStyleProps;
 }

@@ -13,8 +13,7 @@ import {
   SavePostRequest,
 } from "@likeminds.community/feed-js";
 import { styles } from "./styles";
-import { LMPost, LMPostUI } from "likeminds_feed_reactnative_ui";
-import { NavigationService } from "../../navigation";
+import { LMPost, LMPostUI, LMLoader } from "likeminds_feed_reactnative_ui";
 import {
   DELETE_POST_MENU_ITEM,
   EDIT_POST_MENU_ITEM,
@@ -28,7 +27,6 @@ import {
   UNPIN_POST_MENU_ITEM,
   VIDEO_ATTACHMENT_TYPE,
 } from "../../constants/Strings";
-import { LMLoader } from "likeminds_feed_reactnative_ui";
 import {
   CREATE_POST,
   LIKES_LIST,
@@ -36,226 +34,67 @@ import {
 } from "../../constants/screenNames";
 // @ts-ignore the lib do not have TS declarations yet
 import _ from "lodash";
-import { useAppDispatch, useAppSelector } from "../../store/AppContext";
-import { Client } from "../../client";
-import {
-  PIN_POST_STATE,
-  START_LOADING,
-  STOP_LOADING,
-  UNIVERSAL_FEED_REFRESH_SUCCESS,
-  UNIVERSAL_FEED_SUCCESS,
-} from "../../store/actions/types";
 import { DeleteModal, ReportModal } from "../../customModals";
 import { useLMFeedStyles } from "../../lmFeedProvider";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import {
+  getFeed,
+  likePost,
+  pinPost,
+  pinPostStateHandler,
+  refreshFeed,
+  savePost,
+} from "../../store/actions/feed";
+import { clearPostDetail } from "../../store/actions/postDetail";
+import {
+  PostListContextProvider,
+  PostListContextValues,
+  UniversalFeedContextValues,
+  usePostListContext,
+  useUniversalFeedContext,
+} from "../../context";
 
-const PostsList = React.memo(() => {
-  const myClient = Client.myClient;
-  const dispatch  = useAppDispatch();
-  const state  = useAppSelector();
-  const feedData = state.feed.feed;
-  const accessToken = state.login.community.accessToken;
-  const showLoader = state.loader.count;
-  const [feedPageNumber, setFeedPageNumber] = useState(1);
-  const modalPosition = { x: 0, y: 0 };
-  const [showActionListModal, setShowActionListModal] = useState(false);
-  const [selectedMenuItemPostId, setSelectedMenuItemPostId] = useState("");
-  const [showDeleteModal, setDeleteModal] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [localRefresh, setLocalRefresh] = useState(false);
-  const [feedFetching, setFeedFetching] = useState(false);
-  const listRef = useRef<FlatList<LMPostUI>>(null);
+const PostsList = ({ route, children }) => {
+  const {navigation}: UniversalFeedContextValues = useUniversalFeedContext()
+  return (
+    <PostListContextProvider
+      navigation={navigation}
+      route={route}
+      children={children}
+    >
+      <PostsListComponent />
+    </PostListContextProvider>
+  );
+};
+
+const PostsListComponent = React.memo(() => {
+  const dispatch = useAppDispatch();
+  const {
+    navigation,
+    feedData,
+    feedFetching,
+    listRef,
+    refreshing,
+    onRefresh,
+    modalPosition,
+    showActionListModal,
+    closePostActionListModal,
+    onMenuItemSelect,
+    postLikeHandler,
+    debouncedSaveFunction,
+    setFeedPageNumber,
+    feedPageNumber,
+    renderLoader,
+    showLoader,
+    showDeleteModal,
+    showReportModal,
+    getPostDetail,
+    setShowReportModal,
+    localRefresh,
+    handleDeletePost
+  }: PostListContextValues = usePostListContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, loaderStyle } = LMFeedContextStyles;
-
-  // this functions gets universal feed data
-  const fetchFeed = useCallback(async () => {
-    const payload = {
-      page: feedPageNumber,
-      pageSize: 20,
-    };
-    // calling getFeed API
-    dispatch({
-      type: START_LOADING,
-    });
-    const getFeedResponse = await myClient?.getFeed(
-      GetFeedRequest.builder()
-        .setpage(payload.page)
-        .setpageSize(payload.pageSize)
-        .build()
-    );
-    if (getFeedResponse) {
-      dispatch({
-        type: STOP_LOADING,
-      });
-    }
-    await dispatch({
-      type: UNIVERSAL_FEED_SUCCESS,
-      payload: getFeedResponse.getData(),
-    });
-    setFeedFetching(false);
-    return getFeedResponse;
-  }, [dispatch, feedPageNumber]);
-
-  // this function is executed on pull to refresh
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    setLocalRefresh(true);
-    // calling getFeed API
-    const refreshFeedResponse = await myClient?.getFeed(
-      GetFeedRequest.builder().setpage(1).setpageSize(20).build()
-    );
-    await dispatch({
-      type: UNIVERSAL_FEED_REFRESH_SUCCESS,
-      payload: refreshFeedResponse.getData(),
-    });
-    setLocalRefresh(false);
-    setRefreshing(false);
-  }, [dispatch]);
-
-  // debounce on like post function
-  const debouncedLikeFunction = _.debounce(postLikeHandler, 500); // Adjust the debounce time (in milliseconds) as needed
-
-  // useEffect hook to clean up the debounced function
-  useEffect(() => {
-    return () => {
-      debouncedLikeFunction.cancel(); // Cancel any pending debounced executions when the component unmounts
-    };
-  }, [debouncedLikeFunction]);
-
-  // this functions hanldes the post like functionality
-  async function postLikeHandler(id: string) {
-    const payload = {
-      postId: id,
-    };
-    // calling like post api
-    const postLikeResponse = await myClient?.likePost(
-      LikePostRequest.builder().setpostId(payload.postId).build()
-    );
-    return postLikeResponse;
-  }
-
-  // debounce on save post function
-  const debouncedSaveFunction = _.debounce(savePostHandler, 500); // Adjust the debounce time (in milliseconds) as needed
-
-  // useEffect hook to clean up the debounced function
-  useEffect(() => {
-    return () => {
-      debouncedSaveFunction.cancel(); // Cancel any pending debounced executions when the component unmounts
-    };
-  }, [debouncedSaveFunction]);
-
-  // this functions hanldes the post save functionality
-  async function savePostHandler(id: string, saved?: boolean) {
-    const payload = {
-      postId: id,
-    };
-    try {
-      // calling the save post api
-      const savePostResponse = await myClient?.savePost(
-        SavePostRequest.builder().setpostId(payload.postId).build()
-      );
-      // todo: handle toast later
-      // await dispatch(
-      //   showToastMessage({
-      //     isToast: true,
-      //     message: saved ? POST_UNSAVED_SUCCESS : POST_SAVED_SUCCESS,
-      //   }) as any,
-      // );
-      return savePostResponse;
-    } catch (error) {
-      // todo: handle toast later
-      // dispatch(
-      //   showToastMessage({
-      //     isToast: true,
-      //     message: SOMETHING_WENT_WRONG,
-      //   }) as any,
-      // );
-    }
-  }
-
-  useEffect(() => {
-    setFeedFetching(true);
-  }, []);
-  // this calls the getFeed api whenever the page number gets changed
-  useEffect(() => {
-    if (accessToken) {
-      // fetch feed
-      fetchFeed();
-    }
-  }, [accessToken, feedPageNumber, fetchFeed]);
-
-  // this function closes the post action list modal
-  const closePostActionListModal = () => {
-    setShowActionListModal(false);
-  };
-
-  // this function handles the functionality on the pin option
-  const handlePinPost = async (id: string, pinned?: boolean) => {
-    const payload = {
-      postId: id,
-    };
-    dispatch({
-      type: PIN_POST_STATE,
-      payload: payload.postId,
-    });
-    const pinPostResponse = await myClient?.pinPost(
-      PinPostRequest.builder().setpostId(payload.postId).build()
-    );
-    if (pinPostResponse) {
-      // todo: handle toast later
-      // dispatch(
-      //   showToastMessage({
-      //     isToast: true,
-      //     message: pinned ? POST_UNPIN_SUCCESS : POST_PIN_SUCCESS,
-      //   }) as any,
-      // );
-    }
-    return pinPostResponse;
-  };
-
-  // this function handles the functionality on the report option
-  const handleReportPost = async () => {
-    setShowReportModal(true);
-  };
-
-  // this function handles the functionality on the delete option
-  const handleDeletePost = async (visible: boolean) => {
-    setDeleteModal(visible);
-  };
-
-  // this function returns the id of the item selected from menu list and handles further functionalities accordingly
-  const onMenuItemSelect = (
-    postId: string,
-    itemId?: number,
-    pinnedValue?: boolean
-  ) => {
-    setSelectedMenuItemPostId(postId);
-    if (itemId === PIN_POST_MENU_ITEM || itemId === UNPIN_POST_MENU_ITEM) {
-      handlePinPost(postId, pinnedValue);
-    }
-    if (itemId === REPORT_POST_MENU_ITEM) {
-      handleReportPost();
-    }
-    if (itemId === DELETE_POST_MENU_ITEM) {
-      handleDeletePost(true);
-    }
-    if (itemId === EDIT_POST_MENU_ITEM) {
-      NavigationService.navigate(CREATE_POST, postId);
-    }
-  };
-
-  // this function gets the detail pf post whose menu item is clicked
-  const getPostDetail = () => {
-    const postDetail = feedData.find(
-      (item: LMPostUI) => item.id === selectedMenuItemPostId
-    );
-    return postDetail;
-  };
-
-  const renderLoader = () => {
-    return <LMLoader {...loaderStyle?.loader} />;
-  };
 
   return (
     <>
@@ -283,11 +122,10 @@ const PostsList = React.memo(() => {
                     : false
                 }
                 activeOpacity={0.8}
-                style={{ marginBottom: 10, backgroundColor: "#e0e0e0" }}
+                style={{backgroundColor: "#e0e0e0" }}
                 onPress={() => {
-                  // todo: handle later
-                  // dispatch(clearPostDetail() as any);
-                  NavigationService.navigate(POST_DETAIL, [
+                  dispatch(clearPostDetail() as any);
+                  navigation.navigate(POST_DETAIL, [
                     item?.id,
                     NAVIGATED_FROM_POST,
                   ]);
@@ -345,7 +183,7 @@ const PostsList = React.memo(() => {
                     likeIconButton: {
                       ...postListStyle?.footer?.likeIconButton,
                       onTap: () => {
-                        debouncedLikeFunction(item?.id);
+                        postLikeHandler(item?.id);
                         postListStyle?.footer?.likeIconButton?.onTap();
                       },
                     },
@@ -361,19 +199,15 @@ const PostsList = React.memo(() => {
                       onTap: () => {
                         // todo: handle later
                         //   dispatch(postLikesClear() as any);
-                        NavigationService.navigate(LIKES_LIST, [
-                          POST_LIKES,
-                          item?.id,
-                        ]);
+                        navigation.navigate(LIKES_LIST, [POST_LIKES, item?.id]);
                         postListStyle?.footer?.likeTextButton?.onTap();
                       },
                     },
                     commentButton: {
                       ...postListStyle?.footer?.commentButton,
                       onTap: () => {
-                        // todo: handle later
-                        //   dispatch(clearPostDetail() as any);
-                        NavigationService.navigate(POST_DETAIL, [
+                        dispatch(clearPostDetail());
+                        navigation.navigate(POST_DETAIL, [
                           item?.id,
                           NAVIGATED_FROM_COMMENT,
                         ]);
@@ -453,4 +287,4 @@ const PostsList = React.memo(() => {
   );
 });
 
-export default PostsList;
+export { PostsList };

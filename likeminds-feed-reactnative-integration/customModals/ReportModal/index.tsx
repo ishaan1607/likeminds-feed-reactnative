@@ -32,9 +32,8 @@ import {
 import { LMLoader } from "likeminds_feed_reactnative_ui";
 import { SafeAreaView } from "react-native";
 import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
-import { Client } from "../../client";
-import { useAppDispatch, useAppSelector } from "../../store/AppContext";
-import { REPORT_TAGS_SUCCESS } from "../../store/actions/types";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { getReportTags, postReport } from "../../store/actions/feed";
 
 // interface for post report api request
 interface ReportRequest {
@@ -61,26 +60,23 @@ const ReportModal = ({
   postDetail,
   commentDetail,
 }: ReportModalProps) => {
-  const myClient = Client.myClient;
   const dispatch = useAppDispatch();
-  const state = useAppSelector();
+  const reportTags = useAppSelector((state) => state.feed.reportTags);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [otherReason, setOtherReason] = useState("");
   const [selectedId, setSelectedId] = useState(-1);
-  const reportTags = state.feed.reportTags;
 
   // this function calls the get report tags api for reporting a post
   const fetchReportTags = useCallback(async () => {
     const payload = {
       type: REPORT_TAGS_TYPE, // type 3 for report tags
     };
-    const reportTagsResponse = await myClient?.getReportTags(
-      GetReportTagsRequest.builder().settype(payload.type).build()
+    const reportTagsResponse = await dispatch(
+      getReportTags(
+        GetReportTagsRequest.builder().settype(payload.type).build(),
+        true
+      )
     );
-    dispatch({
-      type: REPORT_TAGS_SUCCESS,
-      payload: reportTagsResponse.getData(),
-    });
     return reportTagsResponse;
   }, [dispatch]);
 
@@ -105,14 +101,17 @@ const ReportModal = ({
       setSelectedId(-1);
       setSelectedIndex(-1);
       closeModal();
-      const postReportResponse = await myClient?.postReport(
-        PostReportRequest.builder()
-          .setEntityId(payload.entityId)
-          .setEntityType(payload.entityType)
-          .setReason(payload.reason)
-          .setTagId(payload.tagId)
-          .setUuid(payload.uuid)
-          .build()
+      const postReportResponse = await dispatch(
+        postReport(
+          PostReportRequest.builder()
+            .setEntityId(payload.entityId)
+            .setEntityType(payload.entityType)
+            .setReason(payload.reason)
+            .setTagId(payload.tagId)
+            .setUuid(payload.uuid)
+            .build(),
+          true
+        )
       );
       // toast message action
       if (postReportResponse) {
@@ -161,6 +160,7 @@ const ReportModal = ({
   //     </View>
   //   );
   // };
+  // todo: handle toast later
   // // toast message view UI
   // const toastConfig = {
   //   reportToastView: () => renderToastView(),

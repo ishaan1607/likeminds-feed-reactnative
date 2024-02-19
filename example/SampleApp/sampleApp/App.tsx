@@ -1,11 +1,22 @@
 import React from 'react';
 import {
-  AppProvider,
+  ContextProvider,
   LMFeedProvider,
+  PostDetail,
+  PostsList,
+  UniversalFeed,
+  UNIVERSAL_FEED,
+  POSTS_LIST,
+  POST_DETAIL
 } from 'likeminds-feed-reactnative-integration';
 import {myClient} from '.';
-import {Text, ViewStyle} from 'react-native';
+import {ViewStyle} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {navigationRef} from './RootNavigation';
+
 const App = () => {
+  const Stack = createStackNavigator();
   // custom style of new post button
   const newPostButtonStyle: ViewStyle = {
     backgroundColor: 'red',
@@ -18,37 +29,21 @@ const App = () => {
     shadowColor: '#000',
   };
   return (
-    <AppProvider>
+    <ContextProvider>
       <LMFeedProvider
         myClient={myClient}
         userName="user123"
-        userUniqueId="0e53748a-969b-44c6-b8fa-a4c8e1eb1208"
-        universalFeedStyle={{
-          newPostButtonStyle: newPostButtonStyle,
-          screenHeader: {headingViewStyle: {display: 'none'}},
-        }}
-        postListStyle={{
-          footer: {
-            likeIconButton: {
-              onTap: () => {
-                console.log('likeee');
-              },
-            },
-          },
-          header: {
-            onTap: () => {
-              console.log('outside header tap');
-            },
-            profilePicture: {
-              fallbackTextBoxStyle: {backgroundColor: 'pink'},
-              fallbackText: {children: <Text>dd</Text>},
-            },
-          },
-        }}
-        loaderStyle={{loader: {color:'green'}}}>
-        <Text>Sample app</Text>
+        userUniqueId="user123"
+        >
+        <NavigationContainer ref={navigationRef} independent={true}>
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name={UNIVERSAL_FEED} component={UniversalFeed} />
+            <Stack.Screen name={POSTS_LIST} component={PostsList} />
+            <Stack.Screen name={POST_DETAIL} component={PostDetail} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </LMFeedProvider>
-    </AppProvider>
+    </ContextProvider>
   );
 };
 

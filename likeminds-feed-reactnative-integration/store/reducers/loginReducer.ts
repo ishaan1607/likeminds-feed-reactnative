@@ -1,23 +1,26 @@
-import { AppAction } from "../AppContext";
-import { INIT_API_SUCCESS, PROFILE_DATA_SUCCESS } from "../actions/types";
+import { INITIATE_API_SUCCESS, MEMBER_STATE_SUCCESS } from "../types/types";
 
-export interface initialState {
+export interface LoginReducerState {
   community: {};
+  accessToken: '';
   memberRights: [];
   member: {};
 }
-export const loginReducer = (
-  state: initialState,
-  action: AppAction
-): initialState => {
+export const initialState: LoginReducerState = {
+  community: {},
+  accessToken: '',
+  memberRights: [],
+  member: {},
+};
+export const loginReducer = (state = initialState, action) => {
   switch (action.type) {
-    case INIT_API_SUCCESS: {
-      const {community = {}} = action.payload;
-      return {...state, community: community};
+    case INITIATE_API_SUCCESS: {
+      const { community = {} } = action.body;
+      return { ...state, community: community , accessToken : action.body.accessToken};
     }
-    case PROFILE_DATA_SUCCESS: {
-      const {member = {}, memberRights = []} = action.payload;      
-      return {...state, member: member, memberRights: memberRights};
+    case MEMBER_STATE_SUCCESS: {
+      const { member = {}, memberRights = [] } = action.body;
+      return { ...state, member: member, memberRights: memberRights };
     }
     default:
       return state;

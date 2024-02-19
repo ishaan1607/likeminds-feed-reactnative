@@ -41,6 +41,8 @@ import {
   LMProfilePictureProps,
   LMTextProps,
   LMVideoProps,
+  MentionData,
+  convertToMentionValues
 } from "./components";
 import {
   LMActivityUI,
@@ -78,6 +80,7 @@ export {
   LMCommentItem,
   LMMemberListItem,
   LMNotificationFeedItem,
+  convertToMentionValues,
   LMActivityUI,
   LMActivityEntityUI,
   LMAttachmentMetaUI,
@@ -111,4 +114,5 @@ export {
   LMProfilePictureProps,
   LMTextProps,
   LMVideoProps,
+  MentionData
 };
