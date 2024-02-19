@@ -47,7 +47,6 @@ import {
   ReplyCommentRequest,
 } from "@likeminds.community/feed-js";
 
-const myClient = Client.myClient;
 interface EditCommentState {
   commentId: string;
   commentText: string;
@@ -80,7 +79,7 @@ export const getPost = (payload: GetPostRequest, showLoader: boolean) => () => {
     return {
       type: POST_DATA_SUCCESS,
       [CALL_API]: {
-        func: myClient?.getPost(payload),
+        func: Client.myClient.getPost(payload),
         body: payload,
         types: [POST_DATA, POST_DATA_SUCCESS, POST_DATA_FAILED],
         showLoader: showLoader,
@@ -98,7 +97,7 @@ export const getComments =
       return {
         type: POST_COMMENTS_SUCCESS,
         [CALL_API]: {
-          func: myClient?.getComments(
+          func: Client.myClient.getComments(
             payload.postId,
             payload,
             payload.commentId,
@@ -143,7 +142,7 @@ export const likeComment =
       return {
         type: LIKE_COMMENT_SUCCESS,
         [CALL_API]: {
-          func: myClient?.likeComment(payload),
+          func: Client.myClient.likeComment(payload),
           body: payload,
           types: [LIKE_COMMENT, LIKE_COMMENT_SUCCESS, LIKE_COMMENT_FAILED],
           showLoader: showLoader,
@@ -161,7 +160,7 @@ export const addComment =
       return {
         type: CREATE_COMMENT_SUCCESS,
         [CALL_API]: {
-          func: myClient?.addComment(payload),
+          func: Client.myClient.addComment(payload),
           body: payload,
           types: [
             CREATE_COMMENT,
@@ -195,7 +194,7 @@ export const replyComment =
       return {
         type: CREATE_REPLY_SUCCESS,
         [CALL_API]: {
-          func: myClient?.replyComment(payload),
+          func: Client.myClient.replyComment(payload),
           body: payload,
           types: [CREATE_REPLY, CREATE_REPLY_SUCCESS, CREATE_REPLY_FAILED],
           showLoader: showLoader,
@@ -225,7 +224,7 @@ export const deleteComment =
       return {
         type: COMMENT_DELETE_SUCCESS,
         [CALL_API]: {
-          func: myClient?.deleteComment(payload),
+          func: Client.myClient.deleteComment(payload),
           body: payload,
           types: [
             COMMENT_DELETE,
@@ -260,7 +259,7 @@ export const editComment =
       return {
         type: EDIT_COMMENT_SUCCESS,
         [CALL_API]: {
-          func: myClient.editComment(payload),
+          func: Client.myClient.editComment(payload),
           body: payload,
           types: [EDIT_COMMENT, EDIT_COMMENT_SUCCESS, EDIT_COMMENT_FAILED],
           showLoader: showLoader,
@@ -290,7 +289,7 @@ export const getTaggingList =
       return {
         type: TAGGING_LIST_SUCCESS,
         [CALL_API]: {
-          func: myClient.getTaggingList(payload),
+          func: Client.myClient.getTaggingList(payload),
           body: payload,
           types: [TAGGING_LIST_DATA, TAGGING_LIST_SUCCESS, TAGGING_LIST_FAILED],
           showLoader: showLoader,
@@ -308,7 +307,7 @@ export const refreshPostDetail =
       return {
         type: POST_DATA_REFRESH_SUCCESS,
         [CALL_API]: {
-          func: myClient?.getPost(payload),
+          func: Client.myClient.getPost(payload),
           body: payload,
           types: [
             POST_DATA_REFRESH,

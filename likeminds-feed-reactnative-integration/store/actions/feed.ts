@@ -33,15 +33,13 @@ import {
 import { Client } from '../../client';
 import { DeletePostRequest, GetFeedRequest, GetReportTagsRequest, LikePostRequest, PinPostRequest, PostReportRequest, SavePostRequest } from '@likeminds.community/feed-js';
 
-const myClient = Client.myClient;
-
 // get universal feed API action
 export const getFeed = (payload: GetFeedRequest, showLoader: boolean) => () => {
   try {
     return {
       type: UNIVERSAL_FEED_SUCCESS,
       [CALL_API]: {
-        func: myClient?.getFeed(payload),
+        func: Client.myClient.getFeed(payload),
         body: payload,
         types: [
           UNIVERSAL_FEED_DATA,
@@ -62,7 +60,7 @@ export const refreshFeed = (payload: GetFeedRequest, showLoader: boolean) => () 
     return {
       type: UNIVERSAL_FEED_REFRESH_SUCCESS,
       [CALL_API]: {
-        func: myClient?.getFeed(payload),
+        func: Client.myClient.getFeed(payload),
         body: payload,
         types: [
           UNIVERSAL_FEED_DATA,
@@ -95,7 +93,7 @@ export const likePost = (payload: LikePostRequest, showLoader: boolean) => () =>
     return {
       type: LIKE_POST_SUCCESS,
       [CALL_API]: {
-        func: myClient?.likePost(payload),
+        func: Client.myClient.likePost(payload),
         body: payload,
         types: [LIKE_POST, LIKE_POST_SUCCESS, LIKE_POST_FAILED],
         showLoader: showLoader,
@@ -126,7 +124,7 @@ export const savePost = (payload: SavePostRequest, showLoader: boolean) => () =>
     return {
       type: SAVE_POST_SUCCESS,
       [CALL_API]: {
-        func: myClient?.savePost(payload),
+        func: Client.myClient.savePost(payload),
         body: payload,
         types: [SAVE_POST, SAVE_POST_SUCCESS, SAVE_POST_FAILED],
         showLoader: showLoader,
@@ -157,7 +155,7 @@ export const getReportTags = (payload: GetReportTagsRequest, showLoader: boolean
     return {
       type: REPORT_TAGS_SUCCESS,
       [CALL_API]: {
-        func: myClient?.getReportTags(payload),
+        func: Client.myClient.getReportTags(payload),
         body: payload,
         types: [REPORT_TAGS_DATA, REPORT_TAGS_SUCCESS, REPORT_TAGS_FAILED],
         showLoader: showLoader,
@@ -174,7 +172,7 @@ export const postReport = (payload: PostReportRequest, showLoader: boolean) => (
     return {
       type: POST_REPORT_SUCCESS,
       [CALL_API]: {
-        func: myClient?.postReport(payload),
+        func: Client.myClient.postReport(payload),
         body: payload,
         types: [POST_REPORT, POST_REPORT_SUCCESS, POST_REPORT_FAILED],
         showLoader: showLoader,
@@ -191,7 +189,7 @@ export const deletePost = (payload: DeletePostRequest, showLoader: boolean) => (
     return {
       type: POST_DELETE_SUCCESS,
       [CALL_API]: {
-        func: myClient?.deletePost(payload),
+        func: Client.myClient.deletePost(payload),
         body: payload,
         types: [POST_DELETE, POST_DELETE_SUCCESS, POST_DELETE_FAILED],
         showLoader: showLoader,
@@ -221,7 +219,7 @@ export const pinPost = (payload: PinPostRequest, showLoader: boolean) => () => {
     return {
       type: PIN_POST_SUCCESS,
       [CALL_API]: {
-        func: myClient?.pinPost(payload),
+        func: Client.myClient.pinPost(payload),
         body: payload,
         types: [PIN_POST, PIN_POST_SUCCESS, PIN_POST_FAILED],
         showLoader: showLoader,

@@ -15,15 +15,13 @@ import {CALL_API} from '../apiMiddleware';
 import { Client } from '../../client';
 import { AddPostRequest, DecodeURLRequest, EditPostRequest } from '@likeminds.community/feed-js';
 
-const myClient = Client.myClient;
-
 // get decoded url data api action
 export const getDecodedUrl = (payload: DecodeURLRequest, showLoader: boolean) => () => {
   try {
     return {
       type: DECODE_URL_SUCCESS,
       [CALL_API]: {
-        func: myClient?.decodeURL(payload),
+        func: Client.myClient.decodeURL(payload),
         body: payload,
         types: [DECODE_URL_DATA, DECODE_URL_SUCCESS, DECODE_URL_FAILED],
         showLoader: showLoader,
@@ -40,7 +38,7 @@ export const addPost = (payload: AddPostRequest, showLoader: boolean) => () => {
     return {
       type: CREATE_POST_SUCCESS,
       [CALL_API]: {
-        func: myClient?.addPost(payload),
+        func: Client.myClient.addPost(payload),
         body: payload,
         types: [CREATE_POST, CREATE_POST_SUCCESS, CREATE_POST_FAILED],
         showLoader: showLoader,
@@ -70,7 +68,7 @@ export const editPost = (payload: EditPostRequest, showLoader: boolean) => () =>
     return {
       type: EDIT_POST_SUCCESS,
       [CALL_API]: {
-        func: myClient?.editPost(payload),
+        func: Client.myClient.editPost(payload),
         body: payload,
         types: [EDIT_POST, EDIT_POST_SUCCESS, EDIT_POST_FAILED],
         showLoader: true,
