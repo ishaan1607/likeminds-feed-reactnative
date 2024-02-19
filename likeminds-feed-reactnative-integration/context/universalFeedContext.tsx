@@ -9,15 +9,17 @@ import React, {
 } from "react";
 import { useAppSelector } from "../store/store";
 import { LMPostUI } from "likeminds_feed_reactnative_ui";
+import { RIGHT_CREATE_POST, STATE_ADMIN } from "../constants/Strings";
+import { RootStackParamList } from "../models/RootStackParamsList";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface UniversalFeedContextProps {
   children: ReactNode;
-  navigation: any;
-  route: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
 }
 
 export interface UniversalFeedContextValues {
-  navigation: any;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
   feedData: Array<LMPostUI>;
   accessToken: string;
   memberData: {};
@@ -45,7 +47,6 @@ export const useUniversalFeedContext = () => {
 export const UniversalFeedContextProvider = ({
   children,
   navigation,
-  route,
 }: UniversalFeedContextProps) => {
   const feedData = useAppSelector((state) => state.feed.feed);
   const accessToken = useAppSelector((state) => state.login.accessToken);
@@ -56,9 +57,9 @@ export const UniversalFeedContextProvider = ({
   useEffect(() => {
     if (accessToken) {
       // handles members right
-      if (memberData?.state !== 1) {
+      if (memberData?.state !== STATE_ADMIN) {
         const members_right = memberRight?.find(
-          (item: any) => item?.state === 9
+          (item) => item?.state === RIGHT_CREATE_POST
         );
 
         if (members_right?.isSelected === false) {

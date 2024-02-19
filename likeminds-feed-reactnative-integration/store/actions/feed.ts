@@ -31,11 +31,12 @@ import {
   UNIVERSAL_FEED_REFRESH_SUCCESS,
 } from '../types/types';
 import { Client } from '../../client';
+import { DeletePostRequest, GetFeedRequest, GetReportTagsRequest, LikePostRequest, PinPostRequest, PostReportRequest, SavePostRequest } from '@likeminds.community/feed-js';
 
 const myClient = Client.myClient;
 
 // get universal feed API action
-export const getFeed = (payload: any, showLoader: boolean) => () => {
+export const getFeed = (payload: GetFeedRequest, showLoader: boolean) => () => {
   try {
     return {
       type: UNIVERSAL_FEED_SUCCESS,
@@ -56,7 +57,7 @@ export const getFeed = (payload: any, showLoader: boolean) => () => {
 };
 
 // refresh feed API action
-export const refreshFeed = (payload: any, showLoader: boolean) => () => {
+export const refreshFeed = (payload: GetFeedRequest, showLoader: boolean) => () => {
   try {
     return {
       type: UNIVERSAL_FEED_REFRESH_SUCCESS,
@@ -89,7 +90,7 @@ export const clearFeed = () => () => {
 };
 
 // like post API action
-export const likePost = (payload: any, showLoader: boolean) => () => {
+export const likePost = (payload: LikePostRequest, showLoader: boolean) => () => {
   try {
     return {
       type: LIKE_POST_SUCCESS,
@@ -107,7 +108,7 @@ export const likePost = (payload: any, showLoader: boolean) => () => {
 
 // like post state managing action
 export const likePostStateHandler =
-(payload: any) => () => {
+(payload: string) => () => {
     try {
       return {
         type: LIKE_POST_STATE,
@@ -120,7 +121,7 @@ export const likePostStateHandler =
   };
 
 // save post API action
-export const savePost = (payload: any, showLoader: boolean) => () => {
+export const savePost = (payload: SavePostRequest, showLoader: boolean) => () => {
   try {
     return {
       type: SAVE_POST_SUCCESS,
@@ -138,7 +139,7 @@ export const savePost = (payload: any, showLoader: boolean) => () => {
 
 // save post state managing action
 export const savePostStateHandler =
-(payload: any) => () => {
+(payload: string) => () => {
     try {
       return {
         type: SAVE_POST_STATE,
@@ -151,7 +152,7 @@ export const savePostStateHandler =
   };
 
 // get report tags API action
-export const getReportTags = (payload: any, showLoader: boolean) => () => {
+export const getReportTags = (payload: GetReportTagsRequest, showLoader: boolean) => () => {
   try {
     return {
       type: REPORT_TAGS_SUCCESS,
@@ -168,7 +169,7 @@ export const getReportTags = (payload: any, showLoader: boolean) => () => {
 };
 
 // report post API action
-export const postReport = (payload: any, showLoader: boolean) => () => {
+export const postReport = (payload: PostReportRequest, showLoader: boolean) => () => {
   try {
     return {
       type: POST_REPORT_SUCCESS,
@@ -185,7 +186,7 @@ export const postReport = (payload: any, showLoader: boolean) => () => {
 };
 
 // delete post API action
-export const deletePost = (payload: any, showLoader: boolean) => () => {
+export const deletePost = (payload: DeletePostRequest, showLoader: boolean) => () => {
   try {
     return {
       type: POST_DELETE_SUCCESS,
@@ -203,7 +204,7 @@ export const deletePost = (payload: any, showLoader: boolean) => () => {
 
 // delete post state managing action
 export const deletePostStateHandler =
-(payload: any) => () => {
+(payload: string) => () => {
     try {
       return {
         type: DELETE_POST_STATE,
@@ -215,7 +216,7 @@ export const deletePostStateHandler =
   };
 
 // pin post API action
-export const pinPost = (payload: any, showLoader: boolean) => () => {
+export const pinPost = (payload: PinPostRequest, showLoader: boolean) => () => {
   try {
     return {
       type: PIN_POST_SUCCESS,
@@ -233,7 +234,7 @@ export const pinPost = (payload: any, showLoader: boolean) => () => {
 
 // pin post state managing action
 export const pinPostStateHandler =
-(payload: any) => () => {
+(payload: string) => () => {
     try {
      return {
         type: PIN_POST_STATE,
@@ -246,7 +247,7 @@ export const pinPostStateHandler =
 
 // video auto play/pause handler action
 export const autoPlayPostVideo =
-(payload: any) => () => {
+(payload) => () => {
     try {
       return {
         type: AUTO_PLAY_POST_VIDEO,

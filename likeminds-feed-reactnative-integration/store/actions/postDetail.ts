@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import { Alert } from "react-native";
 import {
   POST_DATA,
   POST_DATA_SUCCESS,
@@ -33,14 +33,49 @@ import {
   POST_DATA_REFRESH_SUCCESS,
   POST_DATA_REFRESH,
   POST_DATA_REFRESH_FAILED,
-} from '../types/types';
-import {CALL_API} from '../apiMiddleware';
-import { Client } from '../../client';
+} from "../types/types";
+import { CALL_API } from "../apiMiddleware";
+import { Client } from "../../client";
+import {
+  AddCommentRequest,
+  DeleteCommentRequest,
+  EditCommentRequest,
+  GetCommentRequest,
+  GetPostRequest,
+  GetTaggingListRequest,
+  LikeCommentRequest,
+  ReplyCommentRequest,
+} from "@likeminds.community/feed-js";
 
 const myClient = Client.myClient;
-
+interface EditCommentState {
+  commentId: string;
+  commentText: string;
+}
+interface DeleteCommentState {
+  deleteReason: string;
+  commentId: string;
+  postId: string;
+}
+interface ReplyCommentState {
+  payload: {
+    postId: string;
+    newComment: string;
+    tempId: string;
+    commentId: string;
+  };
+  loggedInUser: {};
+}
+interface AddCommentState {
+  payload: {
+    postId: string;
+    newComment: string;
+    tempId: string;
+  };
+  loggedInUser: {};
+}
 // get post api action
-export const getPost = (payload: any, showLoader: boolean)  => () => {
+export const getPost = (payload: GetPostRequest, showLoader: boolean) => () => {
   try {
     return {
       type: POST_DATA_SUCCESS,
@@ -57,28 +92,29 @@ export const getPost = (payload: any, showLoader: boolean)  => () => {
 };
 
 // get comments api action
-export const getComments = (payload: any, showLoader: boolean) => () => {
-  try {
-    return {
-      type: POST_COMMENTS_SUCCESS,
-      [CALL_API]: {
-        func: myClient?.getComments(
-          payload.postId,
-          payload,
-          payload.commentId,
-          payload.page,
-        ),
-        body: payload,
-        types: [POST_COMMENTS, POST_COMMENTS_SUCCESS, POST_COMMENTS_FAILED],
-        showLoader: showLoader,
-      },
-    };
-  } catch (error) {
-    Alert.alert(`${error}`);
-  }
-};
+export const getComments =
+  (payload: GetCommentRequest, showLoader: boolean) => () => {
+    try {
+      return {
+        type: POST_COMMENTS_SUCCESS,
+        [CALL_API]: {
+          func: myClient?.getComments(
+            payload.postId,
+            payload,
+            payload.commentId,
+            payload.page
+          ),
+          body: payload,
+          types: [POST_COMMENTS, POST_COMMENTS_SUCCESS, POST_COMMENTS_FAILED],
+          showLoader: showLoader,
+        },
+      };
+    } catch (error) {
+      Alert.alert(`${error}`);
+    }
+  };
 // clear comments data action
-export const clearComments = (payload?: any) => () => {
+export const clearComments = (payload?: string) => () => {
   try {
     return {
       type: CLEAR_COMMENT,
@@ -101,102 +137,112 @@ export const clearPostDetail = () => () => {
 };
 
 // like comment api action
-export const likeComment = (payload: any, showLoader: boolean) => () => {
-  try {
-    return {
-      type: LIKE_COMMENT_SUCCESS,
-      [CALL_API]: {
-        func: myClient?.likeComment(payload),
-        body: payload,
-        types: [LIKE_COMMENT, LIKE_COMMENT_SUCCESS, LIKE_COMMENT_FAILED],
-        showLoader: showLoader,
-      },
-    };
-  } catch (error) {
-    Alert.alert(`${error}`);
-  }
-};
+export const likeComment =
+  (payload: LikeCommentRequest, showLoader: boolean) => () => {
+    try {
+      return {
+        type: LIKE_COMMENT_SUCCESS,
+        [CALL_API]: {
+          func: myClient?.likeComment(payload),
+          body: payload,
+          types: [LIKE_COMMENT, LIKE_COMMENT_SUCCESS, LIKE_COMMENT_FAILED],
+          showLoader: showLoader,
+        },
+      };
+    } catch (error) {
+      Alert.alert(`${error}`);
+    }
+  };
 
 // add comment api action
-export const addComment = (payload: any, showLoader: boolean) => () => {
-  try {
-    return {
-      type: CREATE_COMMENT_SUCCESS,
-      [CALL_API]: {
-        func: myClient?.addComment(payload),
-        body: payload,
-        types: [CREATE_COMMENT, CREATE_COMMENT_SUCCESS, CREATE_COMMENT_FAILED],
-        showLoader: showLoader,
-      },
-    };
-  } catch (error) {
-    Alert.alert(`${error}`);
-  }
-};
+export const addComment =
+  (payload: AddCommentRequest, showLoader: boolean) => () => {
+    try {
+      return {
+        type: CREATE_COMMENT_SUCCESS,
+        [CALL_API]: {
+          func: myClient?.addComment(payload),
+          body: payload,
+          types: [
+            CREATE_COMMENT,
+            CREATE_COMMENT_SUCCESS,
+            CREATE_COMMENT_FAILED,
+          ],
+          showLoader: showLoader,
+        },
+      };
+    } catch (error) {
+      Alert.alert(`${error}`);
+    }
+  };
 
 // add comment state handler action
-export const addCommentStateHandler =
-  (payload?: any) => () => {
-    try {
-      return {
-        type: CREATE_COMMENT_STATE,
-        body: payload,
-      };
-    } catch (error) {
-      Alert.alert(`${error}`);
-    }
-  };
+export const addCommentStateHandler = (payload?: AddCommentState) => () => {
+  try {
+    return {
+      type: CREATE_COMMENT_STATE,
+      body: payload,
+    };
+  } catch (error) {
+    Alert.alert(`${error}`);
+  }
+};
 
 // add reply api action
-export const replyComment = (payload: any, showLoader: boolean) => () => {
-  try {
-    return {
-      type: CREATE_REPLY_SUCCESS,
-      [CALL_API]: {
-        func: myClient?.replyComment(payload),
-        body: payload,
-        types: [CREATE_REPLY, CREATE_REPLY_SUCCESS, CREATE_REPLY_FAILED],
-        showLoader: showLoader,
-      },
-    };
-  } catch (error) {
-    Alert.alert(`${error}`);
-  }
-};
-
-// add reply state handler action
-export const replyCommentStateHandler =
-  (payload?: any) => () => {
+export const replyComment =
+  (payload: ReplyCommentRequest, showLoader: boolean) => () => {
     try {
       return {
-        type: CREATE_REPLY_STATE,
-        body: payload,
+        type: CREATE_REPLY_SUCCESS,
+        [CALL_API]: {
+          func: myClient?.replyComment(payload),
+          body: payload,
+          types: [CREATE_REPLY, CREATE_REPLY_SUCCESS, CREATE_REPLY_FAILED],
+          showLoader: showLoader,
+        },
       };
     } catch (error) {
       Alert.alert(`${error}`);
     }
   };
 
-// delete comment api action
-export const deleteComment = (payload: any, showLoader: boolean) => () => {
+// add reply state handler action
+export const replyCommentStateHandler = (payload?: ReplyCommentState) => () => {
   try {
     return {
-      type: COMMENT_DELETE_SUCCESS,
-      [CALL_API]: {
-        func: myClient?.deleteComment(payload),
-        body: payload,
-        types: [COMMENT_DELETE, COMMENT_DELETE_SUCCESS, COMMENT_DELETE_FAILED],
-        showLoader: showLoader,
-      },
+      type: CREATE_REPLY_STATE,
+      body: payload,
     };
   } catch (error) {
     Alert.alert(`${error}`);
   }
 };
+
+// delete comment api action
+export const deleteComment =
+  (payload: DeleteCommentRequest, showLoader: boolean) => () => {
+    try {
+      return {
+        type: COMMENT_DELETE_SUCCESS,
+        [CALL_API]: {
+          func: myClient?.deleteComment(payload),
+          body: payload,
+          types: [
+            COMMENT_DELETE,
+            COMMENT_DELETE_SUCCESS,
+            COMMENT_DELETE_FAILED,
+          ],
+          showLoader: showLoader,
+        },
+      };
+    } catch (error) {
+      Alert.alert(`${error}`);
+    }
+  };
 
 // delete post state handler action
 export const deleteCommentStateHandler =
-  (payload?: any) => () => {
+  (payload?: DeleteCommentState) => () => {
     try {
       return {
         type: DELETE_COMMENT_STATE,
@@ -208,55 +254,56 @@ export const deleteCommentStateHandler =
   };
 
 // edit comment api action
-export const editComment = (payload: any, showLoader: boolean) => () => {
-  try {
-    return {
-      type: EDIT_COMMENT_SUCCESS,
-      [CALL_API]: {
-        func: myClient.editComment(payload),
-        body: payload,
-        types: [EDIT_COMMENT, EDIT_COMMENT_SUCCESS, EDIT_COMMENT_FAILED],
-        showLoader: showLoader,
-      },
-    };
-  } catch (error) {
-    Alert.alert(`${error}`);
-  }
-};
-
-// delete post state handler action
-export const editCommentStateHandler =
-  (payload?: any) => () => {
+export const editComment =
+  (payload: EditCommentRequest, showLoader: boolean) => () => {
     try {
       return {
-        type: EDIT_COMMENT_STATE,
-        body: payload,
+        type: EDIT_COMMENT_SUCCESS,
+        [CALL_API]: {
+          func: myClient.editComment(payload),
+          body: payload,
+          types: [EDIT_COMMENT, EDIT_COMMENT_SUCCESS, EDIT_COMMENT_FAILED],
+          showLoader: showLoader,
+        },
       };
     } catch (error) {
       Alert.alert(`${error}`);
     }
   };
 
-// edit comment api action
-export const getTaggingList = (payload: any, showLoader: boolean) => () => {
+// delete post state handler action
+export const editCommentStateHandler = (payload?: EditCommentState) => () => {
   try {
     return {
-      type: TAGGING_LIST_SUCCESS,
-      [CALL_API]: {
-        func: myClient.getTaggingList(payload),
-        body: payload,
-        types: [TAGGING_LIST_DATA, TAGGING_LIST_SUCCESS, TAGGING_LIST_FAILED],
-        showLoader: showLoader,
-      },
+      type: EDIT_COMMENT_STATE,
+      body: payload,
     };
   } catch (error) {
     Alert.alert(`${error}`);
   }
 };
 
+// edit comment api action
+export const getTaggingList =
+  (payload: GetTaggingListRequest, showLoader: boolean) => () => {
+    try {
+      return {
+        type: TAGGING_LIST_SUCCESS,
+        [CALL_API]: {
+          func: myClient.getTaggingList(payload),
+          body: payload,
+          types: [TAGGING_LIST_DATA, TAGGING_LIST_SUCCESS, TAGGING_LIST_FAILED],
+          showLoader: showLoader,
+        },
+      };
+    } catch (error) {
+      Alert.alert(`${error}`);
+    }
+  };
+
 // refresh feed API action
 export const refreshPostDetail =
-(payload: any, showLoader: boolean) => () => {
+  (payload: GetPostRequest, showLoader: boolean) => () => {
     try {
       return {
         type: POST_DATA_REFRESH_SUCCESS,

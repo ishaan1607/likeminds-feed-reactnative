@@ -16,7 +16,7 @@ import { useLMFeedStyles } from "../../lmFeedProvider";
 import { useAppDispatch } from "../../store/store";
 import { UniversalFeedContextProvider, UniversalFeedContextValues, useUniversalFeedContext } from "../../context";
 
-const UniversalFeed = ({ navigation, route ,children}: any) => {
+const UniversalFeed = ({ navigation, route ,children}) => {
   return (
     <UniversalFeedContextProvider navigation={navigation} route={route} children={children}>
       <UniversalFeedComponent />

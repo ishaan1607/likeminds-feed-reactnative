@@ -54,7 +54,7 @@ import {
   useUniversalFeedContext,
 } from "../../context";
 
-const PostsList = ({ route, children }: any) => {
+const PostsList = ({ route, children }) => {
   const {navigation}: UniversalFeedContextValues = useUniversalFeedContext()
   return (
     <PostListContextProvider
