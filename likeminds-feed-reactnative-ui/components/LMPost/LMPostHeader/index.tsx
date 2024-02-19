@@ -9,7 +9,7 @@ import LMIcon from '../../LMIcon';
 import { getNameInitials } from '../../../utils/utils';
 import { styles } from "./styles";
 
-const LMPostHeader = ({
+const LMPostHeader = React.memo(({
   post,
   profilePicture,
   titleText,
@@ -199,6 +199,6 @@ const LMPostHeader = ({
       />
     </View>
   );
-};
+})
 
 export default LMPostHeader;

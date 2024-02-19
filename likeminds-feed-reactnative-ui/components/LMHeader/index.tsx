@@ -4,7 +4,7 @@ import { LMHeaderProps } from "./types";
 import { defaultStyles } from "./styles";
 import LMIcon from "../LMIcon";
 
-const LMHeader = ({
+const LMHeader = React.memo(({
   heading,
   rightComponent,
   showBackArrow,
@@ -45,6 +45,6 @@ const LMHeader = ({
       {rightComponent}
     </View>
   );
-};
+})
 
 export default LMHeader;

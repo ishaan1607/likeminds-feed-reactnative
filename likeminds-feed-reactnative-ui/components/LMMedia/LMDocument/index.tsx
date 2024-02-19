@@ -15,7 +15,7 @@ import LMButton from "../../LMButton";
 import LMText from "../../LMText";
 import { styles } from "./styles";
 
-const LMDocument = ({
+const LMDocument = React.memo(({
   attachments,
   documentIcon,
   showPageCount,
@@ -232,6 +232,6 @@ const LMDocument = ({
       )}
     </View>
   );
-};
+})
 
 export default LMDocument;

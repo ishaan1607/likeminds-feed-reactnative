@@ -9,8 +9,9 @@ import { LMPostContentProps } from "./types";
 import { MAX_DEFAULT_POST_CONTENT_LINES } from "../../../constants/strings";
 import LMText from "../../LMText";
 import { styles } from "./styles";
+import decode from "../../../utils/decodeMentions";
 
-const LMPostContent = ({
+const LMPostContent = React.memo(({
   text,
   textStyle,
   visibleLines,
@@ -54,7 +55,7 @@ const LMPostContent = ({
         textStyle={StyleSheet.flatten([styles.contentText, textStyle])}
         onTextLayout={(e) => onTextLayout(e)}
       >
-        {text}
+        {decode(text, true)}
       </LMText>
       {/* show more button section */}
       {showMoreButton && (
@@ -81,6 +82,6 @@ const LMPostContent = ({
       )}
     </View>
   );
-};
+})
 
 export default LMPostContent;

@@ -33,7 +33,6 @@ import { DeleteModal, ReportModal } from "../../customModals";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { styles } from "./styles";
 import Layout from "../../constants/Layout";
-import { FlashList } from "@shopify/flash-list";
 import {
   replaceLastMention,
 } from "../../utils";
@@ -48,6 +47,7 @@ import {
   usePostDetailContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
+import { getNameInitials } from "likeminds_feed_reactnative_ui/utils/utils";
 
 const PostDetail = ({navigation, route, children }) => {
   return (
@@ -119,13 +119,6 @@ const PostDetailComponent = React.memo(() => {
       <KeyboardAvoidingView
         enabled={Platform.OS === "android" ? true : false}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={
-          Platform.OS === "android"
-            ? keyboardIsVisible
-              ? 0
-              : Layout.normalize(32)
-            : 0
-        }
         style={styles.flexView}
       >
         {/* header view */}
@@ -172,8 +165,8 @@ const PostDetailComponent = React.memo(() => {
                   allTags && isUserTagging
                     ? 0
                     : replyOnComment.textInputFocus
-                    ? Layout.normalize(84)
-                    : Layout.normalize(54),
+                    ? Layout.normalize(104)
+                    : keyboardIsVisible? Layout.normalize(74): Layout.normalize(54),
               },
             ])}
           >
@@ -413,14 +406,14 @@ const PostDetailComponent = React.memo(() => {
               styles.taggingListView,
               {
                 paddingBottom: replyOnComment.textInputFocus
-                  ? Layout.normalize(84)
-                  : Layout.normalize(54),
+                  ? Layout.normalize(104)
+                  :keyboardIsVisible?  Layout.normalize(74):  Layout.normalize(54),
                 height: userTaggingListHeight,
               },
               postDetailStyle?.userTaggingListStyle?.taggingListView,
             ]}
           >
-            <FlashList
+            <FlatList
               data={[...allTags]}
               renderItem={({ item }: { item: LMUserUI }) => {
                 return (
@@ -441,6 +434,7 @@ const PostDetailComponent = React.memo(() => {
                       styles.taggingListItem,
                       postDetailStyle?.userTaggingListStyle?.userTagView,
                     ]}
+                    key={item?.id}
                   >
                     <LMProfilePicture
                       {...postDetailStyle?.userTaggingListStyle
@@ -453,7 +447,7 @@ const PostDetailComponent = React.memo(() => {
                           postDetailStyle?.userTaggingListStyle
                             ?.userTagProfileImageStyle?.fallbackText?.children
                         ) : (
-                          <Text>{item?.name}</Text>
+                          <Text>{getNameInitials(item?.name)}</Text>
                         ),
                       }}
                       fallbackTextBoxStyle={[
@@ -488,7 +482,6 @@ const PostDetailComponent = React.memo(() => {
               extraData={{
                 value: [commentToAdd, allTags],
               }}
-              estimatedItemSize={75}
               keyboardShouldPersistTaps={"handled"}
               onEndReached={handleLoadMore}
               onEndReachedThreshold={1}
@@ -513,7 +506,7 @@ const PostDetailComponent = React.memo(() => {
           inputText={commentToAdd}
           onType={handleInputChange}
           inputTextStyle={[
-            styles.textInputStyle,
+            styles.textInputStyle,{bottom: keyboardIsVisible? Layout.normalize(25): 0},
             postDetailStyle?.commentTextInputStyle?.inputTextStyle,
           ]}
           autoFocus={

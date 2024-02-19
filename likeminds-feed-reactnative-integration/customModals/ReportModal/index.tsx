@@ -34,6 +34,8 @@ import { SafeAreaView } from "react-native";
 import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { getReportTags, postReport } from "../../store/actions/feed";
+import Toast from "react-native-toast-message";
+import { showToastMessage } from "../../store/actions/toast";
 
 // interface for post report api request
 interface ReportRequest {
@@ -89,7 +91,7 @@ const ReportModal = ({
     uuid,
   }: ReportRequest) => {
     if (selectedIndex === 5 && otherReason === "") {
-      // showToast();
+      showToast();
     } else {
       const payload = {
         entityId: entityId,
@@ -115,56 +117,53 @@ const ReportModal = ({
       );
       // toast message action
       if (postReportResponse) {
-        // todo: handle toast later
-        // dispatch(
-        //   showToastMessage({
-        //     isToast: true,
-        //     message:
-        //       reportType === POST_TYPE
-        //         ? REPORTED_SUCCESSFULLY
-        //         : COMMENT_REPORTED_SUCCESSFULLY,
-        //   }) as any,
-        // );
+        dispatch(
+          showToastMessage({
+            isToast: true,
+            message:
+              reportType === POST_TYPE
+                ? REPORTED_SUCCESSFULLY
+                : COMMENT_REPORTED_SUCCESSFULLY,
+          })
+        );
       } else {
-        // todo: handle toast later
-        // dispatch(
-        //   showToastMessage({
-        //     isToast: true,
-        //     message: SOMETHING_WENT_WRONG,
-        //   }) as any,
-        // );
+        dispatch(
+          showToastMessage({
+            isToast: true,
+            message: SOMETHING_WENT_WRONG,
+          })
+        );
       }
       return postReportResponse;
     }
   };
 
-  // todo: handle toast later
   // this functions make the toast visible
-  // const showToast = () => {
-  //   Toast.show({
-  //     position: 'bottom',
-  //     type: 'reportToastView',
-  //     autoHide: true,
-  //     visibilityTime: 1500,
-  //   });
-  // };
-  // todo: handle toast later
-  // const renderToastView = () => {
-  //   return (
-  //     <View style={styles.toastViewStyle}>
-  //       <View>
-  //         <View style={styles.modalView}>
-  //           <Text style={styles.filterText}>{REPORT_REASON_VALIDATION}</Text>
-  //         </View>
-  //       </View>
-  //     </View>
-  //   );
-  // };
-  // todo: handle toast later
-  // // toast message view UI
-  // const toastConfig = {
-  //   reportToastView: () => renderToastView(),
-  // };
+  const showToast = () => {
+    Toast.show({
+      position: 'bottom',
+      type: 'reportToastView',
+      autoHide: true,
+      visibilityTime: 1500,
+    });
+  };
+
+  // toast view UI
+  const renderToastView = () => {
+    return (
+      <View style={styles.toastViewStyle}>
+        <View>
+          <View style={styles.modalView}>
+            <Text style={styles.filterText}>{REPORT_REASON_VALIDATION}</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+  // toast message view UI
+  const toastConfig = {
+    reportToastView: () => renderToastView(),
+  };
 
   // this calls the fetchReportTags api when the modal gets visible
   useEffect(() => {
@@ -267,9 +266,8 @@ const ReportModal = ({
               />
             </View>
           ) : null}
-          {/* // todo: handle toast later */}
           {/* toast component */}
-          {/* <Toast config={toastConfig} /> */}
+          <Toast config={toastConfig} />
           {/* report button */}
           <View style={styles.reportBtnParent}>
             <TouchableOpacity

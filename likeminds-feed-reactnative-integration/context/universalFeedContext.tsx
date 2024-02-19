@@ -14,11 +14,12 @@ import { LMAttachmentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { mentionToRouteConverter, uploadFilesToAWS } from "../utils";
 import { addPost, setUploadAttachments } from "../store/actions/createPost";
 import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js";
-import { FlatList } from "react-native";
 import { refreshFeed } from "../store/actions/feed";
-import { RIGHT_CREATE_POST, STATE_ADMIN } from "../constants/Strings";
+import { FlashList } from "@shopify/flash-list";
+import { POST_UPLOADED, RIGHT_CREATE_POST, STATE_ADMIN } from "../constants/Strings";
 import { RootStackParamList } from "../models/RootStackParamsList";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { showToastMessage } from "../store/actions/toast";
 
 interface UniversalFeedContextProps {
   children: ReactNode;
@@ -41,7 +42,7 @@ export interface UniversalFeedContextValues {
   showCreatePost: boolean;
   refreshing: boolean;
   localRefresh: boolean;
-  listRef: MutableRefObject<FlatList<LMPostUI> | null>;
+  listRef: MutableRefObject<FlashList<LMPostUI> | null>;
   mediaAttachmemnts: [];
   linkAttachments: [];
   postContent: string;
@@ -53,6 +54,7 @@ export interface UniversalFeedContextValues {
   setShowCreatePost: Dispatch<SetStateAction<boolean>>;
   onRefresh: () => void;
   postAdd: () => void;
+  keyExtractor:(val) => string
 }
 
 const UniversalFeedContext = createContext<
@@ -88,7 +90,7 @@ export const UniversalFeedContextProvider = ({
 
   const [refreshing, setRefreshing] = useState(false);
   const [localRefresh, setLocalRefresh] = useState(false);
-  const listRef = useRef<FlatList<LMPostUI>>(null);
+  const listRef = useRef<FlashList<LMPostUI>>(null);
 
   useEffect(() => {
     if (accessToken) {
@@ -158,11 +160,10 @@ export const UniversalFeedContextProvider = ({
       );
       await onRefresh();
       listRef.current?.scrollToIndex({ animated: true, index: 0 });
-      dispatch();
-      // showToastMessage({
-      //   isToast: true,
-      //   message: POST_UPLOADED,
-      // }) as any,
+      dispatch(showToastMessage({
+        isToast: true,
+        message: POST_UPLOADED,
+      }));
     }
     return addPostResponse;
   };
@@ -179,6 +180,18 @@ export const UniversalFeedContextProvider = ({
       postAdd();
     }
   }, [mediaAttachmemnts, linkAttachments, postContent]);
+
+   // keyExtractor of feed list
+   const keyExtractor = (item: LMPostUI) => {
+    const id = item?.id;
+    const itemLiked = item?.isLiked;
+    const itemPinned = item?.isPinned;
+    const itemComments = item?.commentsCount;
+    const itemSaved = item?.isSaved;
+    const itemText = item?.text;
+
+    return `${id}${itemLiked}${itemPinned}${itemComments}${itemSaved}${itemText}`;
+  };
 
   const contextValues: UniversalFeedContextValues = {
     navigation,
@@ -201,7 +214,8 @@ export const UniversalFeedContextProvider = ({
     setLocalRefresh,
     setRefreshing,
     onRefresh,
-    postAdd
+    postAdd,
+    keyExtractor
   };
 
   return (

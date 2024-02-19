@@ -3,7 +3,7 @@ import React from "react";
 import { LMTextProps } from "./types";
 import { defaultStyles } from "./styles";
 
-const LMText = ({
+const LMText = React.memo(({
   maxLines,
   textStyle,
   selectable,
@@ -24,6 +24,6 @@ const LMText = ({
       {children}
     </Text>
   );
-};
+})
 
 export default LMText

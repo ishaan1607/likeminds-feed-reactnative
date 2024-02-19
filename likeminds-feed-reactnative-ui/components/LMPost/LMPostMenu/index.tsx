@@ -11,7 +11,7 @@ import layout from "../../../utils/layout";
 import LMText from "../../LMText";
 import { styles } from "./styles";
 
-const LMPostMenu = ({
+const LMPostMenu = React.memo(({
   postId,
   menuItems,
   onSelected,
@@ -81,6 +81,6 @@ const LMPostMenu = ({
       </Pressable>
     </Modal>
   );
-};
+})
 
 export default LMPostMenu;

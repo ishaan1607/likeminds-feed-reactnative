@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, ReactNode } from "react";
+import React from "react";
 import {
   Image,
   Platform,
@@ -8,37 +8,67 @@ import {
   View,
 } from "react-native";
 import { styles } from "./styles";
-import { LMHeader, LMIcon, LMImage, LMLoader, LMVideo } from "likeminds_feed_reactnative_ui";
-import { APP_TITLE, DOCUMENT_ATTACHMENT_TYPE, IMAGE_ATTACHMENT_TYPE, POST_UPLOADING, VIDEO_ATTACHMENT_TYPE } from "../../constants/Strings";
+import {
+  LMHeader,
+  LMIcon,
+  LMImage,
+  LMLoader,
+  LMVideo,
+} from "likeminds_feed_reactnative_ui";
+import {
+  APP_TITLE,
+  CREATE_POST_PERMISSION,
+  DOCUMENT_ATTACHMENT_TYPE,
+  IMAGE_ATTACHMENT_TYPE,
+  POST_UPLOADING,
+  POST_UPLOAD_INPROGRESS,
+  VIDEO_ATTACHMENT_TYPE,
+} from "../../constants/Strings";
 import { CREATE_POST } from "../../constants/screenNames";
 // @ts-ignore the lib do not have TS declarations yet
 import _ from "lodash";
-import {PostsList} from "../postsList";
+import { PostsList } from "../postsList";
 import { useLMFeedStyles } from "../../lmFeedProvider";
 import { useAppDispatch } from "../../store/store";
-import { UniversalFeedContextProvider, UniversalFeedContextValues, useUniversalFeedContext } from "../../context";
+import {
+  UniversalFeedContextProvider,
+  UniversalFeedContextValues,
+  useUniversalFeedContext,
+} from "../../context";
 import STYLES from "../../constants/Styles";
+import { showToastMessage } from "../../store/actions/toast";
 
 const UniversalFeed = ({ navigation, route ,children}) => {
   return (
-    <UniversalFeedContextProvider navigation={navigation} route={route} children={children}>
+    <UniversalFeedContextProvider
+      navigation={navigation}
+      route={route}
+      children={children}
+    >
       <UniversalFeedComponent />
     </UniversalFeedContextProvider>
   );
 };
 
 const UniversalFeedComponent = React.memo(() => {
-  const dispatch = useAppDispatch()
-  const {feedData, showCreatePost, postUploading,navigation , uploadingMediaAttachment, uploadingMediaAttachmentType}: UniversalFeedContextValues = useUniversalFeedContext()
+  const dispatch = useAppDispatch();
+  const {
+    feedData,
+    showCreatePost,
+    postUploading,
+    navigation,
+    uploadingMediaAttachment,
+    uploadingMediaAttachmentType,
+  }: UniversalFeedContextValues = useUniversalFeedContext();
   const LMFeedContextStyles = useLMFeedStyles();
-  const { universalFeedStyle, loaderStyle } = LMFeedContextStyles;  
+  const { universalFeedStyle, loaderStyle } = LMFeedContextStyles;
 
   return (
     <SafeAreaView style={styles.mainContainer}>
       {/* header */}
       <LMHeader heading={APP_TITLE} {...universalFeedStyle?.screenHeader} />
-       {/* post uploading section */}
-       {postUploading && (
+      {/* post uploading section */}
+      {postUploading && (
         <View style={styles.postUploadingView}>
           <View style={styles.uploadingPostContentView}>
             {/* post uploading media preview */}
@@ -64,7 +94,7 @@ const UniversalFeedComponent = React.memo(() => {
             )}
             {uploadingMediaAttachmentType === DOCUMENT_ATTACHMENT_TYPE && (
               <LMIcon
-                assetPath={require('../../assets/images/pdf_icon3x.png')}
+                assetPath={require("../../assets/images/pdf_icon3x.png")}
                 type="png"
                 iconStyle={styles.uploadingDocumentStyle}
                 height={styles.uploadingPdfIconSize.height}
@@ -76,7 +106,7 @@ const UniversalFeedComponent = React.memo(() => {
           {/* progress loader */}
           <LMLoader
             size={
-              Platform.OS === 'ios'
+              Platform.OS === "ios"
                 ? STYLES.$LMLoaderSizeiOS
                 : STYLES.$LMLoaderSizeAndroid
             }
@@ -97,24 +127,22 @@ const UniversalFeedComponent = React.memo(() => {
           universalFeedStyle?.newPostButtonStyle,
         ]}
         // handles post uploading status and member rights to create post
-        onPress={
-          () =>
-            showCreatePost
-              ? postUploading
-                ? dispatch()
-                // todo: handle toast later
-                  // showToastMessage({
-                  //   isToast: true,
-                  //   message: POST_UPLOAD_INPROGRESS,
-                  // }) as any,
-                : 
-                  navigation.navigate(CREATE_POST)
-              : dispatch()
-          // todo: handle toast later
-          //   showToastMessage({
-          //     isToast: true,
-          //     message: CREATE_POST_PERMISSION,
-          //   }) as any,
+        onPress={() =>
+          showCreatePost
+            ? postUploading
+              ? dispatch(
+                  showToastMessage({
+                    isToast: true,
+                    message: POST_UPLOAD_INPROGRESS,
+                  })
+                )
+              : navigation.navigate(CREATE_POST)
+            : dispatch(
+                showToastMessage({
+                  isToast: true,
+                  message: CREATE_POST_PERMISSION,
+                })
+              )
         }
       >
         <Image
@@ -133,4 +161,4 @@ const UniversalFeedComponent = React.memo(() => {
   );
 });
 
-export {UniversalFeed};
+export { UniversalFeed };

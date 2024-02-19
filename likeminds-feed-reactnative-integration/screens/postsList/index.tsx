@@ -1,34 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import {
-  FlatList,
   RefreshControl,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  GetFeedRequest,
-  LikePostRequest,
-  PinPostRequest,
-  SavePostRequest,
-} from "@likeminds.community/feed-js";
 import { styles } from "./styles";
 import { LMPost, LMPostUI, LMLoader } from "likeminds_feed_reactnative_ui";
 import {
-  DELETE_POST_MENU_ITEM,
-  EDIT_POST_MENU_ITEM,
   IMAGE_ATTACHMENT_TYPE,
   NAVIGATED_FROM_COMMENT,
   NAVIGATED_FROM_POST,
-  PIN_POST_MENU_ITEM,
   POST_LIKES,
   POST_TYPE,
-  REPORT_POST_MENU_ITEM,
-  UNPIN_POST_MENU_ITEM,
   VIDEO_ATTACHMENT_TYPE,
 } from "../../constants/Strings";
 import {
-  CREATE_POST,
   POST_LIKES_LIST,
   POST_DETAIL,
 } from "../../constants/screenNames";
@@ -36,15 +23,7 @@ import {
 import _ from "lodash";
 import { DeleteModal, ReportModal } from "../../customModals";
 import { useLMFeedStyles } from "../../lmFeedProvider";
-import { useAppDispatch, useAppSelector } from "../../store/store";
-import {
-  getFeed,
-  likePost,
-  pinPost,
-  pinPostStateHandler,
-  refreshFeed,
-  savePost,
-} from "../../store/actions/feed";
+import { useAppDispatch } from "../../store/store";
 import { clearPostDetail } from "../../store/actions/postDetail";
 import {
   PostListContextProvider,
@@ -54,6 +33,7 @@ import {
   useUniversalFeedContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
+import { FlashList } from "@shopify/flash-list";
 
 const PostsList = ({ route, children }: any) => {
   const {
@@ -77,6 +57,7 @@ const PostsListComponent = React.memo(() => {
     refreshing,
     onRefresh,
     localRefresh,
+    keyExtractor
   }: UniversalFeedContextValues = useUniversalFeedContext();
   const {
     navigation,
@@ -97,7 +78,7 @@ const PostsListComponent = React.memo(() => {
     getPostDetail,
     setShowReportModal,
     handleDeletePost,
-    
+    debouncedLikeFunction
   }: PostListContextValues = usePostListContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, loaderStyle } = LMFeedContextStyles;
@@ -107,7 +88,7 @@ const PostsListComponent = React.memo(() => {
       {/* posts list section */}
       {!feedFetching ? (
         feedData?.length > 0 ? (
-          <FlatList
+          <FlashList
             ref={listRef}
             refreshing={refreshing}
             style={postListStyle?.listStyle}
@@ -136,6 +117,7 @@ const PostsListComponent = React.memo(() => {
                     NAVIGATED_FROM_POST,
                   ]);
                 }}
+                key={item?.id}
               >
                 <LMPost
                   post={item}
@@ -189,7 +171,7 @@ const PostsListComponent = React.memo(() => {
                     likeIconButton: {
                       ...postListStyle?.footer?.likeIconButton,
                       onTap: () => {
-                        postLikeHandler(item?.id);
+                        debouncedLikeFunction(item?.id);
                         postListStyle?.footer?.likeIconButton?.onTap();
                       },
                     },
@@ -257,6 +239,8 @@ const PostsListComponent = React.memo(() => {
             onEndReached={() => {
               setFeedPageNumber(feedPageNumber + 1);
             }}
+            keyExtractor={item => keyExtractor(item)}
+            estimatedItemSize={500}
             ListFooterComponent={<>{showLoader > 0 && renderLoader()}</>}
           />
         ) : (

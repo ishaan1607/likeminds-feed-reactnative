@@ -140,8 +140,6 @@ type LMInputTextProps = Omit<TextInputProps, 'onChange'> & {
   disabled?: boolean; // this represents if the text input is editable or not
   rightIcon?: LMButtonProps; // this represents the icon on the text input
   autoFocus?: boolean; // checks if the text input shoud be on focus or not
-  plainTextStyle?: TextStyle; // style for plain text typed on text input
-  mentionTextStyle?: TextStyle; // style for mentioned text
 };
 
 export type {

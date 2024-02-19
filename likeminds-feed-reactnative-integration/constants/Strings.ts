@@ -95,6 +95,7 @@ export const POST_UNSAVED_SUCCESS = 'Post unsaved!';
 
 export const POST_LIKES = 'Post likes';
 export const COMMENT_LIKES = 'Comment likes';
+export const DELETE_REASON_SELECTION = 'Please select a reason for deletion'
 
 // file size validation
 export const MAX_FILE_SIZE = 104857600; // 100MB in bytes

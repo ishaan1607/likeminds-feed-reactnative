@@ -9,7 +9,7 @@ import LMIcon from "../LMIcon";
 import { ATTACHMENT_TYPE } from "../../constants/strings";
 import { styles } from "./styles";
 
-const LMNotificationFeedItem = ({
+const LMNotificationFeedItem = React.memo(({
   activity,
   userProfilePicture,
   boxStyle,
@@ -104,6 +104,6 @@ const LMNotificationFeedItem = ({
       </TouchableOpacity>
     </View>
   );
-};
+})
 
 export default LMNotificationFeedItem;

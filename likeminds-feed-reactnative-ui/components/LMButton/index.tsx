@@ -5,7 +5,7 @@ import { LMButtonProps } from "./types";
 import LMText from "../LMText";
 import { defaultStyles } from "./styles";
 
-const LMButton = ({
+const LMButton = React.memo(({
   text,
   icon,
   onTap,
@@ -109,6 +109,6 @@ const LMButton = ({
       </View>
     </TouchableOpacity>
   );
-};
+})
 
 export default LMButton;

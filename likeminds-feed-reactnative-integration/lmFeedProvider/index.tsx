@@ -14,8 +14,9 @@ import {
 } from "@likeminds.community/feed-js";
 import { Client } from "../client";
 import { LMFeedProviderProps, ThemeContextProps } from "./types";
-import { useAppDispatch } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../store/store";
 import { getMemberState, initiateUser } from "../store/actions/login";
+import { LMToast } from "../components";
 
 // Create the theme context
 export const LMFeedStylesContext = createContext<ThemeContextProps | undefined>(
@@ -54,7 +55,8 @@ export const LMFeedProvider = ({
   postDetailStyle,
 }: LMFeedProviderProps): React.JSX.Element => {
   const [isInitiated, setIsInitiated] = useState(false);
-  const dispatch = useAppDispatch();
+  const dispatch  = useAppDispatch();
+  const showToast = useAppSelector(state => state.loader.isToast);
 
   useEffect(() => {
     //setting client in Client class
@@ -99,6 +101,7 @@ export const LMFeedProvider = ({
         }}
       >
         <View style={styles.flexStyling}>{children}</View>
+      {showToast && <LMToast />}
       </LMFeedStylesContext.Provider>
     </LMFeedContext.Provider>
   ) : (

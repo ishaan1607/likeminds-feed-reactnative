@@ -6,7 +6,7 @@ import LMLoader from "../../LMLoader";
 import LMButton from "../../LMButton";
 import { defaultStyles } from "./styles";
 
-const LMImage = ({
+const LMImage = React.memo(({
   imageUrl,
   width,
   height,
@@ -83,6 +83,6 @@ const LMImage = ({
       ) : null}
     </View>
   );
-};
+})
 
 export default LMImage;

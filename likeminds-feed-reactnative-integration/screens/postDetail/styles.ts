@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
   },
   replyCommentSection: {
     position: 'absolute',
-    bottom: Layout.normalize(54),
+    bottom: Layout.normalize(74),
     backgroundColor: '#e9e9e9',
     paddingHorizontal: 15,
     width: Layout.window.width,

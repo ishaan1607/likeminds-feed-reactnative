@@ -8,7 +8,7 @@ import STYLES from "../../../constants/constants";
 import { ATTACHMENT_TYPE } from "../../../constants/strings";
 import { styles } from "./styles";
 
-const LMCarousel = ({
+const LMCarousel = React.memo(({
   attachments,
   carouselStyle,
   paginationBoxStyle,
@@ -123,6 +123,6 @@ const LMCarousel = ({
       )}
     />
   );
-};
+})
 
 export default LMCarousel;
