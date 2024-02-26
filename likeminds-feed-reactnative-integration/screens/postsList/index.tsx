@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import { styles } from "./styles";
-import { LMPost, LMPostUI, LMLoader } from "likeminds_feed_reactnative_ui";
+import { LMPost, LMPostUI, LMLoader } from "@likeminds.community/feed-rn-ui";
 import {
   IMAGE_ATTACHMENT_TYPE,
   NAVIGATED_FROM_COMMENT,

@@ -18,7 +18,7 @@ import {
   LMProfilePicture,
   LMUserUI,
   LMLoader,
-} from "likeminds_feed_reactnative_ui";
+} from "@likeminds.community/feed-rn-ui";
 import {
   POST_LIKES_LIST,
   UNIVERSAL_FEED,
@@ -47,7 +47,7 @@ import {
   usePostDetailContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
-import { getNameInitials } from "likeminds_feed_reactnative_ui/utils/utils";
+import { getNameInitials } from "@likeminds.community/feed-rn-ui/utils/utils";
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const PostDetail = ({navigation, route, children }) => {

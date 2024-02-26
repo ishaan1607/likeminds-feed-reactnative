@@ -1,4 +1,4 @@
-import { MentionData } from "likeminds_feed_reactnative_ui/components/LMInputText/types";
+import { MentionData } from "@likeminds.community/feed-rn-ui/components/LMInputText/types";
 
 const mentionRegEx = /((.)\[([^[]*)]\(([^(^)]*)\))/gi;
 // this function gives mention values from the route path

@@ -1,10 +1,19 @@
 {
-  "name": "likeminds_feed_reactnative_ui",
-  "version": "1.0.0",
+  "name": "@likeminds.community/feed-rn-ui",
+  "version": "0.6.0",
   "description": "",
   "main": "index.ts",
+  "private":false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "eslint": "eslint .",
+    "eslint:fix": "eslint --fix .",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write .",
+    "build": "rm -rf dist && microbundle --tsconfig tsconfig.json --no-sourcemap"
   },
   "author": "",
   "license": "ISC",

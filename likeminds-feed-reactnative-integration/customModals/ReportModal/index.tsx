@@ -29,9 +29,9 @@ import {
   REPORT_TAGS_TYPE,
   SOMETHING_WENT_WRONG,
 } from "../../constants/Strings";
-import { LMLoader } from "likeminds_feed_reactnative_ui";
+import { LMLoader } from "@likeminds.community/feed-rn-ui";
 import { SafeAreaView } from "react-native";
-import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
+import { LMCommentUI, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { getReportTags, postReport } from "../../store/actions/feed";
 import Toast from "react-native-toast-message";

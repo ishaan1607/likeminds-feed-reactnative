@@ -8,7 +8,7 @@ import {
   LMLoaderProps,
   LMProfilePictureProps,
   LMTextProps,
-} from "likeminds_feed_reactnative_ui";
+} from "@likeminds.community/feed-rn-ui";
 import { ViewStyle, TextStyle, ImageProps, ImageStyle } from "react-native";
 
 interface TextStyles {

@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { LMLoader, LMPostUI } from "likeminds_feed_reactnative_ui";
+import { LMLoader, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import {
   getFeed,
   likePost,

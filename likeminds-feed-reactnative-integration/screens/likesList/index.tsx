@@ -5,7 +5,7 @@ import {
   LMLikeUI,
   LMMemberListItem,
   LMLoader,
-} from "likeminds_feed_reactnative_ui";
+} from "@likeminds.community/feed-rn-ui";
 import { styles } from "./styles";
 import {
   PostLikesListContextProvider,

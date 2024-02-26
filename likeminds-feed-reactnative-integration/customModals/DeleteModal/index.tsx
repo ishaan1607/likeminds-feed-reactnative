@@ -26,7 +26,7 @@ import {
   SOMETHING_WENT_WRONG,
 } from "../../constants/Strings";
 import STYLES from "../../constants/Styles";
-import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
+import { LMCommentUI, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { deletePost, deletePostStateHandler } from "../../store/actions/feed";
 import { deleteComment, deleteCommentStateHandler } from "../../store/actions/postDetail";
