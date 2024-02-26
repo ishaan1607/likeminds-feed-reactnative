@@ -27,12 +27,13 @@ const LMPostFooter = React.memo(({
   }, [isLiked, likesCount]);
   const likesCountHandler = () => {
     likeIconButton?.onTap();
-    setLiked(!liked);
-    if (liked) {
-      setLikeCount(likeCount - 1);
-    } else {
-      setLikeCount(likeCount + 1);
-    }
+    //  todo : handle later
+    // setLiked(!liked);
+    // if (liked) {
+    //   setLikeCount(likeCount - 1);
+    // } else {
+    //   setLikeCount(likeCount + 1);
+    // }
   };
   return (
     <View style={StyleSheet.flatten([styles.postFooter, footerBoxStyle])}>

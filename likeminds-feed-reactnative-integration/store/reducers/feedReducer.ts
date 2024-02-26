@@ -10,7 +10,8 @@ import {
   LIKE_POST_STATE,
   SAVE_POST_STATE,
   EDIT_POST_SUCCESS,
-  CREATE_COMMENT_SUCCESS
+  CREATE_COMMENT_SUCCESS,
+  DELETE_COMMENT_STATE
 } from '../types/types';
 
 export interface FeedReducerState {
@@ -67,6 +68,7 @@ export const feedReducer = (
       const pinnedPostIndex = updatedFeed.findIndex(
         (item: any) => item?.id === action.body,
       );
+      
       // this updates the isPinned value
       updatedFeed[pinnedPostIndex].isPinned =
         !updatedFeed[pinnedPostIndex].isPinned;
@@ -74,6 +76,8 @@ export const feedReducer = (
       const menuItemIndex = updatedFeed[pinnedPostIndex].menuItems.findIndex(
         (item: any) => item.id === PIN_POST_ID || item.id === UNPIN_POST_ID,
       );
+
+      if(menuItemIndex != -1) {
       if (updatedFeed[pinnedPostIndex].isPinned) {
         //  this updates the menuItem title to unpin
         updatedFeed[pinnedPostIndex].menuItems[menuItemIndex].id =
@@ -86,6 +90,7 @@ export const feedReducer = (
         updatedFeed[pinnedPostIndex].menuItems[menuItemIndex].title =
           PIN_THIS_POST;
       }
+    }
 
       return {...state, feed: updatedFeed};
     }
@@ -116,9 +121,8 @@ export const feedReducer = (
         (item: any) => item?.id === action.body,
       );
       // this updates the isSaved value
-      updatedFeed[savedPostIndex].isSaved =
-        !updatedFeed[savedPostIndex].isSaved;
-
+      updatedFeed[savedPostIndex].isSaved = !updatedFeed[savedPostIndex].isSaved;
+      
       return {...state, feed: updatedFeed};
     }
     case EDIT_POST_SUCCESS: {
@@ -138,6 +142,16 @@ export const feedReducer = (
       updatedFeed.find((item: LMPostUI) => {
         if (item.id === comment.postId) {
           item.commentsCount = item?.commentsCount + 1;
+        }
+      });
+      return {...state};
+    }
+    case DELETE_COMMENT_STATE: {
+      const updatedFeed = state.feed;
+      // finds the post whose comment is deleted in post detail and manage its comment count
+      updatedFeed.find((item: LMPostUI) => {
+        if (item.id === action.body.postId) {
+          item.commentsCount = item?.commentsCount - 1;
         }
       });
       return {...state};

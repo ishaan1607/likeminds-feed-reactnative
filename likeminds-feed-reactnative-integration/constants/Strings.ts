@@ -28,9 +28,11 @@ export const REPLY_TYPE = 'reply';
 export const REPORTED_SUCCESSFULLY = 'Post Reported!';
 export const COMMENT_REPORTED_SUCCESSFULLY = 'Comment Reported!';
 export const SOMETHING_WENT_WRONG = 'Something Went Wrong';
-export const REASON_FOR_DELETION_PLACEHOLDER =
+export const REASON_FOR_REPORTING_PLACEHOLDER =
   'Enter the reason for reporting this post';
-
+  export const REASON_FOR_DELETION_PLACEHOLDER =
+  'Enter the reason for deleting this post';
+  export const ENTER_REASON_FOR_DELETION = 'Please enter a specific reason for deleting this post';
 // pin option in menu items
 export const PIN_THIS_POST = 'Pin this Post';
 export const UNPIN_THIS_POST = 'Unpin this Post';
@@ -108,3 +110,6 @@ export const NAVIGATED_FROM_COMMENT = 'FROM_COMMENTS';
 export const STATE_ADMIN = 1
 export const STATE_MEMBER = 4
 export const RIGHT_CREATE_POST = 9
+
+// post detail screen text 
+export const VIEW_MORE_TEXT = 'View more replies'

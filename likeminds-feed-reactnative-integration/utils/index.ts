@@ -12,6 +12,7 @@ import {getAWS} from './AWSConfig';
 import {uploadFilesToAWS} from './uploadFilesToAWS';
 import {selectDocument, selectImageVideo} from './mediaSelection';
 import {detectURLs} from './detectLinks';
+import NetworkUtil from './NetworkUtil';
 
 export {
   detectMentions,
@@ -29,4 +30,5 @@ export {
   selectDocument,
   selectImageVideo,
   detectURLs,
+  NetworkUtil
 };

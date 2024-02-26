@@ -82,6 +82,7 @@ export interface PostListContextValues {
   ) => void;
   fetchFeed: () => void;
   postLikeHandler: (id: string) => void;
+  savePostHandler: (id: string, saved?: boolean) => void;
   debouncedSaveFunction: (id: string, saved?: boolean) => void;
   debouncedLikeFunction:(id: string) => void;
   closePostActionListModal: () => void;
@@ -156,6 +157,7 @@ export const PostListContextProvider = ({
     const payload = {
       postId: id,
     };
+    dispatch(likePostStateHandler(payload.postId));
     // calling like post api
     const postLikeResponse = await dispatch(
       likePost(
@@ -315,6 +317,7 @@ export const PostListContextProvider = ({
     closePostActionListModal,
     handlePinPost,
     handleReportPost,
+    savePostHandler
   };
 
   return (

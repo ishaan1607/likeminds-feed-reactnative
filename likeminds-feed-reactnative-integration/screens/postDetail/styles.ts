@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    height: Layout.window.height - Layout.normalize(54),
+    height: Layout.window.height - Layout.normalize(64),
   },
   commentCountText: {
     paddingHorizontal: 15,
@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     paddingBottom: Layout.window.height / 6.2,
   },
-  noCommentText: {color: '#0F1E3D66', fontSize: 16, fontWeight: '500'},
+  noCommentText: {color: '#333333', fontSize: 16, fontWeight: '500'},
   loaderView: {
     flex: 1,
     justifyContent: 'center',
@@ -35,7 +35,6 @@ export const styles = StyleSheet.create({
   },
   replyCommentSection: {
     position: 'absolute',
-    bottom: Layout.normalize(74),
     backgroundColor: '#e9e9e9',
     paddingHorizontal: 15,
     width: Layout.window.width,
@@ -62,7 +61,7 @@ export const styles = StyleSheet.create({
       width: 5,
       height: 5,
     },
-    height: Layout.normalize(54),
+    height: Layout.normalize(64),
     paddingHorizontal: 15,
     fontSize: 14,
     color: '#222020',
@@ -70,7 +69,7 @@ export const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
   },
-  lightGreyColorText: {color: '#0F1E3D66'},
+  lightGreyColorText: {color: '#666666'},
   taggingListView: {
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,

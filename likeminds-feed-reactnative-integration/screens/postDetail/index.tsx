@@ -6,7 +6,6 @@ import {
   Platform,
   Pressable,
   RefreshControl,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -27,7 +26,8 @@ import {
 import {
   COMMENT_LIKES,
   COMMENT_TYPE,
-  POST_TYPE
+  POST_TYPE,
+  VIEW_MORE_TEXT
 } from "../../constants/Strings";
 import { DeleteModal, ReportModal } from "../../customModals";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -48,6 +48,7 @@ import {
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
 import { getNameInitials } from "likeminds_feed_reactnative_ui/utils/utils";
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const PostDetail = ({navigation, route, children }) => {
   return (
@@ -109,6 +110,8 @@ const PostDetailComponent = React.memo(() => {
     addNewReply,
     handleDeletePost,
     myRef,
+    keyboardFocusOnReply,
+    setKeyboardFocusOnReply
   }: PostDetailContextValues = usePostDetailContext();
 
   const LMFeedContextStyles = useLMFeedStyles();
@@ -117,8 +120,8 @@ const PostDetailComponent = React.memo(() => {
   return (
     <SafeAreaView edges={["left", "right", "top"]} style={styles.flexView}>
       <KeyboardAvoidingView
-        enabled={Platform.OS === "android" ? true : false}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+       enabled={true}
+       behavior={"height"}
         style={styles.flexView}
       >
         {/* header view */}
@@ -165,8 +168,8 @@ const PostDetailComponent = React.memo(() => {
                   allTags && isUserTagging
                     ? 0
                     : replyOnComment.textInputFocus
-                    ? Layout.normalize(104)
-                    : keyboardIsVisible? Layout.normalize(74): Layout.normalize(54),
+                    ? Platform.OS === 'android' ? keyboardFocusOnReply ? Layout.normalize(114) : Layout.normalize(94) : Layout.normalize(94)
+                    : keyboardIsVisible? Layout.normalize(84): Layout.normalize(64),
               },
             ])}
           >
@@ -237,6 +240,7 @@ const PostDetailComponent = React.memo(() => {
                               ...postDetailStyle?.commentItemStyle
                                 ?.replyTextProps,
                               onTap: () => {
+                                setKeyboardFocusOnReply(true)
                                 setReplyOnComment({
                                   textInputFocus: true,
                                   commentId: item?.id,
@@ -254,7 +258,7 @@ const PostDetailComponent = React.memo(() => {
                                 postDetailStyle?.commentItemStyle
                                   ?.viewMoreRepliesProps?.children
                               ) : (
-                                <Text></Text>
+                                <Text>{VIEW_MORE_TEXT}</Text>
                               ),
                               textStyle: postDetailStyle?.commentItemStyle
                                 ?.viewMoreRepliesProps?.textStyle
@@ -369,6 +373,7 @@ const PostDetailComponent = React.memo(() => {
           <View
             style={[
               styles.replyCommentSection,
+              {bottom: Platform.OS === 'android' ? keyboardIsVisible ? Layout.normalize(84) : Layout.normalize(64) : Layout.normalize(64)},
               postDetailStyle?.replyingViewStyle?.replyingView,
             ]}
           >
@@ -406,9 +411,9 @@ const PostDetailComponent = React.memo(() => {
               styles.taggingListView,
               {
                 paddingBottom: replyOnComment.textInputFocus
-                  ? Layout.normalize(104)
-                  :keyboardIsVisible?  Layout.normalize(74):  Layout.normalize(54),
-                height: userTaggingListHeight,
+                  ? Layout.normalize(114)
+                  :keyboardIsVisible?  Layout.normalize(84):  Layout.normalize(64),
+                  maxHeight:300
               },
               postDetailStyle?.userTaggingListStyle?.taggingListView,
             ]}
@@ -514,7 +519,7 @@ const PostDetailComponent = React.memo(() => {
               ? postDetailStyle?.commentTextInputStyle?.autoFocus
               : routeParams
               ? true
-              : replyOnComment.textInputFocus
+              : keyboardFocusOnReply
               ? true
               : editCommentFocus
               ? true
@@ -550,6 +555,8 @@ const PostDetailComponent = React.memo(() => {
                         ? addNewReply(postDetail?.id, replyOnComment.commentId)
                         : addNewComment(postDetail?.id)
                       : {};
+                      setAllTags([]);
+                      setIsUserTagging(false);
                   },
                   icon: {
                     type: "png",
@@ -587,6 +594,7 @@ const PostDetailComponent = React.memo(() => {
           deleteType={selectedMenuItemPostId ? POST_TYPE : COMMENT_TYPE}
           postDetail={postDetail}
           commentDetail={getCommentDetail(postDetail?.replies)}
+          navigation={navigation}
         />
       )}
       {/* report post modal */}

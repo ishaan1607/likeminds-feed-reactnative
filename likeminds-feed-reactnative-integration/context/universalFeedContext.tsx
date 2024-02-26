@@ -20,6 +20,7 @@ import { POST_UPLOADED, RIGHT_CREATE_POST, STATE_ADMIN } from "../constants/Stri
 import { RootStackParamList } from "../models/RootStackParamsList";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { showToastMessage } from "../store/actions/toast";
+import { FlatList } from "react-native";
 
 interface UniversalFeedContextProps {
   children: ReactNode;
@@ -42,7 +43,7 @@ export interface UniversalFeedContextValues {
   showCreatePost: boolean;
   refreshing: boolean;
   localRefresh: boolean;
-  listRef: MutableRefObject<FlashList<LMPostUI> | null>;
+  listRef: MutableRefObject<FlatList<LMPostUI> | null>;
   mediaAttachmemnts: [];
   linkAttachments: [];
   postContent: string;
@@ -90,7 +91,7 @@ export const UniversalFeedContextProvider = ({
 
   const [refreshing, setRefreshing] = useState(false);
   const [localRefresh, setLocalRefresh] = useState(false);
-  const listRef = useRef<FlashList<LMPostUI>>(null);
+  const listRef = useRef<FlatList<LMPostUI>>(null);
 
   useEffect(() => {
     if (accessToken) {
@@ -190,7 +191,7 @@ export const UniversalFeedContextProvider = ({
     const itemSaved = item?.isSaved;
     const itemText = item?.text;
 
-    return `${id}${itemLiked}${itemPinned}${itemComments}${itemSaved}${itemText}`;
+    return `${id}${itemSaved}`;
   };
 
   const contextValues: UniversalFeedContextValues = {

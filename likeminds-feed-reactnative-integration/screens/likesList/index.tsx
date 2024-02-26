@@ -12,6 +12,7 @@ import {
   PostLikesListContextValues,
   usePostLikesListContext,
 } from "../../context";
+import { useLMFeedStyles } from "../../lmFeedProvider";
 
 const PostLikesList = ({ navigation, route, children }) => {
   return (
@@ -28,6 +29,8 @@ const PostLikesList = ({ navigation, route, children }) => {
 const PostLikesListComponent = React.memo(() => {
   const { totalLikes, postLike, navigation }: PostLikesListContextValues =
     usePostLikesListContext();
+  const LMFeedContextStyles = useLMFeedStyles();
+  const { postListStyle ,postLikesListStyle} = LMFeedContextStyles;
   return (
     <SafeAreaView style={styles.mainContainer}>
       <LMHeader
@@ -43,7 +46,13 @@ const PostLikesListComponent = React.memo(() => {
         <FlatList
           data={postLike}
           renderItem={({ item }: { item: LMLikeUI }) => {
-            return <LMMemberListItem likes={item} />;
+            return (
+              <LMMemberListItem
+                likes={item}
+                profilePictureProps={postListStyle?.header?.profilePicture}
+                boxStyle = {postLikesListStyle?.likeListItemStyle}
+              />
+            );
           }}
         />
       ) : (

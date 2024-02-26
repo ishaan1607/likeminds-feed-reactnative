@@ -103,15 +103,7 @@ const LMPost = React.memo(({
     documentProps: mediaProps?.documentProps,
     linkPreviewProps: mediaProps?.linkPreviewProps,
   };
-  const MemoizedChildComponentOne = useMemo(() => {
-    return <LMPostMedia  attachments= {post?.attachments ? post?.attachments : []}
-    postMediaStyle = {mediaProps?.postMediaStyle}
-    imageProps={ mediaProps?.imageProps}
-    videoProps= {mediaProps?.videoProps}
-    carouselProps ={mediaProps?.carouselProps}
-    documentProps ={ mediaProps?.documentProps}
-    linkPreviewProps ={mediaProps?.linkPreviewProps} />;
-  }, [mediaProps,post?.attachments]);
+
   return (
     <View style={styles.mainContainer}>
       {/* post header */}
@@ -125,7 +117,7 @@ const LMPost = React.memo(({
       )}
       {/* post media */}
       {post?.attachments && post?.attachments.length > 0 && (
-        MemoizedChildComponentOne
+       <LMPostMedia  {...updatedMediaProps} />
       )}
       {/* post footer */}
       <LMPostFooter {...updatedFooterProps} />

@@ -6,9 +6,10 @@ import {
   ScrollView,
   Pressable,
   FlatList,
+  Alert,
 } from "react-native";
 import React from "react";
-import { nameInitials, replaceLastMention } from "../../utils";
+import { NetworkUtil, nameInitials, replaceLastMention } from "../../utils";
 import { useAppDispatch } from "../../store/store";
 import {
   LMButton,
@@ -47,7 +48,7 @@ import {
   useCreatePostContext,
 } from "../../context";
 import { getNameInitials } from "likeminds_feed_reactnative_ui/utils/utils";
-
+import { useLMFeedStyles } from "../../lmFeedProvider";
 
 const CreatePost = ({ navigation, route, children }) => {
   return (
@@ -63,6 +64,8 @@ const CreatePost = ({ navigation, route, children }) => {
 
 const CreatePostComponent = React.memo(() => {
   const dispatch = useAppDispatch();
+  const LMFeedContextStyles = useLMFeedStyles();
+  const { postListStyle, createPostStyle } = LMFeedContextStyles;
   const {
     navigation,
     postToEdit,
@@ -114,6 +117,7 @@ const CreatePostComponent = React.memo(() => {
         <View style={styles.profileContainer}>
           {/* profile image */}
           <LMProfilePicture
+            {...postListStyle?.header?.profilePicture}
             fallbackText={{
               children: <Text>{nameInitials(memberData.name)}</Text>,
             }}
@@ -122,11 +126,16 @@ const CreatePostComponent = React.memo(() => {
           {/* user name */}
           <LMText
             children={<Text>{memberData.name}</Text>}
-            textStyle={styles.userNameText}
+            textStyle={
+              createPostStyle?.userNameTextStyle
+                ? createPostStyle?.userNameTextStyle
+                : styles.userNameText
+            }
           />
         </View>
         {/* text input field */}
         <LMInputText
+          {...createPostStyle?.createPostTextInputStyle}
           placeholderText={CREATE_POST_PLACEHOLDER_TEXT}
           placeholderTextColor="#0F1E3D66"
           inputTextStyle={styles.textInputView}
@@ -135,6 +144,7 @@ const CreatePostComponent = React.memo(() => {
           inputText={postContentText}
           onType={handleInputChange}
           autoFocus={postToEdit ? true : false}
+          textValueStyle={{ fontSize: 16 }}
           partTypes={[
             {
               trigger: "@", // Should be a single character like '@' or '#'
@@ -157,6 +167,7 @@ const CreatePostComponent = React.memo(() => {
           >
             <FlatList
               data={[...allTags]}
+              nestedScrollEnabled={true}
               renderItem={({ item }: { item: LMUserUI }) => {
                 return (
                   <Pressable
@@ -176,7 +187,9 @@ const CreatePostComponent = React.memo(() => {
                     key={item?.id}
                   >
                     <LMProfilePicture
-                      fallbackText={{ children: <Text>{getNameInitials(item?.name)}</Text> }}
+                      fallbackText={{
+                        children: <Text>{getNameInitials(item?.name)}</Text>,
+                      }}
                       fallbackTextBoxStyle={styles.taggingListProfileBoxStyle}
                       size={40}
                     />
@@ -307,6 +320,25 @@ const CreatePostComponent = React.memo(() => {
     );
   };
 
+  const checkNetInfo = async () => {
+    const isConnected = await NetworkUtil.isNetworkAvailable();
+    if (isConnected) {
+      postToEdit
+        ? postEdit()
+        : // store the media for uploading and navigate to feed screen
+          dispatch(
+            setUploadAttachments({
+              mediaAttachmentData: allAttachment,
+              linkAttachmentData: formattedLinkAttachments,
+              postContentData: postContentText.trim(),
+            })
+          );
+      navigation.goBack();
+    } else {
+      Alert.alert("", "Please check your internet connection");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* screen header section*/}
@@ -329,7 +361,9 @@ const CreatePostComponent = React.memo(() => {
                 : true
             }
             style={
-              postToEdit
+              createPostStyle?.createPostTextStyle
+                ? createPostStyle?.createPostTextStyle
+                : postToEdit
                 ? styles.enabledOpacity
                 : allAttachment?.length > 0 ||
                   formattedLinkAttachments?.length > 0 ||
@@ -337,23 +371,7 @@ const CreatePostComponent = React.memo(() => {
                 ? styles.enabledOpacity
                 : styles.disabledOpacity
             }
-            onPress={
-              postToEdit
-                ? () => {
-                    postEdit();
-                  }
-                : () => {
-                    // store the media for uploading and navigate to feed screen
-                    dispatch(
-                      setUploadAttachments({
-                        mediaAttachmentData: allAttachment,
-                        linkAttachmentData: formattedLinkAttachments,
-                        postContentData: postContentText.trim(),
-                      })
-                    );
-                    navigation.goBack();
-                  }
-            }
+            onPress={() => checkNetInfo()}
           >
             <Text style={styles.headerRightComponentText}>
               {postToEdit ? SAVE_POST_TEXT : ADD_POST_TEXT}

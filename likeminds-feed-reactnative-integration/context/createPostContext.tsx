@@ -360,6 +360,8 @@ export const CreatePostContextProvider = ({
               setFormattedLinkAttachments(convertedLinkData);
               if (!closedOnce) {
                 setShowLinkPreview(true);
+              }else {                
+                setFormattedLinkAttachments([])
               }
             }
             // Do something with the array of non-undefined responses
@@ -377,7 +379,7 @@ export const CreatePostContextProvider = ({
     return () => {
       debouncedSearch.cancel(); // Cleanup the debounced function
     };
-  }, [postContentText, dispatch, closedOnce]);
+  }, [postContentText, closedOnce]);
 
   // all image/video/document media to be uploaded
   const allAttachment = [
@@ -455,9 +457,7 @@ export const CreatePostContextProvider = ({
         true
       )
     );
-    if (editPostResponse) {
-      navigation.goBack();
-    }
+
     return editPostResponse;
   };
 

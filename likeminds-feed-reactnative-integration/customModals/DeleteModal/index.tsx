@@ -19,6 +19,7 @@ import {
   CONFIRM_DELETE,
   DELETE_REASON_SELECTION,
   DELETION_REASON,
+  ENTER_REASON_FOR_DELETION,
   POST_DELETE,
   POST_TYPE,
   REASON_FOR_DELETION_PLACEHOLDER,
@@ -63,6 +64,8 @@ const DeleteModal = ({
   // this function calls the delete post api
   const postDelete = async () => {
     if (!deletionReason && loggedInUser.userUniqueId !== postDetail?.userId) {
+      showToast();
+    } else if (deletionReason === 'Others' && otherReason === '') {
       showToast();
     } else {
       const payload = {
@@ -167,7 +170,7 @@ const DeleteModal = ({
         <View>
           <View style={styles.modalView}>
             <Text style={styles.filterText}>
-              {DELETE_REASON_SELECTION}
+              {deletionReason === 'Others' ? ENTER_REASON_FOR_DELETION : DELETE_REASON_SELECTION}
             </Text>
           </View>
         </View>

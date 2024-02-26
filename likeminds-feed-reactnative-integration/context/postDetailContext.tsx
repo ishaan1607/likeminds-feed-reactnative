@@ -32,7 +32,7 @@ import {
   SOMETHING_WENT_WRONG,
   UNPIN_POST_MENU_ITEM,
 } from "../constants/Strings";
-import { Keyboard, TextInput } from "react-native";
+import { Keyboard, Platform, TextInput } from "react-native";
 import { useLMFeedStyles } from "../lmFeedProvider";
 import {
   addComment,
@@ -125,7 +125,8 @@ export interface PostDetailContextValues {
   commentFocus: boolean;
   routeParams: string;
   isKeyboardVisible: boolean;
-
+  keyboardFocusOnReply: boolean;
+  setKeyboardFocusOnReply: Dispatch<SetStateAction<boolean>>;
   setRouteParams: Dispatch<SetStateAction<string>>;
   setCommentFocus: Dispatch<SetStateAction<boolean>>;
   setLocalRefresh: Dispatch<SetStateAction<boolean>>;
@@ -154,6 +155,7 @@ export interface PostDetailContextValues {
   closePostActionListModal: () => void;
   closeCommentActionListModal: () => void;
   postLikeHandler: (id: string) => void;
+  debouncedLikeFunction:(id: string) => void;
   debouncedSaveFunction: (id: string, saved?: boolean) => void;
   savePostHandler: (id: string, saved?: boolean) => void;
   handlePinPost: (id: string, pinned?: boolean) => void;
@@ -247,6 +249,7 @@ export const PostDetailContextProvider = ({
   const [refreshing, setRefreshing] = useState(false);
   const [localRefresh, setLocalRefresh] = useState(false);
   const [commentFocus, setCommentFocus] = useState(false);
+  const [keyboardFocusOnReply, setKeyboardFocusOnReply] = useState(false)
   const [routeParams, setRouteParams] = useState(
     route.params[1] === NAVIGATED_FROM_COMMENT
   );
@@ -272,7 +275,7 @@ export const PostDetailContextProvider = ({
     );
     setLocalRefresh(false);
     setRefreshing(false);
-  }
+  };
 
   // this function closes the post action list modal
   const closePostActionListModal = () => {
@@ -283,6 +286,16 @@ export const PostDetailContextProvider = ({
   const closeCommentActionListModal = () => {
     setShowCommentActionListModal(false);
   };
+
+  // debounce on like post function
+  const debouncedLikeFunction = _.debounce(postLikeHandler, 500); // Adjust the debounce time (in milliseconds) as needed
+
+  // useEffect hook to clean up the debounced function
+  useEffect(() => {
+    return () => {
+      debouncedLikeFunction.cancel(); // Cancel any pending debounced executions when the component unmounts
+    };
+  }, [debouncedLikeFunction]);
 
   // this functions hanldes the post like functionality
   async function postLikeHandler(id: string) {
@@ -328,7 +341,7 @@ export const PostDetailContextProvider = ({
         showToastMessage({
           isToast: true,
           message: saved ? POST_UNSAVED_SUCCESS : POST_SAVED_SUCCESS,
-        }),
+        })
       );
       return savePostResponse;
     } catch (error) {
@@ -336,7 +349,7 @@ export const PostDetailContextProvider = ({
         showToastMessage({
           isToast: true,
           message: SOMETHING_WENT_WRONG,
-        }),
+        })
       );
     }
   }
@@ -355,7 +368,7 @@ export const PostDetailContextProvider = ({
         showToastMessage({
           isToast: true,
           message: pinned ? POST_UNPIN_SUCCESS : POST_PIN_SUCCESS,
-        }),
+        })
       );
     }
     return pinPostResponse;
@@ -389,7 +402,7 @@ export const PostDetailContextProvider = ({
       handleDeletePost(true);
     }
     if (itemId === EDIT_POST_MENU_ITEM) {
-      navigation.navigate(CREATE_POST, {postId});
+      navigation.navigate(CREATE_POST, { postId });
     }
   };
 
@@ -522,7 +535,7 @@ export const PostDetailContextProvider = ({
     const currentDate = new Date();
     const payload = {
       postId: postId,
-      newComment: convertedNewComment,
+      newComment: convertedNewComment.trim(),
       tempId: `${-currentDate.getTime()}`,
     };
     setCommentToAdd("");
@@ -550,7 +563,7 @@ export const PostDetailContextProvider = ({
     const currentDate = new Date();
     const payload = {
       postId: postId,
-      newComment: convertedNewReply,
+      newComment: convertedNewReply.trim(),
       tempId: `${-currentDate.getTime()}`,
       commentId: commentId,
     };
@@ -635,15 +648,18 @@ export const PostDetailContextProvider = ({
           saveButton: {
             ...postListStyle?.footer?.saveButton,
             onTap: () => {
-              debouncedSaveFunction(postDetail?.id, postDetail?.isSaved);
+              savePostHandler(postDetail?.id, postDetail?.isSaved);
               postListStyle?.footer?.saveButton?.onTap();
             },
           },
           likeTextButton: {
             ...postListStyle?.footer?.likeTextButton,
             onTap: () => {
-              dispatch(postLikesClear())
-              navigation.navigate(POST_LIKES_LIST, [POST_LIKES, postDetail?.id]);
+              dispatch(postLikesClear());
+              navigation.navigate(POST_LIKES_LIST, [
+                POST_LIKES,
+                postDetail?.id,
+              ]);
               postListStyle?.footer?.likeTextButton?.onTap();
             },
           },
@@ -696,6 +712,12 @@ export const PostDetailContextProvider = ({
 
   // this handles the view layout with keyboard visibility
   useEffect(() => {
+    setLocalModalVisibility(showDeleteModal);
+  }, [showDeleteModal]);
+
+  // this handles the view layout with keyboard visibility
+  useEffect(() => {
+   if(Platform.OS === 'android') {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
       () => {
@@ -709,7 +731,7 @@ export const PostDetailContextProvider = ({
         setKeyboardIsVisible(false);
         if (Keyboard.isVisible() === false) {
           Keyboard.dismiss();
-          setReplyOnComment({ textInputFocus: false, commentId: "" });
+          setKeyboardFocusOnReply(false);
           setEditCommentFocus(false);
           setCommentFocus(false);
           setRouteParams(false);
@@ -720,7 +742,8 @@ export const PostDetailContextProvider = ({
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
-    };
+    }
+   }
   }, [isKeyboardVisible]);
 
   // this function calls the edit comment api
@@ -729,7 +752,7 @@ export const PostDetailContextProvider = ({
     const convertedEditedComment = mentionToRouteConverter(commentToAdd);
     const payload = {
       commentId: selectedMenuItemCommentId,
-      commentText: convertedEditedComment,
+      commentText: convertedEditedComment.trim(),
     };
     await dispatch(editCommentStateHandler(payload));
     // call edit comment api
@@ -867,6 +890,8 @@ export const PostDetailContextProvider = ({
     commentFocus,
     routeParams,
     isKeyboardVisible,
+    keyboardFocusOnReply,
+    setKeyboardFocusOnReply,
 
     setRouteParams,
     setCommentFocus,
@@ -896,6 +921,7 @@ export const PostDetailContextProvider = ({
     closePostActionListModal,
     closeCommentActionListModal,
     postLikeHandler,
+    debouncedLikeFunction,
     debouncedSaveFunction,
     savePostHandler,
     handlePinPost,
