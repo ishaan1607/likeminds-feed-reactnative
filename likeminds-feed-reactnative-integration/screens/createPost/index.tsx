@@ -25,7 +25,7 @@ import {
   LMUserUI,
   LMVideo,
   LMLoader,
-} from "likeminds_feed_reactnative_ui";
+} from "@likeminds.community/feed-rn-ui";
 import {
   ADD_FILES,
   ADD_IMAGES,
@@ -47,7 +47,7 @@ import {
   CreatePostContextValues,
   useCreatePostContext,
 } from "../../context";
-import { getNameInitials } from "likeminds_feed_reactnative_ui/utils/utils";
+import { getNameInitials } from "@likeminds.community/feed-rn-ui/utils/utils";
 import { useLMFeedStyles } from "../../lmFeedProvider";
 
 const CreatePost = ({ navigation, route, children }) => {

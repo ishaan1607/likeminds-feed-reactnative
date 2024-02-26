@@ -27,7 +27,7 @@ import {
   LMPostUI,
   LMSDKClientInfoUI,
   LMUserUI,
-} from 'likeminds_feed_reactnative_ui';
+} from '@likeminds.community/feed-rn-ui';
 
 /**
  * @param data: [GetFeedResponse]
@@ -302,7 +302,7 @@ export function convertToLMCommentUI(
   postId: string,
   data: IComment[],
   user: {[key: string]: LMUserUI},
-): LMCommentUI[] {
+): any[] {
   return data?.map((item: IComment) => {
     return {
       id: item.Id,

@@ -15,7 +15,7 @@ import {
   LMOGTagsUI,
   LMPostUI,
   LMUserUI,
-} from "likeminds_feed_reactnative_ui";
+} from "@likeminds.community/feed-rn-ui";
 import { Platform, TextInput } from "react-native";
 import {
   detectMentions,

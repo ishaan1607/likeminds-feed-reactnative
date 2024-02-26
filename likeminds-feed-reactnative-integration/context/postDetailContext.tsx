@@ -14,7 +14,7 @@ import {
   LMPost,
   LMPostUI,
   LMUserUI,
-} from "likeminds_feed_reactnative_ui";
+} from "@likeminds.community/feed-rn-ui";
 import {
   DELETE_COMMENT_MENU_ITEM,
   DELETE_POST_MENU_ITEM,

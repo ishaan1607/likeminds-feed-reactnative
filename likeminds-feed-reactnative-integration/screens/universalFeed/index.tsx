@@ -14,7 +14,7 @@ import {
   LMImage,
   LMLoader,
   LMVideo,
-} from "likeminds_feed_reactnative_ui";
+} from "@likeminds.community/feed-rn-ui";
 import {
   APP_TITLE,
   CREATE_POST_PERMISSION,

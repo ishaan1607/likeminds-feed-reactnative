@@ -10,7 +10,7 @@ import React, {
   MutableRefObject,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { LMAttachmentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
+import { LMAttachmentUI, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { mentionToRouteConverter, uploadFilesToAWS } from "../utils";
 import { addPost, setUploadAttachments } from "../store/actions/createPost";
 import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js";

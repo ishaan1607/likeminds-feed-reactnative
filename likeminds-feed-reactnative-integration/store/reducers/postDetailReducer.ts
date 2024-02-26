@@ -1,4 +1,4 @@
-import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
+import { LMCommentUI, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { convertToLMCommentUI, convertToLMPostUI } from "../../viewDataModels";
 import {
   PIN_POST_ID,
