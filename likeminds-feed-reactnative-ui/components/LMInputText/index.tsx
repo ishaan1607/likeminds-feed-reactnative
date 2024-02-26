@@ -42,6 +42,7 @@ const LMInputText: FC<LMInputTextProps> = React.memo(({
   disabled,
   rightIcon,
   autoFocus,
+  textValueStyle,
 
   ...textInputProps
 }) => {
@@ -155,7 +156,7 @@ const LMInputText: FC<LMInputTextProps> = React.memo(({
         secureTextEntry={secureText ? secureText : false}
         editable={disabled ? disabled : true}
       >
-        <Text>
+        <Text style={textValueStyle}>
           {parts.map(({ text, partType, data }, index) =>
             partType ? (
               <Text

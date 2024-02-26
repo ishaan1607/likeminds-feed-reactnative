@@ -244,12 +244,35 @@ interface PostDetailStyleProps {
   };
 }
 
+interface CreatePostStyleProps {
+  userNameTextStyle?: TextStyle;
+  createPostTextStyle?: TextStyle;
+  createPostTextInputStyle?: {
+    containerStyle?: ViewStyle;
+    inputTextStyle?: TextStyle;
+    placeholderText?: string;
+    placeholderTextColor?: string;
+    disabled?: boolean;
+    rightIcon?: LMButtonProps;
+    autoFocus?: boolean;
+    plainTextStyle?: TextStyle;
+    mentionTextStyle?: TextStyle;
+    multilineField?: boolean
+  };
+}
+
+interface PostLikesListStyleProps {
+  likeListItemStyle?: ViewStyle;
+}
+
 export interface ThemeContextProps {
   textStyle?: TextStyles;
   universalFeedStyle?: UniversalFeedStyleProps;
   postListStyle?: PostListStyleProps;
   loaderStyle?: LoaderStyleProps;
   postDetailStyle?: PostDetailStyleProps;
+  createPostStyle?: CreatePostStyleProps;
+  postLikesListStyle?: PostLikesListStyleProps
 }
 
 export interface LMFeedProviderProps {
@@ -262,4 +285,6 @@ export interface LMFeedProviderProps {
   postListStyle?: PostListStyleProps;
   loaderStyle?: LoaderStyleProps;
   postDetailStyle?: PostDetailStyleProps;
+  createPostStyle?: CreatePostStyleProps;
+  postLikesListStyle?: PostLikesListStyleProps
 }

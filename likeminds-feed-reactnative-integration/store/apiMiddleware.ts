@@ -1,14 +1,20 @@
 import { Alert } from "react-native";
 import { START_LOADING, STOP_LOADING } from "./types/loader";
-
+import { NetworkUtil } from "../utils";
 export const NETWORK_FAILED = "Network request failed";
 
 async function invokeAPI(func: Function, payload: any, name = "") {
   if (func === undefined) {
     return;
   }
-  const response: any = await func;
-  return response?.data;
+
+  const isConnected = await NetworkUtil.isNetworkAvailable();
+  if (isConnected) {
+    const response: any = await func;
+    return response?.data;
+  } else {
+    Alert.alert("", "Please check your internet connection");
+  }
 }
 
 export const CALL_API = "Call API";
@@ -35,16 +41,16 @@ const apiMiddleware = async (next, action) => {
     if (showLoader) {
       next({ type: START_LOADING });
     }
-
     const responseBody = await invokeAPI(func, JSON.stringify(body), name);
+    if (responseBody) {
+      successType &&
+        next({
+          body: { ...responseBody },
+          type: successType,
+        });
 
-    successType &&
-      next({
-        body: { ...responseBody },
-        type: successType,
-      });
-
-    return responseBody;
+      return responseBody;
+    }
   } catch (error: any) {
     if (Number(error.message) === 401) {
       //  process error

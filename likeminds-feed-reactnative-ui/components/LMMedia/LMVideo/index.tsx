@@ -6,9 +6,9 @@ import {
   TouchableWithoutFeedback,
   Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 // @ts-ignore the lib do not have TS declarations yet
-import Video from "react-native-video";
+import Video, {VideoRef} from "react-native-video";
 import { LMVideoProps } from "./types";
 import { MEDIA_FETCH_ERROR } from "../../../constants/strings";
 import LMLoader from "../../LMLoader";
@@ -33,18 +33,19 @@ const LMVideo = React.memo(({
   currentVideoUrl,
   showCancel,
   onCancel,
-}: LMVideoProps) => {
+}: LMVideoProps) => {  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [playingStatus, setPlayingStatus] = useState(true);
-  const [viewController, setViewController] = useState(showControls);
+  const [viewController, setViewController] = useState(showControls); 
+  const player = useRef<VideoRef>(null); 
 
   // this throw error and ask for currentVideoUrl if auto play is set true
   if (autoPlay && !currentVideoUrl) {
     throw new Error(
       "Property 'currentVideoUrl' is missing in type '{ videoUrl: string; autoPlay: true; }' but required in type 'LMVideoProps'."
     );
-  }
+  }    
 
   return (
     <View style={StyleSheet.flatten([defaultStyles.videoContainer, boxStyle])}>
@@ -69,9 +70,13 @@ const LMVideo = React.memo(({
       {/* this renders the video */}
       <>
         <Video
+        ref={player}
           source={{ uri: videoUrl }}
           key={videoUrl}
-          onReadyForDisplay={() => setLoading(false)}
+          onLoad={() => {
+            setLoading(false)
+            player.current.seek(0); // this will set first frame of video as thumbnail            
+          }}
           onError={() => setError(true)}
           repeat={looping ? looping : true}
           resizeMode={boxFit ? boxFit : defaultStyles.videoStyle.resizeMode}
@@ -123,7 +128,8 @@ const LMVideo = React.memo(({
       {viewController && (
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => setViewController(false)}
+          // todo: handle later
+          // onPress={() => setViewController(false)}
           style={[defaultStyles.videoStyle, defaultStyles.videoControllerView]}
         >
           <TouchableOpacity

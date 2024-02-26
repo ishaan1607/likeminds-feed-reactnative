@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  FlatList,
   RefreshControl,
   Text,
   TouchableOpacity,
@@ -69,6 +70,7 @@ const PostsListComponent = React.memo(() => {
     onMenuItemSelect,
     postLikeHandler,
     debouncedSaveFunction,
+    savePostHandler,
     setFeedPageNumber,
     feedPageNumber,
     renderLoader,
@@ -88,7 +90,7 @@ const PostsListComponent = React.memo(() => {
       {/* posts list section */}
       {!feedFetching ? (
         feedData?.length > 0 ? (
-          <FlashList
+          <FlatList
             ref={listRef}
             refreshing={refreshing}
             style={postListStyle?.listStyle}
@@ -163,7 +165,7 @@ const PostsListComponent = React.memo(() => {
                     likesCount: item?.likesCount,
                     commentsCount: item?.commentsCount,
                     showBookMarkIcon: postListStyle?.footer?.showBookMarkIcon
-                      ? postListStyle?.footer?.showBookMarkIco
+                      ? postListStyle?.footer?.showBookMarkIcon
                       : true,
                     showShareIcon: postListStyle?.footer?.showShareIcon
                       ? postListStyle?.footer?.showShareIcon
@@ -171,14 +173,14 @@ const PostsListComponent = React.memo(() => {
                     likeIconButton: {
                       ...postListStyle?.footer?.likeIconButton,
                       onTap: () => {
-                        debouncedLikeFunction(item?.id);
+                        postLikeHandler(item?.id);
                         postListStyle?.footer?.likeIconButton?.onTap();
                       },
                     },
                     saveButton: {
                       ...postListStyle?.footer?.saveButton,
                       onTap: () => {
-                        debouncedSaveFunction(item?.id, item?.isSaved);
+                        savePostHandler(item?.id, item?.isSaved);
                         postListStyle?.footer?.saveButton?.onTap();
                       },
                     },
@@ -240,7 +242,6 @@ const PostsListComponent = React.memo(() => {
               setFeedPageNumber(feedPageNumber + 1);
             }}
             keyExtractor={item => keyExtractor(item)}
-            estimatedItemSize={500}
             ListFooterComponent={<>{showLoader > 0 && renderLoader()}</>}
           />
         ) : (

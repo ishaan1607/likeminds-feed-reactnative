@@ -19,29 +19,6 @@ const LMPostMedia = React.memo(({
   carouselProps,
   linkPreviewProps,
 }: LMPostMediaProps) => {
-  const MemoizedChildComponent = useMemo(() => {
-    return <LMVideo
-    videoUrl={
-      attachments[0]?.attachmentMeta.url
-        ? attachments[0]?.attachmentMeta.url
-        : ''
-    }
-    height={videoProps?.height}
-    width={videoProps?.width}
-    videoStyle={videoProps?.videoStyle}
-    boxFit={videoProps?.boxFit}
-    boxStyle={videoProps?.boxStyle}
-    aspectRatio={videoProps?.aspectRatio}
-    showControls={videoProps?.showControls}
-    playButton={videoProps?.playButton}
-    pauseButton={videoProps?.pauseButton}
-    autoPlay={videoProps?.autoPlay}
-    looping={videoProps?.looping}
-    loaderWidget={videoProps?.loaderWidget}
-    errorWidget={videoProps?.errorWidget}
-    currentVideoUrl={videoProps?.currentVideoUrl}
-  />;
-  }, [videoProps, attachments]);
   // this handles the rendering of posts with single attachment
   const renderSingleAttachment = () => {
     switch (attachments[0]?.attachmentType) {
@@ -66,7 +43,27 @@ const LMPostMedia = React.memo(({
       }
       case ATTACHMENT_TYPE.VIDEO: {
         return (
-         <>{MemoizedChildComponent}</>
+          <LMVideo
+          videoUrl={
+            attachments[0]?.attachmentMeta.url
+              ? attachments[0]?.attachmentMeta.url
+              : ''
+          }
+          height={videoProps?.height}
+          width={videoProps?.width}
+          videoStyle={videoProps?.videoStyle}
+          boxFit={videoProps?.boxFit}
+          boxStyle={videoProps?.boxStyle}
+          aspectRatio={videoProps?.aspectRatio}
+          showControls={videoProps?.showControls}
+          playButton={videoProps?.playButton}
+          pauseButton={videoProps?.pauseButton}
+          autoPlay={videoProps?.autoPlay}
+          looping={videoProps?.looping}
+          loaderWidget={videoProps?.loaderWidget}
+          errorWidget={videoProps?.errorWidget}
+          currentVideoUrl={videoProps?.currentVideoUrl}
+        />
         );
       }
       case ATTACHMENT_TYPE.DOCUMENT: {
@@ -164,25 +161,24 @@ const LMPostMedia = React.memo(({
             )}
             {attachments?.find(
               item => item?.attachmentType === ATTACHMENT_TYPE.VIDEO,
-            ) && ( <></>
-            // todo: handle later
-              // <LMVideo
-              //   videoUrl={getUrl(ATTACHMENT_TYPE.VIDEO)}
-              //   height={videoProps?.height}
-              //   width={videoProps?.width}
-              //   videoStyle={videoProps?.videoStyle}
-              //   boxFit={videoProps?.boxFit}
-              //   boxStyle={videoProps?.boxStyle}
-              //   aspectRatio={videoProps?.aspectRatio}
-              //   showControls={videoProps?.showControls}
-              //   playButton={videoProps?.playButton}
-              //   pauseButton={videoProps?.pauseButton}
-              //   autoPlay={videoProps?.autoPlay}
-              //   looping={videoProps?.looping}
-              //   loaderWidget={videoProps?.loaderWidget}
-              //   errorWidget={videoProps?.errorWidget}
-              //   currentVideoUrl={videoProps?.currentVideoUrl}
-              // />
+            ) && (
+              <LMVideo
+                videoUrl={getUrl(ATTACHMENT_TYPE.VIDEO)}
+                height={videoProps?.height}
+                width={videoProps?.width}
+                videoStyle={videoProps?.videoStyle}
+                boxFit={videoProps?.boxFit}
+                boxStyle={videoProps?.boxStyle}
+                aspectRatio={videoProps?.aspectRatio}
+                showControls={videoProps?.showControls}
+                playButton={videoProps?.playButton}
+                pauseButton={videoProps?.pauseButton}
+                autoPlay={videoProps?.autoPlay}
+                looping={videoProps?.looping}
+                loaderWidget={videoProps?.loaderWidget}
+                errorWidget={videoProps?.errorWidget}
+                currentVideoUrl={videoProps?.currentVideoUrl}
+              />
             )}
             {attachments?.find(
               item => item?.attachmentType === ATTACHMENT_TYPE.DOCUMENT,

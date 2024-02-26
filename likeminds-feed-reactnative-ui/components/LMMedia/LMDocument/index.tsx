@@ -14,6 +14,7 @@ import LMIcon from "../../LMIcon";
 import LMButton from "../../LMButton";
 import LMText from "../../LMText";
 import { styles } from "./styles";
+import FileViewer from "react-native-file-viewer";
 
 const LMDocument = React.memo(({
   attachments,
@@ -50,9 +51,10 @@ const LMDocument = React.memo(({
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
+              item?.attachmentMeta?.url.includes("https://") ?
               Linking.openURL(
-                item?.attachmentMeta?.url ? item?.attachmentMeta?.url : ""
-              );
+                item?.attachmentMeta?.url
+              ): FileViewer.open(item?.attachmentMeta?.url);
               onTap;
             }}
             key={index}
