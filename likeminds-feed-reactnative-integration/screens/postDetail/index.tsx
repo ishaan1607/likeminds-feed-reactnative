@@ -12,14 +12,6 @@ import {
 } from "react-native";
 import React from "react";
 import {
-  LMCommentItem,
-  LMHeader,
-  LMInputText,
-  LMProfilePicture,
-  LMUserUI,
-  LMLoader,
-} from "@likeminds.community/feed-rn-ui";
-import {
   POST_LIKES_LIST,
   UNIVERSAL_FEED,
 } from "../../constants/screenNames";
@@ -34,6 +26,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { styles } from "./styles";
 import Layout from "../../constants/Layout";
 import {
+  nameInitials,
   replaceLastMention,
 } from "../../utils";
 import { useLMFeedStyles } from "../../lmFeedProvider";
@@ -47,8 +40,10 @@ import {
   usePostDetailContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
-import { getNameInitials } from "@likeminds.community/feed-rn-ui/utils/utils";
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { LMCommentItem, LMHeader, LMLoader } from "../../components";
+import { LMUserUI } from "../../models";
+import { LMInputText, LMProfilePicture } from "../../uiComponents";
 
 const PostDetail = ({navigation, route, children }) => {
   return (
@@ -452,7 +447,7 @@ const PostDetailComponent = React.memo(() => {
                           postDetailStyle?.userTaggingListStyle
                             ?.userTagProfileImageStyle?.fallbackText?.children
                         ) : (
-                          <Text>{getNameInitials(item?.name)}</Text>
+                          <Text>{nameInitials(item?.name)}</Text>
                         ),
                       }}
                       fallbackTextBoxStyle={[

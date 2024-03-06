@@ -12,21 +12,6 @@ import React from "react";
 import { NetworkUtil, nameInitials, replaceLastMention } from "../../utils";
 import { useAppDispatch } from "../../store/store";
 import {
-  LMButton,
-  LMCarousel,
-  LMDocument,
-  LMHeader,
-  LMIcon,
-  LMImage,
-  LMInputText,
-  LMLinkPreview,
-  LMProfilePicture,
-  LMText,
-  LMUserUI,
-  LMVideo,
-  LMLoader,
-} from "@likeminds.community/feed-rn-ui";
-import {
   ADD_FILES,
   ADD_IMAGES,
   ADD_MORE_MEDIA,
@@ -47,8 +32,10 @@ import {
   CreatePostContextValues,
   useCreatePostContext,
 } from "../../context";
-import { getNameInitials } from "@likeminds.community/feed-rn-ui/utils/utils";
 import { useLMFeedStyles } from "../../lmFeedProvider";
+import { LMButton, LMIcon, LMInputText, LMProfilePicture, LMText } from "../../uiComponents";
+import { LMUserUI } from "../../models";
+import { LMCarousel, LMDocument, LMHeader, LMImage, LMLinkPreview, LMLoader, LMVideo } from "../../components";
 
 const CreatePost = ({ navigation, route, children }) => {
   return (
@@ -188,7 +175,7 @@ const CreatePostComponent = React.memo(() => {
                   >
                     <LMProfilePicture
                       fallbackText={{
-                        children: <Text>{getNameInitials(item?.name)}</Text>,
+                        children: <Text>{nameInitials(item?.name)}</Text>,
                       }}
                       fallbackTextBoxStyle={styles.taggingListProfileBoxStyle}
                       size={40}
@@ -403,7 +390,6 @@ const CreatePostComponent = React.memo(() => {
               }}
             >
               <LMIcon
-                type="png"
                 assetPath={require("../../assets/images/gallery_icon3x.png")}
               />
               <LMText
@@ -420,7 +406,6 @@ const CreatePostComponent = React.memo(() => {
               }}
             >
               <LMIcon
-                type="png"
                 assetPath={require("../../assets/images/video_icon3x.png")}
               />
               <LMText
@@ -437,7 +422,6 @@ const CreatePostComponent = React.memo(() => {
               }}
             >
               <LMIcon
-                type="png"
                 assetPath={require("../../assets/images/paperClip_icon3x.png")}
               />
               <LMText

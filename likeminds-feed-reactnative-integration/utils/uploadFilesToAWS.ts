@@ -1,4 +1,4 @@
-import {LMAttachmentMetaUI} from '@likeminds.community/feed-rn-ui';
+import { LMAttachmentMetaUI } from '../models';
 import {getAWS} from './AWSConfig';
 
 // this function converts the image/video url to blob

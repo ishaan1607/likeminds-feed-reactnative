@@ -1,15 +1,8 @@
 import React from "react";
 import { LMFeedClient } from "@likeminds.community/feed-js";
-import {
-  LMButtonProps,
-  LMHeaderProps,
-  LMIconProps,
-  LMInputTextProps,
-  LMLoaderProps,
-  LMProfilePictureProps,
-  LMTextProps,
-} from "@likeminds.community/feed-rn-ui";
 import { ViewStyle, TextStyle, ImageProps, ImageStyle } from "react-native";
+import { LMHeaderProps, LMLoaderProps } from "../components";
+import { LMButtonProps, LMIconProps, LMProfilePictureProps, LMTextProps } from "../uiComponents";
 
 interface TextStyles {
   fontSize: number;
@@ -36,17 +29,23 @@ interface UniversalFeedStyleProps {
 // custom style interface for post's list
 interface PostListStyleProps {
   header?: {
-    profilePicture?: LMProfilePictureProps;
-    titleText?: LMTextProps;
-    createdAt?: LMTextProps;
+    profilePicture?: {
+      fallbackTextStyle?: TextStyle;
+      size?: number;
+      onTap?: () => void;
+      fallbackTextBoxStyle?: ViewStyle;
+      profilePictureStyle?: ImageStyle;
+    };
+    titleText?: TextStyle;
+    createdAt?: TextStyle;
+    pinIcon?: LMIconProps;
+    menuIcon?: LMIconProps;
     showMemberStateLabel?: boolean;
     memberStateViewStyle?: ViewStyle;
     memberStateTextStyle?: TextStyle;
     postHeaderViewStyle?: ViewStyle;
-    pinIcon?: LMIconProps;
-    menuIcon?: LMIconProps;
-    onTap?: () => void;
     showMenuIcon?: boolean;
+    onTap?: () => void;
     postMenu?: {
       menuItemTextStyle?: TextStyle;
       menuViewStyle?: ViewStyle;
@@ -56,16 +55,51 @@ interface PostListStyleProps {
   footer?: {
     showBookMarkIcon?: boolean;
     showShareIcon?: boolean;
-    likeIconButton?: LMButtonProps;
-    likeTextButton?: LMButtonProps;
-    commentButton?: LMButtonProps;
-    saveButton?: LMButtonProps;
-    shareButton?: LMButtonProps;
+    saveButton?: {
+      text?: LMTextProps;
+      icon?: LMIconProps;
+      onTap?: (value?: any) => void;
+      placement?: "start" | "end";
+      activeIcon?: LMIconProps;
+      activeText?: LMTextProps;
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
+    shareButton?: {
+      text?: LMTextProps;
+      icon?: LMIconProps;
+      onTap?: (value?: any) => void;
+      placement?: "start" | "end";
+      activeIcon?: LMIconProps;
+      activeText?: LMTextProps;
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
+    likeIconButton?: {
+      icon?: LMIconProps;
+      activeIcon?: LMIconProps;
+      onTap?: (value?: any) => void;
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
+    likeTextButton?: {
+      text?: TextStyle;
+      onTap?: (value?: any) => void;
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
+    commentButton?: {
+      text?: TextStyle;
+      icon?: LMIconProps;
+      onTap?: (value?: any) => void;
+      placement?: "start" | "end";
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
     footerBoxStyle?: ViewStyle;
   };
   postContent?: {
     textStyle?: TextStyle;
-    linkStyle?: TextStyle;
     visibleLines?: number;
     showMoreText?: LMTextProps;
     postContentViewStyle?: ViewStyle;
@@ -83,6 +117,14 @@ interface PostListStyleProps {
       errorWidget?: React.ReactNode;
       showCancel?: boolean;
       onCancel?: () => void;
+      cancelButton?: {
+        text?: LMTextProps;
+        icon?: LMIconProps;
+        onTap?: (value?: any) => void;
+        placement?: "start" | "end";
+        buttonStyle?: ViewStyle;
+        isClickable?: boolean;
+      };
     };
     video?: {
       height?: number;
@@ -95,70 +137,35 @@ interface PostListStyleProps {
       looping?: boolean;
       loaderWidget?: React.ReactNode;
       errorWidget?: React.ReactNode;
-      playButton?: LMButtonProps;
-      pauseButton?: LMButtonProps;
+      playButton?: React.ReactNode;
+      pauseButton?: React.ReactNode;
       autoPlay?: boolean;
       showCancel?: boolean;
       onCancel?: () => void;
+      cancelButton?: {
+        text?: LMTextProps;
+        icon?: LMIconProps;
+        onTap?: (value?: any) => void;
+        placement?: "start" | "end";
+        buttonStyle?: ViewStyle;
+        isClickable?: boolean;
+      };
     };
     carousel?: {
       carouselStyle?: ViewStyle;
       paginationBoxStyle?: ViewStyle;
       activeIndicatorStyle?: ViewStyle;
       inactiveIndicatorStyle?: ViewStyle;
-      imageItem?: {
-        height?: number;
-        width?: number;
-        imageStyle?: ImageStyle;
-        boxFit?: "center" | "contain" | "cover" | "repeat" | "stretch";
-        boxStyle?: ViewStyle;
-        aspectRatio?:
-          | 0
-          | 0.1
-          | 0.2
-          | 0.3
-          | 0.4
-          | 0.5
-          | 0.6
-          | 0.7
-          | 0.8
-          | 0.9
-          | 1;
-        loaderWidget?: React.ReactNode;
-        errorWidget?: React.ReactNode;
-        showCancel?: boolean;
-        onCancel?: () => void;
-      };
-      videoItem?: {
-        height?: number;
-        width?: number;
-        videoStyle?: ViewStyle;
-        boxFit?: "stretch" | "contain" | "cover" | "none";
-        boxStyle?: ViewStyle;
-        aspectRatio?:
-          | 0
-          | 0.1
-          | 0.2
-          | 0.3
-          | 0.4
-          | 0.5
-          | 0.6
-          | 0.7
-          | 0.8
-          | 0.9
-          | 1;
-        showControls?: boolean;
-        looping?: boolean;
-        loaderWidget?: React.ReactNode;
-        errorWidget?: React.ReactNode;
-        playButton?: LMButtonProps;
-        pauseButton?: LMButtonProps;
-        autoPlay?: boolean;
-        showCancel?: boolean;
-        onCancel?: () => void;
-      };
       showCancel?: boolean;
       onCancel?: () => void;
+      cancelButton?: {
+        text?: LMTextProps;
+        icon?: LMIconProps;
+        onTap?: (value?: any) => void;
+        placement?: "start" | "end";
+        buttonStyle?: ViewStyle;
+        isClickable?: boolean;
+      };
     };
     document?: {
       documentIcon?: LMIconProps;
@@ -173,8 +180,18 @@ interface PostListStyleProps {
       showCancel?: boolean;
       onCancel?: () => void;
       showMoreText?: boolean;
+      showMoreTextStyle?: TextStyle;
+      cancelButton?: {
+        text?: LMTextProps;
+        icon?: LMIconProps;
+        onTap?: (value?: any) => void;
+        placement?: "start" | "end";
+        buttonStyle?: ViewStyle;
+        isClickable?: boolean;
+      };
     };
     linkPreview?: {
+      onTap?: ()=> void;
       showLinkUrl?: boolean;
       linkPreviewBoxStyle?: ViewStyle;
       linkTitleStyle?: TextStyle;
@@ -186,6 +203,14 @@ interface PostListStyleProps {
       showTitle?: boolean;
       showCancel?: boolean;
       onCancel?: () => void;
+      cancelButton?: {
+        text?: LMTextProps;
+        icon?: LMIconProps;
+        onTap?: (value?: any) => void;
+        placement?: "start" | "end";
+        buttonStyle?: ViewStyle;
+        isClickable?: boolean;
+      };
     };
   };
   noPostView?: ViewStyle;
@@ -240,7 +265,7 @@ interface PostDetailStyleProps {
     autoFocus?: boolean;
     plainTextStyle?: TextStyle;
     mentionTextStyle?: TextStyle;
-    multilineField?: boolean
+    multilineField?: boolean;
   };
 }
 
@@ -257,7 +282,7 @@ interface CreatePostStyleProps {
     autoFocus?: boolean;
     plainTextStyle?: TextStyle;
     mentionTextStyle?: TextStyle;
-    multilineField?: boolean
+    multilineField?: boolean;
   };
 }
 
@@ -272,7 +297,7 @@ export interface ThemeContextProps {
   loaderStyle?: LoaderStyleProps;
   postDetailStyle?: PostDetailStyleProps;
   createPostStyle?: CreatePostStyleProps;
-  postLikesListStyle?: PostLikesListStyleProps
+  postLikesListStyle?: PostLikesListStyleProps;
 }
 
 export interface LMFeedProviderProps {
@@ -286,5 +311,5 @@ export interface LMFeedProviderProps {
   loaderStyle?: LoaderStyleProps;
   postDetailStyle?: PostDetailStyleProps;
   createPostStyle?: CreatePostStyleProps;
-  postLikesListStyle?: PostLikesListStyleProps
+  postLikesListStyle?: PostLikesListStyleProps;
 }

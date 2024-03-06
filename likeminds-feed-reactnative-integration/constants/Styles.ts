@@ -14,7 +14,12 @@ export class STYLES {
     MSG: "#777e8e",
     FONT_PRIMARY: "hsl(222, 53%, 15%)",
     JOINED_BTN: "hsl(222, 22%, 93%)",
-    RED: "red",
+    WHITE: '#ffffff',
+    BLACK: '#000000',
+    THEME: '#5046E5',
+    TEXT_COLOR: '#484F67',
+    LIGHT_GREY: '#e0e0e0',
+    RED: '#ff0000',
     whiteTextColor: '#ffffff',
     darkTextColor: '#000000',
     lightGreyTextColor: '#00000077',
@@ -29,10 +34,12 @@ export class STYLES {
     XL: 18,
     XXL: 20,
   };
-  static $FONT_WEIGHTS = {
-    LIGHT: "200" as const,
-    MEDIUM: "500" as const,
-    BOLD: "700" as const,
+  static $FONT_WEIGHT ={
+    LIGHT: '300' as const,
+    REGULAR: '400' as const,
+    MEDIUM: '500' as const ,
+    BOLD: '600' as const,
+    BOLDER: '700' as const
   };
   static $FONT_TYPES = {
     LIGHT: "SofiaPro-Light",

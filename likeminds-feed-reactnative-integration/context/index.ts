@@ -15,6 +15,7 @@ import {
 } from "./postDetailContext";
 import { CreatePostContextProvider, CreatePostContextValues, useCreatePostContext } from "./createPostContext";
 import { PostLikesListContextProvider, PostLikesListContextValues, usePostLikesListContext } from "./postLikesListContext";
+import { LMPostContextProvider, LMPostContextValues, useLMPostContext } from "./postItemContext";
 export {
   UniversalFeedContextProvider,
   UniversalFeedContextValues,
@@ -30,5 +31,8 @@ export {
   useCreatePostContext,
   PostLikesListContextProvider,
   PostLikesListContextValues,
-  usePostLikesListContext
+  usePostLikesListContext,
+  LMPostContextProvider,
+  LMPostContextValues,
+  useLMPostContext
 };

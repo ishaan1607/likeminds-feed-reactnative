@@ -13,6 +13,8 @@ import {uploadFilesToAWS} from './uploadFilesToAWS';
 import {selectDocument, selectImageVideo} from './mediaSelection';
 import {detectURLs} from './detectLinks';
 import NetworkUtil from './NetworkUtil';
+import decode from './decodeMentions';
+import { formatBytes } from './formatBytes';
 
 export {
   detectMentions,
@@ -30,5 +32,7 @@ export {
   selectDocument,
   selectImageVideo,
   detectURLs,
-  NetworkUtil
+  NetworkUtil,
+  decode,
+  formatBytes
 };

@@ -1,11 +1,5 @@
 import { View, SafeAreaView, FlatList } from "react-native";
 import React from "react";
-import {
-  LMHeader,
-  LMLikeUI,
-  LMMemberListItem,
-  LMLoader,
-} from "@likeminds.community/feed-rn-ui";
 import { styles } from "./styles";
 import {
   PostLikesListContextProvider,
@@ -13,6 +7,8 @@ import {
   usePostLikesListContext,
 } from "../../context";
 import { useLMFeedStyles } from "../../lmFeedProvider";
+import { LMHeader, LMLoader, LMMemberListItem } from "../../components";
+import { LMLikeUI } from "../../models";
 
 const PostLikesList = ({ navigation, route, children }) => {
   return (

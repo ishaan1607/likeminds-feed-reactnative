@@ -8,7 +8,6 @@ import React, {
   useState,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { LMLoader, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import {
   getFeed,
   likePost,
@@ -42,6 +41,8 @@ import { useLMFeedStyles } from "../lmFeedProvider";
 import { showToastMessage } from "../store/actions/toast";
 import { RootStackParamList } from "../models/RootStackParamsList";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { LMPostUI } from "../models";
+import { LMLoader } from "../components";
 
 interface PostListContextProps {
   children: ReactNode;

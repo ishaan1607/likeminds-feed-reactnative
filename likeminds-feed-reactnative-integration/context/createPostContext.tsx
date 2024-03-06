@@ -10,12 +10,6 @@ import React, {
   MutableRefObject,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import {
-  LMAttachmentUI,
-  LMOGTagsUI,
-  LMPostUI,
-  LMUserUI,
-} from "@likeminds.community/feed-rn-ui";
 import { Platform, TextInput } from "react-native";
 import {
   detectMentions,
@@ -53,6 +47,7 @@ import { getPost, getTaggingList } from "../store/actions/postDetail";
 import { showToastMessage } from "../store/actions/toast";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../models/RootStackParamsList";
+import { LMAttachmentUI, LMOGTagsUI, LMPostUI, LMUserUI } from "../models";
 
 interface CreatePostContextProps {
   children: ReactNode;
