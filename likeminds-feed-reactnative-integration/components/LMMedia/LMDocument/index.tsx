@@ -216,7 +216,6 @@ const LMDocument = React.memo(
                         buttonStyle={styles.cancelButton}
                         icon={{
                           assetPath: require("../../../assets/images/crossCircle_icon3x.png"),
-                          type: "png",
                           height: 22,
                           width: 22,
                         }}

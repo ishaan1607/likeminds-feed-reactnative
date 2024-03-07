@@ -33,9 +33,23 @@ import {
   useCreatePostContext,
 } from "../../context";
 import { useLMFeedStyles } from "../../lmFeedProvider";
-import { LMButton, LMIcon, LMInputText, LMProfilePicture, LMText } from "../../uiComponents";
+import {
+  LMButton,
+  LMIcon,
+  LMInputText,
+  LMProfilePicture,
+  LMText,
+} from "../../uiComponents";
 import { LMUserUI } from "../../models";
-import { LMCarousel, LMDocument, LMHeader, LMImage, LMLinkPreview, LMLoader, LMVideo } from "../../components";
+import {
+  LMCarousel,
+  LMDocument,
+  LMHeader,
+  LMImage,
+  LMLinkPreview,
+  LMLoader,
+  LMVideo,
+} from "../../components";
 
 const CreatePost = ({ navigation, route, children }) => {
   return (
@@ -123,20 +137,21 @@ const CreatePostComponent = React.memo(() => {
         {/* text input field */}
         <LMInputText
           {...createPostStyle?.createPostTextInputStyle}
-          placeholderText={CREATE_POST_PLACEHOLDER_TEXT}
-          placeholderTextColor="#0F1E3D66"
-          inputTextStyle={styles.textInputView}
-          multilineField
+          placeholderText={createPostStyle?.createPostTextInputStyle?.placeholderText ? createPostStyle?.createPostTextInputStyle?.placeholderText :CREATE_POST_PLACEHOLDER_TEXT}
+          placeholderTextColor={createPostStyle?.createPostTextInputStyle?.placeholderTextColor ? createPostStyle?.createPostTextInputStyle?.placeholderTextColor :"#0F1E3D66"}
+          inputTextStyle={[styles.textInputView, createPostStyle?.createPostTextInputStyle?.inputTextStyle]}
+          multilineField ={createPostStyle?.createPostTextInputStyle?.multilineField != undefined ? createPostStyle?.createPostTextInputStyle?.multilineField : true}
           inputRef={myRef}
           inputText={postContentText}
           onType={handleInputChange}
           autoFocus={postToEdit ? true : false}
-          textValueStyle={{ fontSize: 16 }}
+          textValueStyle={createPostStyle?.createPostTextInputStyle?.textValueStyle ? createPostStyle?.createPostTextInputStyle?.textValueStyle :{ fontSize: 16 }}
           partTypes={[
             {
               trigger: "@", // Should be a single character like '@' or '#'
               textStyle: {
                 color: "#007AFF",
+                ...createPostStyle?.createPostTextInputStyle?.mentionTextStyle
               }, // The mention style in the input
             },
           ]}
@@ -292,7 +307,6 @@ const CreatePostComponent = React.memo(() => {
               }
               icon={{
                 assetPath: require("../../assets/images/plusAdd_icon3x.png"),
-                type: "png",
                 height: 20,
                 width: 20,
               }}
@@ -329,10 +343,25 @@ const CreatePostComponent = React.memo(() => {
   return (
     <SafeAreaView style={styles.container}>
       {/* screen header section*/}
-      <LMHeader
-        showBackArrow
-        onBackPress={() => navigation.goBack()}
-        heading={postToEdit ? "Edit Post" : "Create a Post"}
+      <LMHeader {...createPostStyle?.createPostScreenHeader}
+        showBackArrow={
+          createPostStyle?.createPostScreenHeader?.showBackArrow != undefined
+            ? createPostStyle?.createPostScreenHeader?.showBackArrow
+            : true
+        }
+        onBackPress={() => {
+          navigation.goBack();
+          createPostStyle?.createPostScreenHeader?.onBackPress && createPostStyle?.createPostScreenHeader?.onBackPress();
+        }}
+        heading={
+          postToEdit
+            ? createPostStyle?.createPostScreenHeader?.editPostHeading
+              ? createPostStyle?.createPostScreenHeader?.editPostHeading
+              : "Edit Post"
+            : createPostStyle?.createPostScreenHeader?.createPostHeading
+            ? createPostStyle?.createPostScreenHeader?.createPostHeading
+            : "Create a Post"
+        }
         rightComponent={
           // post button section
           <TouchableOpacity
@@ -348,9 +377,7 @@ const CreatePostComponent = React.memo(() => {
                 : true
             }
             style={
-              createPostStyle?.createPostTextStyle
-                ? createPostStyle?.createPostTextStyle
-                : postToEdit
+              postToEdit
                 ? styles.enabledOpacity
                 : allAttachment?.length > 0 ||
                   formattedLinkAttachments?.length > 0 ||
@@ -360,9 +387,13 @@ const CreatePostComponent = React.memo(() => {
             }
             onPress={() => checkNetInfo()}
           >
-            <Text style={styles.headerRightComponentText}>
-              {postToEdit ? SAVE_POST_TEXT : ADD_POST_TEXT}
-            </Text>
+            {createPostStyle?.createPostScreenHeader?.rightComponent ? (
+              createPostStyle?.createPostScreenHeader?.rightComponent
+            ) : (
+              <Text style={styles.headerRightComponentText}>
+                {postToEdit ? SAVE_POST_TEXT : ADD_POST_TEXT}
+              </Text>
+            )}
           </TouchableOpacity>
         }
       />
@@ -379,58 +410,65 @@ const CreatePostComponent = React.memo(() => {
       )}
       {/* selection options section */}
       {!postToEdit && showOptions && (
-        <View>
-          <View style={styles.selectionOptionsView}>
+          <View style={[styles.selectionOptionsView, createPostStyle?.attachmentOptionsStyle?.attachmentOptionsView]}>
             {/* add photos button */}
             <TouchableOpacity
               activeOpacity={0.8}
-              style={styles.optionItemView}
+              style={[styles.optionItemView, createPostStyle?.attachmentOptionsStyle?.photoAttachmentView]}
               onPress={() => {
                 handleGallery(SELECT_IMAGE);
+                createPostStyle?.attachmentOptionsStyle?.onPhotoAttachmentOptionClick && createPostStyle?.attachmentOptionsStyle?.onPhotoAttachmentOptionClick()
               }}
             >
               <LMIcon
                 assetPath={require("../../assets/images/gallery_icon3x.png")}
+                {...createPostStyle?.attachmentOptionsStyle?.photoAttachmentIcon}
               />
               <LMText
                 children={<Text>{ADD_IMAGES}</Text>}
                 textStyle={styles.selectionOptionstext}
+                {...createPostStyle?.attachmentOptionsStyle?.photoAttachmentTextStyle}
               />
             </TouchableOpacity>
             {/* add video button */}
             <TouchableOpacity
               activeOpacity={0.8}
-              style={styles.optionItemView}
+              style={[styles.optionItemView, createPostStyle?.attachmentOptionsStyle?.videoAttachmentView]}
               onPress={() => {
                 handleGallery(SELECT_VIDEO);
+                createPostStyle?.attachmentOptionsStyle?.onVideoAttachmentOptionClick && createPostStyle?.attachmentOptionsStyle?.onVideoAttachmentOptionClick()
               }}
             >
               <LMIcon
                 assetPath={require("../../assets/images/video_icon3x.png")}
+                {...createPostStyle?.attachmentOptionsStyle?.videoAttachmentIcon}
               />
               <LMText
                 children={<Text>{ADD_VIDEOS}</Text>}
                 textStyle={styles.selectionOptionstext}
+                {...createPostStyle?.attachmentOptionsStyle?.videoAttachmentTextStyle}
               />
             </TouchableOpacity>
             {/* add files button */}
             <TouchableOpacity
               activeOpacity={0.8}
-              style={styles.optionItemView}
+              style={[styles.optionItemView, createPostStyle?.attachmentOptionsStyle?.filesAttachmentView]}
               onPress={() => {
                 handleDocument();
+                createPostStyle?.attachmentOptionsStyle?.onFilesAttachmentOptionClick && createPostStyle?.attachmentOptionsStyle?.onFilesAttachmentOptionClick()
               }}
             >
               <LMIcon
                 assetPath={require("../../assets/images/paperClip_icon3x.png")}
+                {...createPostStyle?.attachmentOptionsStyle?.filesAttachmentIcon}
               />
               <LMText
                 children={<Text>{ADD_FILES}</Text>}
                 textStyle={styles.selectionOptionstext}
+                {...createPostStyle?.attachmentOptionsStyle?.filesAttachmentTextStyle}
               />
             </TouchableOpacity>
           </View>
-        </View>
       )}
     </SafeAreaView>
   );

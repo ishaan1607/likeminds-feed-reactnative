@@ -2,7 +2,12 @@ import React from "react";
 import { LMFeedClient } from "@likeminds.community/feed-js";
 import { ViewStyle, TextStyle, ImageProps, ImageStyle } from "react-native";
 import { LMHeaderProps, LMLoaderProps } from "../components";
-import { LMButtonProps, LMIconProps, LMProfilePictureProps, LMTextProps } from "../uiComponents";
+import {
+  LMButtonProps,
+  LMIconProps,
+  LMProfilePictureProps,
+  LMTextProps,
+} from "../uiComponents";
 
 interface TextStyles {
   fontSize: number;
@@ -191,7 +196,7 @@ interface PostListStyleProps {
       };
     };
     linkPreview?: {
-      onTap?: ()=> void;
+      onTap?: () => void;
       showLinkUrl?: boolean;
       linkPreviewBoxStyle?: ViewStyle;
       linkTitleStyle?: TextStyle;
@@ -227,14 +232,17 @@ interface LoaderStyleProps {
 interface PostDetailStyleProps {
   screenHeader?: LMHeaderProps;
   commentItemStyle?: {
-    likeIconButton?: LMButtonProps;
-    likeTextButton?: LMButtonProps;
     onTapViewMore?: () => void;
-    menuIcon?: LMButtonProps;
     commentUserNameStyle?: TextStyle;
     commentContentProps?: LMTextProps;
-    showMoreProps?: LMTextProps;
-    replyTextProps?: LMButtonProps;
+    replyTextProps?: {
+      text?: LMTextProps;
+      icon?: LMIconProps;
+      onTap?: (value?: any) => void;
+      placement?: "start" | "end";
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
     repliesCountTextStyle?: TextStyle;
     timeStampStyle?: TextStyle;
     viewMoreRepliesProps?: LMTextProps;
@@ -252,18 +260,22 @@ interface PostDetailStyleProps {
   userTaggingListStyle?: {
     taggingListView?: ViewStyle;
     userTagView?: ViewStyle;
-    userTagProfileImageStyle?: LMProfilePictureProps;
     userTagNameStyle?: TextStyle;
   };
   commentTextInputStyle?: {
-    containerStyle?: ViewStyle;
     inputTextStyle?: TextStyle;
     placeholderText?: string;
     placeholderTextColor?: string;
     disabled?: boolean;
-    rightIcon?: LMButtonProps;
-    autoFocus?: boolean;
-    plainTextStyle?: TextStyle;
+    rightIcon?: {
+      text?: LMTextProps;
+      icon?: LMIconProps;
+      onTap?: (value?: any) => void;
+      placement?: "start" | "end";
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
+    textValueStyle?: TextStyle;
     mentionTextStyle?: TextStyle;
     multilineField?: boolean;
   };
@@ -271,19 +283,51 @@ interface PostDetailStyleProps {
 
 interface CreatePostStyleProps {
   userNameTextStyle?: TextStyle;
-  createPostTextStyle?: TextStyle;
+  createPostScreenHeader?: {
+    showBackArrow?: boolean;
+    onBackPress?: () => void;
+    editPostHeading?: string;
+    createPostHeading?: string;
+    rightComponent?: React.ReactNode;
+    subHeading?: string;
+    backIcon?: LMIconProps;
+    subHeadingTextStyle?: TextStyle;
+    headingTextStyle?: TextStyle;
+    headingViewStyle?: ViewStyle;
+  };
   createPostTextInputStyle?: {
-    containerStyle?: ViewStyle;
     inputTextStyle?: TextStyle;
     placeholderText?: string;
     placeholderTextColor?: string;
     disabled?: boolean;
-    rightIcon?: LMButtonProps;
-    autoFocus?: boolean;
-    plainTextStyle?: TextStyle;
+    rightIcon?: {
+      text?: LMTextProps;
+      icon?: LMIconProps;
+      onTap?: (value?: any) => void;
+      placement?: "start" | "end";
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
+    textValueStyle?: TextStyle;
     mentionTextStyle?: TextStyle;
     multilineField?: boolean;
   };
+  attachmentOptionsStyle?: {
+    attachmentOptionsView?: ViewStyle;
+    photoAttachmentView?: ViewStyle;
+    photoAttachmentIcon?: LMIconProps;
+    photoAttachmentTextStyle?: LMTextProps;
+    onPhotoAttachmentOptionClick?: () => void;
+    videoAttachmentView?: ViewStyle;
+    videoAttachmentIcon?: LMIconProps;
+    videoAttachmentTextStyle?: LMTextProps;
+    onVideoAttachmentOptionClick?: () => void;
+    filesAttachmentView?: ViewStyle;
+    filesAttachmentIcon?: LMIconProps;
+    filesAttachmentTextStyle?: LMTextProps;
+    onFilesAttachmentOptionClick?: () => void;
+  };
+  // mediaattachments, addmoreButton
 }
 
 interface PostLikesListStyleProps {

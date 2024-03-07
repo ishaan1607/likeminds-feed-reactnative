@@ -126,7 +126,6 @@ const LMVideo = React.memo(
                 buttonStyle={defaultStyles.cancelButtonStyle}
                 icon={{
                   assetPath: require("../../../assets/images/crossCircle_icon3x.png"),
-                  type: "png",
                   height: 22,
                   width: 22,
                 }}

@@ -154,7 +154,7 @@ const LMInputText: FC<LMInputTextProps> = React.memo(({
         keyboardType={keyboardType ? keyboardType : "default"}
         multiline={multilineField ? multilineField : false}
         secureTextEntry={secureText ? secureText : false}
-        editable={disabled ? disabled : true}
+        editable={disabled != undefined ? !disabled : true}
       >
         <Text style={textValueStyle}>
           {parts.map(({ text, partType, data }, index) =>
@@ -178,12 +178,11 @@ const LMInputText: FC<LMInputTextProps> = React.memo(({
           onTap={rightIcon.onTap}
           text={rightIcon.text}
           icon={{
-            type: "png",
             assetPath: rightIcon.icon?.assetPath,
             ...rightIcon.icon,
           }}
           placement={rightIcon.placement}
-          buttonStyle={defaultStyles.rightIconButton}
+          buttonStyle={StyleSheet.flatten([defaultStyles.rightIconButton, rightIcon?.buttonStyle])}
         />
       )}
     </View>
