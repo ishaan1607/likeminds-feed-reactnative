@@ -428,7 +428,7 @@ const PostDetailComponent = React.memo(() => {
                   : Layout.normalize(64),
                 maxHeight: 300,
               },
-              postDetailStyle?.userTaggingListStyle?.taggingListView,
+              postDetailStyle?.userTaggingListStyle?.taggingListView
             ]}
           >
             <FlatList
@@ -450,7 +450,7 @@ const PostDetailComponent = React.memo(() => {
                     }}
                     style={[
                       styles.taggingListItem,
-                      postDetailStyle?.userTaggingListStyle?.userTagView,
+                      postDetailStyle?.userTaggingListStyle?.userTagView
                     ]}
                     key={item?.id}
                   >

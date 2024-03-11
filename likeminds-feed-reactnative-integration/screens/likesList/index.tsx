@@ -26,16 +26,32 @@ const PostLikesListComponent = React.memo(() => {
   const { totalLikes, postLike, navigation }: PostLikesListContextValues =
     usePostLikesListContext();
   const LMFeedContextStyles = useLMFeedStyles();
-  const { postListStyle ,postLikesListStyle} = LMFeedContextStyles;
+  const { postListStyle, postLikesListStyle } = LMFeedContextStyles;
   return (
     <SafeAreaView style={styles.mainContainer}>
       <LMHeader
-        showBackArrow
-        heading="Likes"
-        subHeading={
-          totalLikes > 1 ? `${totalLikes} likes` : `${totalLikes} like`
+        {...postLikesListStyle?.screenHeader}
+        showBackArrow={
+          postLikesListStyle?.screenHeader?.showBackArrow != undefined
+            ? postLikesListStyle?.screenHeader?.showBackArrow
+            : true
         }
-        onBackPress={() => navigation.goBack()}
+        heading={
+          postLikesListStyle?.screenHeader?.heading
+            ? postLikesListStyle?.screenHeader?.heading
+            : "Likes"
+        }
+        subHeading={
+          postLikesListStyle?.screenHeader?.subHeading
+            ? postLikesListStyle?.screenHeader?.subHeading
+            : totalLikes > 1
+            ? `${totalLikes} likes`
+            : `${totalLikes} like`
+        }
+        onBackPress={() => {
+          navigation.goBack();
+          postLikesListStyle?.screenHeader?.onBackPress();
+        }}
       />
       {/* post likes list */}
       {postLike?.length > 0 ? (
@@ -46,7 +62,11 @@ const PostLikesListComponent = React.memo(() => {
               <LMMemberListItem
                 likes={item}
                 profilePictureProps={postListStyle?.header?.profilePicture}
-                boxStyle = {postLikesListStyle?.likeListItemStyle}
+                boxStyle={postLikesListStyle?.likeListItemStyle}
+                nameProps={{ textStyle: postLikesListStyle?.userNameTextStyle }}
+                customTitleProps={{
+                  textStyle: postLikesListStyle?.userDesignationTextStyle,
+                }}
               />
             );
           }}

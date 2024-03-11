@@ -7,6 +7,7 @@ import {
   Pressable,
   FlatList,
   Alert,
+  StyleSheet,
 } from "react-native";
 import React from "react";
 import { NetworkUtil, nameInitials, replaceLastMention } from "../../utils";
@@ -66,7 +67,8 @@ const CreatePost = ({ navigation, route, children }) => {
 const CreatePostComponent = React.memo(() => {
   const dispatch = useAppDispatch();
   const LMFeedContextStyles = useLMFeedStyles();
-  const { postListStyle, createPostStyle } = LMFeedContextStyles;
+  const { postListStyle, createPostStyle, postDetailStyle } =
+    LMFeedContextStyles;
   const {
     navigation,
     postToEdit,
@@ -137,21 +139,41 @@ const CreatePostComponent = React.memo(() => {
         {/* text input field */}
         <LMInputText
           {...createPostStyle?.createPostTextInputStyle}
-          placeholderText={createPostStyle?.createPostTextInputStyle?.placeholderText ? createPostStyle?.createPostTextInputStyle?.placeholderText :CREATE_POST_PLACEHOLDER_TEXT}
-          placeholderTextColor={createPostStyle?.createPostTextInputStyle?.placeholderTextColor ? createPostStyle?.createPostTextInputStyle?.placeholderTextColor :"#0F1E3D66"}
-          inputTextStyle={[styles.textInputView, createPostStyle?.createPostTextInputStyle?.inputTextStyle]}
-          multilineField ={createPostStyle?.createPostTextInputStyle?.multilineField != undefined ? createPostStyle?.createPostTextInputStyle?.multilineField : true}
+          placeholderText={
+            createPostStyle?.createPostTextInputStyle?.placeholderText
+              ? createPostStyle?.createPostTextInputStyle?.placeholderText
+              : CREATE_POST_PLACEHOLDER_TEXT
+          }
+          placeholderTextColor={
+            createPostStyle?.createPostTextInputStyle?.placeholderTextColor
+              ? createPostStyle?.createPostTextInputStyle?.placeholderTextColor
+              : "#0F1E3D66"
+          }
+          inputTextStyle={[
+            styles.textInputView,
+            createPostStyle?.createPostTextInputStyle?.inputTextStyle,
+          ]}
+          multilineField={
+            createPostStyle?.createPostTextInputStyle?.multilineField !=
+            undefined
+              ? createPostStyle?.createPostTextInputStyle?.multilineField
+              : true
+          }
           inputRef={myRef}
           inputText={postContentText}
           onType={handleInputChange}
           autoFocus={postToEdit ? true : false}
-          textValueStyle={createPostStyle?.createPostTextInputStyle?.textValueStyle ? createPostStyle?.createPostTextInputStyle?.textValueStyle :{ fontSize: 16 }}
+          textValueStyle={
+            createPostStyle?.createPostTextInputStyle?.textValueStyle
+              ? createPostStyle?.createPostTextInputStyle?.textValueStyle
+              : { fontSize: 16 }
+          }
           partTypes={[
             {
               trigger: "@", // Should be a single character like '@' or '#'
               textStyle: {
                 color: "#007AFF",
-                ...createPostStyle?.createPostTextInputStyle?.mentionTextStyle
+                ...createPostStyle?.createPostTextInputStyle?.mentionTextStyle,
               }, // The mention style in the input
             },
           ]}
@@ -165,6 +187,7 @@ const CreatePostComponent = React.memo(() => {
               {
                 height: userTaggingListHeight,
               },
+              postDetailStyle?.userTaggingListStyle?.taggingListView,
             ]}
           >
             <FlatList
@@ -185,21 +208,44 @@ const CreatePostComponent = React.memo(() => {
                       setAllTags([]);
                       setIsUserTagging(false);
                     }}
-                    style={styles.taggingListItem}
+                    style={[
+                      styles.taggingListItem,
+                      postDetailStyle?.userTaggingListStyle?.userTagView,
+                    ]}
                     key={item?.id}
                   >
                     <LMProfilePicture
+                      {...postListStyle?.header?.profilePicture}
                       fallbackText={{
-                        children: <Text>{nameInitials(item?.name)}</Text>,
+                        ...postListStyle?.header?.profilePicture?.fallbackText,
+                        children: postListStyle?.header?.profilePicture
+                          ?.fallbackText?.children ? (
+                          postListStyle?.header?.profilePicture?.fallbackText
+                            ?.children
+                        ) : (
+                          <Text>{nameInitials(item?.name)}</Text>
+                        ),
                       }}
-                      fallbackTextBoxStyle={styles.taggingListProfileBoxStyle}
-                      size={40}
+                      fallbackTextBoxStyle={[
+                        styles.taggingListProfileBoxStyle,
+                        postListStyle?.header?.profilePicture
+                          ?.fallbackTextBoxStyle,
+                      ]}
+                      size={
+                        postListStyle?.header?.profilePicture?.size
+                          ? postListStyle?.header?.profilePicture?.size
+                          : 40
+                      }
                     />
                     <View style={styles.taggingListItemTextView}>
                       <LMText
                         children={<Text>{item?.name}</Text>}
                         maxLines={1}
-                        textStyle={styles.taggingListText}
+                        textStyle={[
+                          styles.taggingListText,
+                          postDetailStyle?.userTaggingListStyle
+                            ?.userTagNameStyle,
+                        ]}
                       />
                     </View>
                   </Pressable>
@@ -237,10 +283,19 @@ const CreatePostComponent = React.memo(() => {
           ) : formattedMediaAttachments ? (
             formattedMediaAttachments?.length > 1 ? (
               <LMCarousel
+                {...postListStyle?.media?.carousel}
                 attachments={formattedMediaAttachments}
-                showCancel={postToEdit ? false : true}
-                videoItem={{ videoUrl: "", showControls: true }}
-                onCancel={(index) => removeMediaAttachment(index)}
+                showCancel={
+                  postListStyle?.media?.carousel?.showCancel != undefined
+                    ? postListStyle?.media?.carousel?.showCancel
+                    : postToEdit
+                    ? false
+                    : true
+                }
+                onCancel={(index) => {
+                  removeMediaAttachment(index);
+                  postListStyle?.media?.carousel?.onCancel();
+                }}
               />
             ) : (
               <>
@@ -248,20 +303,48 @@ const CreatePostComponent = React.memo(() => {
                 {formattedMediaAttachments[0]?.attachmentType ===
                   IMAGE_ATTACHMENT_TYPE && (
                   <LMImage
+                    {...postListStyle?.media?.image}
                     imageUrl={`${formattedMediaAttachments[0]?.attachmentMeta.url}`}
-                    showCancel={postToEdit ? false : true}
-                    onCancel={() => removeSingleAttachment()}
+                    showCancel={
+                      postListStyle?.media?.image?.showCancel != undefined
+                        ? postListStyle?.media?.image?.showCancel
+                        : postToEdit
+                        ? false
+                        : true
+                    }
+                    onCancel={() => {
+                      removeSingleAttachment();
+                      postListStyle?.media?.image?.onCancel();
+                    }}
                   />
                 )}
                 {/* single video selected section  */}
                 {formattedMediaAttachments[0]?.attachmentType ===
                   VIDEO_ATTACHMENT_TYPE && (
                   <LMVideo
+                    {...postListStyle?.media?.video}
                     videoUrl={`${formattedMediaAttachments[0]?.attachmentMeta.url}`}
-                    showCancel={postToEdit ? false : true}
-                    showControls
-                    looping={false}
-                    onCancel={() => removeSingleAttachment()}
+                    showCancel={
+                      postListStyle?.media?.video?.showCancel != undefined
+                        ? postListStyle?.media?.video?.showCancel
+                        : postToEdit
+                        ? false
+                        : true
+                    }
+                    showControls={
+                      postListStyle?.media?.video?.showControls != undefined
+                        ? postListStyle?.media?.video?.showControls
+                        : true
+                    }
+                    looping={
+                      postListStyle?.media?.video?.looping != undefined
+                        ? postListStyle?.media?.video?.looping
+                        : false
+                    }
+                    onCancel={() => {
+                      removeSingleAttachment();
+                      postListStyle?.media?.video?.onCancel();
+                    }}
                   />
                 )}
               </>
@@ -271,10 +354,24 @@ const CreatePostComponent = React.memo(() => {
           {formattedDocumentAttachments &&
             formattedDocumentAttachments.length >= 1 && (
               <LMDocument
+                {...postListStyle?.media?.document}
                 attachments={formattedDocumentAttachments}
-                showCancel={postToEdit ? false : true}
-                showMoreText={false}
-                onCancel={(index) => removeDocumentAttachment(index)}
+                showCancel={
+                  postListStyle?.media?.document?.showCancel != undefined
+                    ? postListStyle?.media?.document?.showCancel
+                    : postToEdit
+                    ? false
+                    : true
+                }
+                showMoreText={
+                  postListStyle?.media?.document?.showMoreText != undefined
+                    ? postListStyle?.media?.document?.showMoreText
+                    : false
+                }
+                onCancel={(index) => {
+                  removeDocumentAttachment(index);
+                  postListStyle?.media?.document?.onCancel();
+                }}
               />
             )}
           {/* added link preview section */}
@@ -283,12 +380,20 @@ const CreatePostComponent = React.memo(() => {
             showLinkPreview &&
             formattedLinkAttachments.length >= 1 && (
               <LMLinkPreview
+                {...postListStyle?.media?.linkPreview}
                 attachments={formattedLinkAttachments}
-                showCancel
+                showCancel={
+                  postListStyle?.media?.linkPreview?.showCancel != undefined
+                    ? postListStyle?.media?.linkPreview?.showCancel
+                    : postToEdit
+                    ? false
+                    : true
+                }
                 onCancel={() => {
                   setShowLinkPreview(false);
                   setClosedOnce(true);
                   setFormattedLinkAttachments([]);
+                  postListStyle?.media?.linkPreview?.onCancel();
                 }}
               />
             )}
@@ -298,23 +403,33 @@ const CreatePostComponent = React.memo(() => {
           allAttachment.length > 0 &&
           allAttachment.length < 10 && (
             <LMButton
-              onTap={
+              onTap={() => {
                 formattedMediaAttachments.length > 0
-                  ? () => handleGallery(SELECT_BOTH)
+                  ? handleGallery(SELECT_BOTH)
                   : formattedDocumentAttachments.length > 0
-                  ? () => handleDocument()
-                  : () => {}
-              }
+                  ? handleDocument()
+                  : {},
+                  createPostStyle?.addMoreAttachmentsButton?.onTap();
+              }}
               icon={{
                 assetPath: require("../../assets/images/plusAdd_icon3x.png"),
                 height: 20,
                 width: 20,
+                ...createPostStyle?.addMoreAttachmentsButton?.icon,
               }}
               text={{
                 children: <Text>{ADD_MORE_MEDIA}</Text>,
                 textStyle: styles.addMoreButtonText,
+                ...createPostStyle?.addMoreAttachmentsButton?.text,
               }}
-              buttonStyle={styles.addMoreButtonView}
+              buttonStyle={StyleSheet.flatten([
+                styles.addMoreButtonView,
+                createPostStyle?.addMoreAttachmentsButton?.buttonStyle,
+              ])}
+              placement={createPostStyle?.addMoreAttachmentsButton?.placement}
+              isClickable={
+                createPostStyle?.addMoreAttachmentsButton?.isClickable
+              }
             />
           )}
       </ScrollView>
@@ -343,7 +458,8 @@ const CreatePostComponent = React.memo(() => {
   return (
     <SafeAreaView style={styles.container}>
       {/* screen header section*/}
-      <LMHeader {...createPostStyle?.createPostScreenHeader}
+      <LMHeader
+        {...createPostStyle?.createPostScreenHeader}
         showBackArrow={
           createPostStyle?.createPostScreenHeader?.showBackArrow != undefined
             ? createPostStyle?.createPostScreenHeader?.showBackArrow
@@ -351,7 +467,8 @@ const CreatePostComponent = React.memo(() => {
         }
         onBackPress={() => {
           navigation.goBack();
-          createPostStyle?.createPostScreenHeader?.onBackPress && createPostStyle?.createPostScreenHeader?.onBackPress();
+          createPostStyle?.createPostScreenHeader?.onBackPress &&
+            createPostStyle?.createPostScreenHeader?.onBackPress();
         }}
         heading={
           postToEdit
@@ -410,65 +527,88 @@ const CreatePostComponent = React.memo(() => {
       )}
       {/* selection options section */}
       {!postToEdit && showOptions && (
-          <View style={[styles.selectionOptionsView, createPostStyle?.attachmentOptionsStyle?.attachmentOptionsView]}>
-            {/* add photos button */}
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={[styles.optionItemView, createPostStyle?.attachmentOptionsStyle?.photoAttachmentView]}
-              onPress={() => {
-                handleGallery(SELECT_IMAGE);
-                createPostStyle?.attachmentOptionsStyle?.onPhotoAttachmentOptionClick && createPostStyle?.attachmentOptionsStyle?.onPhotoAttachmentOptionClick()
-              }}
-            >
-              <LMIcon
-                assetPath={require("../../assets/images/gallery_icon3x.png")}
-                {...createPostStyle?.attachmentOptionsStyle?.photoAttachmentIcon}
-              />
-              <LMText
-                children={<Text>{ADD_IMAGES}</Text>}
-                textStyle={styles.selectionOptionstext}
-                {...createPostStyle?.attachmentOptionsStyle?.photoAttachmentTextStyle}
-              />
-            </TouchableOpacity>
-            {/* add video button */}
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={[styles.optionItemView, createPostStyle?.attachmentOptionsStyle?.videoAttachmentView]}
-              onPress={() => {
-                handleGallery(SELECT_VIDEO);
-                createPostStyle?.attachmentOptionsStyle?.onVideoAttachmentOptionClick && createPostStyle?.attachmentOptionsStyle?.onVideoAttachmentOptionClick()
-              }}
-            >
-              <LMIcon
-                assetPath={require("../../assets/images/video_icon3x.png")}
-                {...createPostStyle?.attachmentOptionsStyle?.videoAttachmentIcon}
-              />
-              <LMText
-                children={<Text>{ADD_VIDEOS}</Text>}
-                textStyle={styles.selectionOptionstext}
-                {...createPostStyle?.attachmentOptionsStyle?.videoAttachmentTextStyle}
-              />
-            </TouchableOpacity>
-            {/* add files button */}
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={[styles.optionItemView, createPostStyle?.attachmentOptionsStyle?.filesAttachmentView]}
-              onPress={() => {
-                handleDocument();
-                createPostStyle?.attachmentOptionsStyle?.onFilesAttachmentOptionClick && createPostStyle?.attachmentOptionsStyle?.onFilesAttachmentOptionClick()
-              }}
-            >
-              <LMIcon
-                assetPath={require("../../assets/images/paperClip_icon3x.png")}
-                {...createPostStyle?.attachmentOptionsStyle?.filesAttachmentIcon}
-              />
-              <LMText
-                children={<Text>{ADD_FILES}</Text>}
-                textStyle={styles.selectionOptionstext}
-                {...createPostStyle?.attachmentOptionsStyle?.filesAttachmentTextStyle}
-              />
-            </TouchableOpacity>
-          </View>
+        <View
+          style={[
+            styles.selectionOptionsView,
+            createPostStyle?.attachmentOptionsStyle?.attachmentOptionsView,
+          ]}
+        >
+          {/* add photos button */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={[
+              styles.optionItemView,
+              createPostStyle?.attachmentOptionsStyle?.photoAttachmentView,
+            ]}
+            onPress={() => {
+              handleGallery(SELECT_IMAGE);
+              createPostStyle?.attachmentOptionsStyle
+                ?.onPhotoAttachmentOptionClick &&
+                createPostStyle?.attachmentOptionsStyle?.onPhotoAttachmentOptionClick();
+            }}
+          >
+            <LMIcon
+              assetPath={require("../../assets/images/gallery_icon3x.png")}
+              {...createPostStyle?.attachmentOptionsStyle?.photoAttachmentIcon}
+            />
+            <LMText
+              children={<Text>{ADD_IMAGES}</Text>}
+              textStyle={styles.selectionOptionstext}
+              {...createPostStyle?.attachmentOptionsStyle
+                ?.photoAttachmentTextStyle}
+            />
+          </TouchableOpacity>
+          {/* add video button */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={[
+              styles.optionItemView,
+              createPostStyle?.attachmentOptionsStyle?.videoAttachmentView,
+            ]}
+            onPress={() => {
+              handleGallery(SELECT_VIDEO);
+              createPostStyle?.attachmentOptionsStyle
+                ?.onVideoAttachmentOptionClick &&
+                createPostStyle?.attachmentOptionsStyle?.onVideoAttachmentOptionClick();
+            }}
+          >
+            <LMIcon
+              assetPath={require("../../assets/images/video_icon3x.png")}
+              {...createPostStyle?.attachmentOptionsStyle?.videoAttachmentIcon}
+            />
+            <LMText
+              children={<Text>{ADD_VIDEOS}</Text>}
+              textStyle={styles.selectionOptionstext}
+              {...createPostStyle?.attachmentOptionsStyle
+                ?.videoAttachmentTextStyle}
+            />
+          </TouchableOpacity>
+          {/* add files button */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={[
+              styles.optionItemView,
+              createPostStyle?.attachmentOptionsStyle?.filesAttachmentView,
+            ]}
+            onPress={() => {
+              handleDocument();
+              createPostStyle?.attachmentOptionsStyle
+                ?.onFilesAttachmentOptionClick &&
+                createPostStyle?.attachmentOptionsStyle?.onFilesAttachmentOptionClick();
+            }}
+          >
+            <LMIcon
+              assetPath={require("../../assets/images/paperClip_icon3x.png")}
+              {...createPostStyle?.attachmentOptionsStyle?.filesAttachmentIcon}
+            />
+            <LMText
+              children={<Text>{ADD_FILES}</Text>}
+              textStyle={styles.selectionOptionstext}
+              {...createPostStyle?.attachmentOptionsStyle
+                ?.filesAttachmentTextStyle}
+            />
+          </TouchableOpacity>
+        </View>
       )}
     </SafeAreaView>
   );

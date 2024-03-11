@@ -327,11 +327,21 @@ interface CreatePostStyleProps {
     filesAttachmentTextStyle?: LMTextProps;
     onFilesAttachmentOptionClick?: () => void;
   };
-  // mediaattachments, addmoreButton
+  addMoreAttachmentsButton?: {
+    text?: LMTextProps;
+    icon?: LMIconProps;
+    onTap?: (value?: any) => void;
+    placement?: "start" | "end";
+    buttonStyle?: ViewStyle;
+    isClickable?: boolean;
+  };
 }
 
 interface PostLikesListStyleProps {
+  screenHeader?: LMHeaderProps;
   likeListItemStyle?: ViewStyle;
+  userNameTextStyle?: TextStyle;
+  userDesignationTextStyle?: TextStyle
 }
 
 export interface ThemeContextProps {
