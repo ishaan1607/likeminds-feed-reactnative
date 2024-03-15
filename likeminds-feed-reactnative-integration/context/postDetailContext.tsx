@@ -185,6 +185,8 @@ export interface PostDetailContextValues {
   handleInputChange: (event: string) => void;
   loadData: (newPage: number) => void;
   handleLoadMore: () => void;
+  showRepliesOfCommentId: string;
+  setShowRepliesOfCommentId: Dispatch<SetStateAction<string>>;
 }
 
 const PostDetailContext = createContext<PostDetailContextValues | undefined>(
@@ -251,6 +253,7 @@ export const PostDetailContextProvider = ({
     route.params[1] === NAVIGATED_FROM_COMMENT
   );
   const isKeyboardVisible = Keyboard.isVisible();
+  const [showRepliesOfCommentId, setShowRepliesOfCommentId] = useState('')
 
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle } = LMFeedContextStyles;
@@ -564,6 +567,7 @@ export const PostDetailContextProvider = ({
       tempId: `${-currentDate.getTime()}`,
       commentId: commentId,
     };
+    setShowRepliesOfCommentId(replyOnComment?.commentId)
     setCommentToAdd("");
     setReplyOnComment({ textInputFocus: false, commentId: "" });
     dispatch(replyCommentStateHandler({ payload, loggedInUser }));
@@ -870,6 +874,8 @@ export const PostDetailContextProvider = ({
     handleInputChange,
     loadData,
     handleLoadMore,
+    showRepliesOfCommentId,
+    setShowRepliesOfCommentId
   };
 
   return (

@@ -10,7 +10,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React,{useState} from "react";
 import { POST_LIKES_LIST, UNIVERSAL_FEED } from "../../constants/screenNames";
 import {
   COMMENT_LIKES,
@@ -99,6 +99,7 @@ const PostDetailComponent = React.memo(() => {
     myRef,
     keyboardFocusOnReply,
     setKeyboardFocusOnReply,
+    showRepliesOfCommentId
   }: PostDetailContextValues = usePostDetailContext();
 
   const LMFeedContextStyles = useLMFeedStyles();
@@ -204,6 +205,7 @@ const PostDetailComponent = React.memo(() => {
                         {item && (
                           <LMCommentItem
                             comment={item}
+                            isRepliesVisible={item?.id === showRepliesOfCommentId}
                             // this calls the getCommentsReplies function on click of number of child replies text
                             onTapReplies={(repliesResponseCallback) => {
                               dispatch(clearComments(item?.id));
@@ -561,6 +563,7 @@ const PostDetailComponent = React.memo(() => {
                   ? addNewReply(postDetail?.id, replyOnComment.commentId)
                   : addNewComment(postDetail?.id)
                 : {};
+              Keyboard.dismiss()
               setAllTags([]);
               setIsUserTagging(false);
             },

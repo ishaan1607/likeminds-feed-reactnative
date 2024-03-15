@@ -37,6 +37,7 @@ import { FlashList } from "@shopify/flash-list";
 import LMPost from "../../components/LMPost/LMPost";
 import { LMPostUI } from "../../models";
 import { LMLoader } from "../../components";
+import { autoPlayPostVideo } from "../../store/actions/feed";
 
 const PostsList = ({ route, children }: any) => {
   const {
@@ -102,16 +103,16 @@ const PostsListComponent = React.memo(() => {
             data={feedData}
             renderItem={({ item }: { item: LMPostUI }) => (
               <TouchableOpacity
-                disabled={
-                  item?.attachments &&
-                  item?.attachments?.filter(
-                    (media) =>
-                      media?.attachmentType === IMAGE_ATTACHMENT_TYPE ||
-                      media?.attachmentType === VIDEO_ATTACHMENT_TYPE
-                  ).length >= 2
-                    ? true
-                    : false
-                }
+                // disabled={
+                //   item?.attachments &&
+                //   item?.attachments?.filter(
+                //     (media) =>
+                //       media?.attachmentType === IMAGE_ATTACHMENT_TYPE ||
+                //       media?.attachmentType === VIDEO_ATTACHMENT_TYPE
+                //   ).length >= 2
+                //     ? true
+                //     : false
+                // }
                 activeOpacity={0.8}
                 style={{ backgroundColor: "#e0e0e0" }}
                 onPress={() => {
@@ -172,6 +173,16 @@ const PostsListComponent = React.memo(() => {
             }}
             keyExtractor={item => keyExtractor(item)}
             ListFooterComponent={<>{showLoader > 0 && renderLoader()}</>}
+            onViewableItemsChanged={({changed, viewableItems}) => {
+              if (changed) {
+                if (viewableItems) {
+                  dispatch(
+                    autoPlayPostVideo(viewableItems?.[0]?.item?.id) as any,
+                  );
+                }
+              }
+            }}
+            viewabilityConfig={{viewAreaCoveragePercentThreshold: 60}}
           />
         ) : (
           <View style={[styles.noDataView, postListStyle?.noPostView]}>

@@ -10,7 +10,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { LMCommentProps } from "./types";
 import { LMIcon, LMText, LMButton } from "../../uiComponents";
-import { MAX_DEFAULT_COMMENT_LINES, PARENT_LEVEL_COMMENT, VIEW_MORE_TEXT } from "../../constants/Strings";
+import {
+  MAX_DEFAULT_COMMENT_LINES,
+  PARENT_LEVEL_COMMENT,
+  VIEW_MORE_TEXT,
+} from "../../constants/Strings";
 import LMPostMenu from "../LMPost/LMPostMenu";
 import LMLoader from "../LMLoader";
 import { LMCommentUI } from "../../models";
@@ -35,8 +39,11 @@ const LMCommentItem = React.memo(
     viewMoreRepliesProps,
     onTapReplies,
     commentMenu,
+    isRepliesVisible,
   }: LMCommentProps) => {
-    const MAX_LINES = commentMaxLines ? commentMaxLines : MAX_DEFAULT_COMMENT_LINES;
+    const MAX_LINES = commentMaxLines
+      ? commentMaxLines
+      : MAX_DEFAULT_COMMENT_LINES;
     const [showText, setShowText] = useState(false);
     const [numberOfLines, setNumberOfLines] = useState<number>();
     const [showMoreButton, setShowMoreButton] = useState(false);
@@ -61,6 +68,13 @@ const LMCommentItem = React.memo(
         setNumberOfLines(MAX_LINES);
       }
     };
+
+    useEffect(() => {
+      if (isRepliesVisible) {
+        setShowReplies(true)
+        onTapReplies((data: Array<LMCommentUI>) => setRepliesArray(data));
+      }
+    }, [isRepliesVisible]);
 
     // this handles the visiblity of whole comment content and trimmed text upto maximum line
     useEffect(() => {
@@ -90,9 +104,15 @@ const LMCommentItem = React.memo(
 
     //creating show more props as per customization
     const updatedShowMoreProps = {
-          children: showMoreProps ? showMoreProps : showText ? <Text></Text> : <Text>See More</Text>,
-          textStyle: showMoreProps?.textStyle,
-        };
+      children: showMoreProps ? (
+        showMoreProps
+      ) : showText ? (
+        <Text></Text>
+      ) : (
+        <Text>See More</Text>
+      ),
+      textStyle: showMoreProps?.textStyle,
+    };
 
     const handleReplies = () => {
       setShowReplies(!showReplies);
@@ -129,7 +149,7 @@ const LMCommentItem = React.memo(
       } else {
         setCommentLikeCount(commentLikeCount + 1);
       }
-    };    
+    };
 
     return (
       <View
@@ -237,7 +257,7 @@ const LMCommentItem = React.memo(
                 />
                 {/* this opens the input text to reply */}
                 <LMButton
-                {...replyTextProps}
+                  {...replyTextProps}
                   text={{
                     children: replyTextProps ? (
                       replyTextProps.text?.children ? (
@@ -256,7 +276,10 @@ const LMCommentItem = React.memo(
                   onTap={() => {
                     replyTextProps?.onTap();
                   }}
-                  buttonStyle={StyleSheet.flatten([styles.replyTextButton, replyTextProps?.buttonStyle])}
+                  buttonStyle={StyleSheet.flatten([
+                    styles.replyTextButton,
+                    replyTextProps?.buttonStyle,
+                  ])}
                 />
 
                 {/* this shows all the replies of a comment */}
