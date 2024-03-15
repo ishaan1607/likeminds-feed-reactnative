@@ -1,5 +1,5 @@
 import {LMAttachmentMetaUI} from '@likeminds.community/feed-rn-ui';
-import {getAWS} from './AWSConfig';
+import {S3_BUCKET, getAWS} from './AWSConfig';
 
 // this function converts the image/video url to blob
 function uriToBlob(uri: string): Promise<Blob> {
@@ -34,7 +34,7 @@ export const uploadFilesToAWS = async (
   const mediaObject = getAWS()
     .upload({
       Key: `files/post/${userUniqueId}/${media.name}`,
-      Bucket: `${process.env.S3_BUCKET}`,
+      Bucket: `${S3_BUCKET}`,
       Body: blob,
       ACL: 'public-read-write',
       ContentType: media.format,

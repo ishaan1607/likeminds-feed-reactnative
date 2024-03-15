@@ -34,7 +34,6 @@ import {
   useUniversalFeedContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
-import { FlashList } from "@shopify/flash-list";
 
 const PostsList = ({ route, children }: any) => {
   const {

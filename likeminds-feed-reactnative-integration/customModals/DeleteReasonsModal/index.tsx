@@ -36,7 +36,7 @@ const DeleteReasonsModal = ({
     const reportTagsResponse = await dispatch(
       getReportTags(
         GetReportTagsRequest.builder().settype(payload.type).build(),
-        true
+        false
       )
     );
     return reportTagsResponse;

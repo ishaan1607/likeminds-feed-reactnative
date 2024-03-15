@@ -68,7 +68,7 @@ export const PostLikesListContextProvider = ({
           .setpage(1)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
     return postLikesResponse;
@@ -89,7 +89,7 @@ export const PostLikesListContextProvider = ({
           .setpageSize(10)
           .setpostId(payload.postId)
           .build(),
-        true
+        false
       )
     );
     return commentLikesResponse;

@@ -333,7 +333,7 @@ export const CreatePostContextProvider = ({
               const decodeUrlResponse = dispatch(
                 getDecodedUrl(
                   DecodeURLRequest.builder().setURL(item).build(),
-                  true
+                  false
                 )
               );
               decodeUrlResponse
@@ -396,7 +396,7 @@ export const CreatePostContextProvider = ({
           .setpage(1)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
 
@@ -454,7 +454,7 @@ export const CreatePostContextProvider = ({
           .setpostId(postDetail?.id)
           .settext(contentText)
           .build(),
-        true
+        false
       )
     );
 
@@ -488,7 +488,7 @@ export const CreatePostContextProvider = ({
               .setpage(1)
               .setpageSize(10)
               .build(),
-            true
+            false
           )
         );
 
@@ -525,7 +525,7 @@ export const CreatePostContextProvider = ({
           .setpage(newPage)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
     if (taggingListResponse) {
