@@ -11,8 +11,9 @@ import {
   POSTS_LIST,
   POST_DETAIL,
   CREATE_POST,
-  POST_LIKES_LIST
-} from 'likeminds-feed-reactnative-integration';
+  POST_LIKES_LIST,
+  LMOverlayProvider
+} from '@likeminds.community/feed-rn-core';
 import {myClient} from '.';
 import {ViewStyle} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -33,8 +34,7 @@ const App = () => {
     shadowColor: '#000',
   };
   return (
-    <ContextProvider>
-      <LMFeedProvider
+       <LMOverlayProvider
         myClient={myClient}
         userName=''
         userUniqueId=''
@@ -48,8 +48,7 @@ const App = () => {
             <Stack.Screen name={POST_LIKES_LIST} component={PostLikesList} />
           </Stack.Navigator>
         </NavigationContainer>
-      </LMFeedProvider>
-    </ContextProvider>
+      </LMOverlayProvider>
   );
 };
 

@@ -79,13 +79,13 @@ const DeleteModal = ({
           DeletePostRequest.builder()
             .setdeleteReason(payload.deleteReason)
             .setpostId(payload.postId)
-            .build(),true
+            .build(),false
         ),
       );
       // toast message action
       if (deletePostResponse) {
         setDeletionReason("");
-        navigation.goBack();
+        navigation?.goBack();
         dispatch(
           showToastMessage({
             isToast: true,
@@ -126,7 +126,7 @@ const DeleteModal = ({
               .setcommentId(payload.commentId)
               .setpostId(payload.postId)
               .setreason(payload.deleteReason)
-              .build(), true
+              .build(), false
           ),
         );
         setDeletionReason("");

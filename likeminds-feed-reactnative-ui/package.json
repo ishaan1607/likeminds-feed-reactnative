@@ -1,6 +1,6 @@
 {
   "name": "@likeminds.community/feed-rn-ui",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "index.ts",
   "private":false,
@@ -19,13 +19,15 @@
   "license": "ISC",
   "dependencies": {
     "diff": "5.1.0",
-    "react": "18.2.0",
-    "react-native": "0.73.1",
     "react-native-file-viewer": "2.1.5",
-    "react-native-swiper-flatlist": "3.2.3",
-    "react-native-video": "5.2.1"
+    "react-native-swiper-flatlist": "3.2.3"
   },
   "devDependencies": {
     "typescript": "5.3.3"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0",
+    "react-native": ">=0.71.1",
+    "react-native-video": ">=5.2.1"
   }
 }
