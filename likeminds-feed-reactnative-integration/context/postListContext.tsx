@@ -136,7 +136,7 @@ export const PostListContextProvider = ({
           .setpage(payload.page)
           .setpageSize(payload.pageSize)
           .build(),
-        true
+        false
       )
     );
     setFeedFetching(false);
@@ -163,7 +163,7 @@ export const PostListContextProvider = ({
     const postLikeResponse = await dispatch(
       likePost(
         LikePostRequest.builder().setpostId(payload.postId).build(),
-        true
+        false
       )
     );
     return postLikeResponse;
@@ -190,7 +190,7 @@ export const PostListContextProvider = ({
       const savePostResponse = await dispatch(
         savePost(
           SavePostRequest.builder().setpostId(payload.postId).build(),
-          true
+          false
         )
       );
       await dispatch(
@@ -233,7 +233,7 @@ export const PostListContextProvider = ({
     };
     dispatch(pinPostStateHandler(payload.postId));
     const pinPostResponse = await dispatch(
-      pinPost(PinPostRequest.builder().setpostId(payload.postId).build(), true)
+      pinPost(PinPostRequest.builder().setpostId(payload.postId).build(), false)
     );
     if (pinPostResponse) {
       dispatch(

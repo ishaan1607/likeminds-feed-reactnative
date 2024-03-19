@@ -33,7 +33,6 @@ import {
   useUniversalFeedContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
-import { FlashList } from "@shopify/flash-list";
 import LMPost from "../../components/LMPost/LMPost";
 import { LMPostUI } from "../../models";
 import { LMLoader } from "../../components";

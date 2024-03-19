@@ -113,7 +113,6 @@ const UniversalFeedComponent = React.memo(() => {
       {/* create post button section */}
       <TouchableOpacity
         activeOpacity={0.8}
-        disabled={feedData?.length > 0 ? false : true}
         style={[
           styles.newPostButtonView,
           showCreatePost

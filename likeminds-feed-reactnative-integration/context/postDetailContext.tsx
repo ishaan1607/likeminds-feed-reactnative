@@ -270,7 +270,7 @@ export const PostDetailContextProvider = ({
           .setpage(1)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
     setLocalRefresh(false);
@@ -307,7 +307,7 @@ export const PostDetailContextProvider = ({
     const postLikeResponse = await dispatch(
       likePost(
         LikePostRequest.builder().setpostId(payload.postId).build(),
-        true
+        false
       )
     );
     return postLikeResponse;
@@ -334,7 +334,7 @@ export const PostDetailContextProvider = ({
       const savePostResponse = await dispatch(
         savePost(
           SavePostRequest.builder().setpostId(payload.postId).build(),
-          true
+          false
         )
       );
       await dispatch(
@@ -361,7 +361,7 @@ export const PostDetailContextProvider = ({
     };
     dispatch(pinPostStateHandler(payload.postId));
     const pinPostResponse = await dispatch(
-      pinPost(PinPostRequest.builder().setpostId(payload.postId).build(), true)
+      pinPost(PinPostRequest.builder().setpostId(payload.postId).build(), false)
     );
     if (pinPostResponse) {
       dispatch(
@@ -473,7 +473,7 @@ export const PostDetailContextProvider = ({
           .setpage(commentPageNumber)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
     return getPostResponse;
@@ -494,7 +494,7 @@ export const PostDetailContextProvider = ({
           .setpage(pageNo)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
 
@@ -522,7 +522,7 @@ export const PostDetailContextProvider = ({
           .setcommentId(payload.commentId)
           .setpostId(payload.postId)
           .build(),
-        true
+        false
       )
     );
     return commentLikeResponse;
@@ -550,7 +550,7 @@ export const PostDetailContextProvider = ({
           .settext(payload.newComment)
           .setTempId(`${payload.tempId}`)
           .build(),
-        true
+        false
       )
     );
     return commentAddResponse;
@@ -580,7 +580,7 @@ export const PostDetailContextProvider = ({
           .setTempId(`${payload.tempId}`)
           .setText(payload.newComment)
           .build(),
-        true
+        false
       )
     );
     return replyAddResponse;
@@ -695,7 +695,7 @@ export const PostDetailContextProvider = ({
           .setpostId(postDetail?.id)
           .settext(payload.commentText)
           .build(),
-        true
+        false
       )
     );
     if (editCommentResponse) {
@@ -732,7 +732,7 @@ export const PostDetailContextProvider = ({
               .setpage(1)
               .setpageSize(10)
               .build(),
-            true
+            false
           )
         );
         if (mentionListLength > 0) {
@@ -768,7 +768,7 @@ export const PostDetailContextProvider = ({
           .setpage(newPage)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
     if (taggingListResponse) {
