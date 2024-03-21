@@ -2,14 +2,14 @@ import React, { createContext, ReactNode, useContext } from "react";
 
 export interface CreatePostCallbacksContextProps {
   children?: ReactNode;
-  handleGalleryProp: () => void;
+  handleGalleryProp: (type: string) => void;
   handleDocumentProp: () => void;
-  removeDocumentAttachmentProp: () => void;
-  removeMediaAttachmentProp: () => void;
-  removeSingleAttachmentProp: () => void;
 }
 
-export interface CreatePostCustomisableMethodsContext {}
+export interface CreatePostCustomisableMethodsContext {
+  handleGalleryProp: (type: string) => void;
+  handleDocumentProp: () => void;
+}
 
 const CreatePostCustomisableMethodsContext = createContext<
   CreatePostCustomisableMethodsContext | undefined
@@ -28,17 +28,11 @@ export const useCreatePostCustomisableMethodsContext = () => {
 export const CreatePostCustomisableMethodsContextProvider = ({
   children,
   handleGalleryProp,
-  handleDocumentProp,
-  removeDocumentAttachmentProp,
-  removeMediaAttachmentProp,
-  removeSingleAttachmentProp,
+  handleDocumentProp
 }: CreatePostCallbacksContextProps) => {
   const contextValues: CreatePostCustomisableMethodsContext = {
     handleGalleryProp,
-    handleDocumentProp,
-    removeDocumentAttachmentProp,
-    removeMediaAttachmentProp,
-    removeSingleAttachmentProp,
+    handleDocumentProp
   };
 
   return (

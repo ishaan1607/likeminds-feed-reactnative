@@ -31,7 +31,9 @@ import { styles } from "./styles";
 import {
   CreatePostContextProvider,
   CreatePostContextValues,
+  CreatePostCustomisableMethodsContextProvider,
   useCreatePostContext,
+  useCreatePostCustomisableMethodsContext,
 } from "../../context";
 import { useLMFeedStyles } from "../../lmFeedProvider";
 import {
@@ -41,7 +43,7 @@ import {
   LMProfilePicture,
   LMText,
 } from "../../uiComponents";
-import { LMUserUI } from "../../models";
+import { LMUserUI, RootStackParamList } from "../../models";
 import {
   LMCarousel,
   LMDocument,
@@ -51,15 +53,40 @@ import {
   LMLoader,
   LMVideo,
 } from "../../components";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-const CreatePost = ({ navigation, route, children }) => {
+interface CreatePostProps {
+  children: React.ReactNode;
+  navigation: NativeStackNavigationProp<RootStackParamList, "CreatePost">;
+  route: {
+    key: string;
+    name: string;
+    params: { postId: string };
+    path: undefined;
+  };
+  handleGalleryProp: (type: string) => void;
+  handleDocumentProp: () => void;
+}
+
+const CreatePost = ({
+  navigation,
+  route,
+  children,
+  handleDocumentProp,
+  handleGalleryProp
+}: CreatePostProps) => {
   return (
     <CreatePostContextProvider
       navigation={navigation}
       route={route}
       children={children}
     >
-      <CreatePostComponent />
+      <CreatePostCustomisableMethodsContextProvider
+        handleDocumentProp={handleDocumentProp}
+        handleGalleryProp={handleGalleryProp}
+      >
+        <CreatePostComponent />
+      </CreatePostCustomisableMethodsContextProvider>
     </CreatePostContextProvider>
   );
 };
@@ -103,6 +130,12 @@ const CreatePostComponent = React.memo(() => {
     postDetail,
     postEdit,
   }: CreatePostContextValues = useCreatePostContext();
+
+  const {
+    handleDocumentProp,
+    handleGalleryProp
+  } = useCreatePostCustomisableMethodsContext();
+
   // this renders the post detail UI
   const uiRenderForPost = () => {
     return (
@@ -405,9 +438,9 @@ const CreatePostComponent = React.memo(() => {
             <LMButton
               onTap={() => {
                 formattedMediaAttachments.length > 0
-                  ? handleGallery(SELECT_BOTH)
+                  ? handleGalleryProp ? handleGalleryProp(SELECT_BOTH) : handleGallery(SELECT_BOTH)
                   : formattedDocumentAttachments.length > 0
-                  ? handleDocument()
+                  ? handleDocumentProp ? handleDocumentProp() : handleDocument()
                   : {},
                   createPostStyle?.addMoreAttachmentsButton?.onTap();
               }}
@@ -541,7 +574,7 @@ const CreatePostComponent = React.memo(() => {
               createPostStyle?.attachmentOptionsStyle?.photoAttachmentView,
             ]}
             onPress={() => {
-              handleGallery(SELECT_IMAGE);
+              handleGalleryProp ? handleGalleryProp(SELECT_IMAGE) :handleGallery(SELECT_IMAGE);
               createPostStyle?.attachmentOptionsStyle
                 ?.onPhotoAttachmentOptionClick &&
                 createPostStyle?.attachmentOptionsStyle?.onPhotoAttachmentOptionClick();
@@ -566,7 +599,7 @@ const CreatePostComponent = React.memo(() => {
               createPostStyle?.attachmentOptionsStyle?.videoAttachmentView,
             ]}
             onPress={() => {
-              handleGallery(SELECT_VIDEO);
+              handleGalleryProp ? handleGalleryProp(SELECT_VIDEO) : handleGallery(SELECT_VIDEO);
               createPostStyle?.attachmentOptionsStyle
                 ?.onVideoAttachmentOptionClick &&
                 createPostStyle?.attachmentOptionsStyle?.onVideoAttachmentOptionClick();
@@ -591,7 +624,7 @@ const CreatePostComponent = React.memo(() => {
               createPostStyle?.attachmentOptionsStyle?.filesAttachmentView,
             ]}
             onPress={() => {
-              handleDocument();
+              handleDocumentProp ? handleDocumentProp() : handleDocument()
               createPostStyle?.attachmentOptionsStyle
                 ?.onFilesAttachmentOptionClick &&
                 createPostStyle?.attachmentOptionsStyle?.onFilesAttachmentOptionClick();

@@ -1,7 +1,5 @@
-import {View, Text} from 'react-native';
 import React from 'react';
-import {PostsList, UniversalFeed, usePostListContext, useUniversalFeedContext} from '@likeminds.community/feed-rn-core';
-import {navigationRef} from '../RootNavigation';
+import { UniversalFeed, usePostListContext, useUniversalFeedContext} from '@likeminds.community/feed-rn-core';
 
 const Feed = ({route}) => {
   const {
@@ -36,7 +34,6 @@ const Feed = ({route}) => {
     console.log('after comment select', postId);
   };
   return (
-    <View>
       <UniversalFeed
         navigation={navigation}
         route={route}
@@ -47,7 +44,6 @@ const Feed = ({route}) => {
         selectPinPostProp={(id, pinned) => customHandlePin(id, pinned)}
       >
       </UniversalFeed>
-    </View>
   );
 };
 

@@ -1,7 +1,5 @@
-import {View, Text} from 'react-native';
 import React from 'react';
-import {PostDetail, UniversalFeed, usePostDetailContext} from '@likeminds.community/feed-rn-core';
-import {navigationRef} from '../RootNavigation';
+import {PostDetail, usePostDetailContext} from '@likeminds.community/feed-rn-core';
 
 const DetailScreen = ({navigation}) => {
   const {route, getCommentsReplies, addNewComment, addNewReply, commentLikeHandler, onCommentMenuItemSelect} = usePostDetailContext();
