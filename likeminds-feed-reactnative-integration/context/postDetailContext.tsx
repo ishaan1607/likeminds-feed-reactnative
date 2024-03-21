@@ -9,12 +9,7 @@ import React, {
   useRef,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import {
-  LMCommentUI,
-  LMPost,
-  LMPostUI,
-  LMUserUI,
-} from "@likeminds.community/feed-rn-ui";
+
 import {
   DELETE_COMMENT_MENU_ITEM,
   DELETE_POST_MENU_ITEM,
@@ -78,6 +73,8 @@ import { postLikesClear } from "../store/actions/postLikes";
 import { showToastMessage } from "../store/actions/toast";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../models/RootStackParamsList";
+import LMPost from "../components/LMPost/LMPost";
+import { LMCommentUI, LMPostUI, LMUserUI } from "../models";
 
 interface PostDetailContextProps {
   children: ReactNode;
@@ -597,110 +594,41 @@ export const PostDetailContextProvider = ({
         post={postDetail}
         // header props
         headerProps={{
-          post: postDetail,
           postMenu: {
-            postId: postDetail?.id,
-            menuItems: postDetail?.menuItems,
             modalPosition: modalPosition,
             modalVisible: showActionListModal,
             onCloseModal: closePostActionListModal,
             onSelected: (postId, itemId) =>
-              onMenuItemSelect(postId, itemId, postDetail?.isPinned),
-            ...postListStyle?.header?.postMenu,
-          },
-          onTap: () => {
-            postListStyle?.header?.onTap();
-          },
-          showMenuIcon: postListStyle?.header?.showMenuIcon
-            ? postListStyle?.header?.showMenuIcon
-            : true,
-          showMemberStateLabel: postListStyle?.header?.showMemberStateLabel
-            ? postListStyle?.header?.showMemberStateLabel
-            : true,
-          profilePicture: postListStyle?.header?.profilePicture,
-          titleText: postListStyle?.header?.titleText,
-          createdAt: postListStyle?.header?.createdAt,
-          memberStateViewStyle: postListStyle?.header?.memberStateViewStyle,
-          memberStateTextStyle: postListStyle?.header?.memberStateTextStyle,
-          postHeaderViewStyle: postListStyle?.header?.postHeaderViewStyle,
-          pinIcon: postListStyle?.header?.pinIcon,
-          menuIcon: postListStyle?.header?.menuIcon,
+            onMenuItemSelect(postId, itemId, postDetail?.isPinned),
+          }
         }}
         // footer props
         footerProps={{
-          isLiked: postDetail?.isLiked,
-          isSaved: postDetail?.isSaved,
-          likesCount: postDetail?.likesCount,
-          commentsCount: postDetail?.commentsCount,
-          showBookMarkIcon: postListStyle?.footer?.showBookMarkIcon
-            ? postListStyle?.footer?.showBookMarkIco
-            : true,
-          showShareIcon: postListStyle?.footer?.showShareIcon
-            ? postListStyle?.footer?.showShareIcon
-            : true,
           likeIconButton: {
-            ...postListStyle?.footer?.likeIconButton,
             onTap: () => {
               postLikeHandler(postDetail?.id);
-              postListStyle?.footer?.likeIconButton?.onTap();
             },
           },
           saveButton: {
-            ...postListStyle?.footer?.saveButton,
             onTap: () => {
               savePostHandler(postDetail?.id, postDetail?.isSaved);
-              postListStyle?.footer?.saveButton?.onTap();
             },
           },
           likeTextButton: {
-            ...postListStyle?.footer?.likeTextButton,
             onTap: () => {
               dispatch(postLikesClear());
               navigation.navigate(POST_LIKES_LIST, [
                 POST_LIKES,
                 postDetail?.id,
               ]);
-              postListStyle?.footer?.likeTextButton?.onTap();
             },
           },
           commentButton: {
-            ...postListStyle?.footer?.commentButton,
             onTap: () => {
               setCommentFocus(true);
-              postListStyle?.footer?.commentButton?.onTap();
-            },
-          },
-          shareButton: postListStyle?.footer?.shareButton,
-          footerBoxStyle: postListStyle?.footer?.footerBoxStyle,
+            }
+          }
         }}
-        // media props
-        mediaProps={{
-          attachments: postDetail?.attachments ? postDetail.attachments : [],
-          imageProps: postListStyle?.media?.image,
-          videoProps: {
-            ...postListStyle?.media?.video,
-            videoUrl: "",
-            showControls: postListStyle?.media?.video?.showControls
-              ? postListStyle?.media?.video?.showControls
-              : true,
-          },
-          carouselProps: {
-            ...postListStyle?.media?.carousel,
-            attachments: postDetail?.attachments ? postDetail.attachments : [],
-            videoItem: {
-              ...postListStyle?.media?.carousel?.videoItem,
-              videoUrl: "",
-              showControls: postListStyle?.media?.carousel?.videoItem
-                ?.showControls
-                ? postListStyle?.media?.carousel?.videoItem?.showControls
-                : true,
-            },
-          },
-          documentProps: postListStyle?.media?.document,
-          linkPreviewProps: postListStyle?.media?.linkPreview,
-          postMediaStyle: postListStyle?.media?.postMediaStyle,
-        }}
-        contentProps={postListStyle?.postContent}
       />
     );
   };

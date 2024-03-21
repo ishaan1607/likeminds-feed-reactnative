@@ -10,8 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@likeminds.community/feed-rn-core": "0.6.0",
-    "@likeminds.community/feed-rn-ui": "0.6.0",
+    "@likeminds.community/feed-rn-core": "file:../../../likeminds-feed-reactnative-integration/likeminds.community-feed-rn-core-0.6.0.tgz",
     "@react-native-community/netinfo": "11.3.0",
     "@react-navigation/native": "6.1.9",
     "@react-navigation/stack": "6.3.20",

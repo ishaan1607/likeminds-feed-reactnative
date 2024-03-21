@@ -1,4 +1,3 @@
-import { LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { convertToLMPostUI, convertUniversalFeedPosts } from "../../viewDataModels";
 import { PIN_POST_ID, PIN_THIS_POST, UNPIN_POST_ID, UNPIN_THIS_POST } from "../../constants/Strings";
 import {
@@ -13,6 +12,7 @@ import {
   CREATE_COMMENT_SUCCESS,
   DELETE_COMMENT_STATE
 } from '../types/types';
+import { LMPostUI } from "../../models";
 
 export interface FeedReducerState {
   feed: LMPostUI[],

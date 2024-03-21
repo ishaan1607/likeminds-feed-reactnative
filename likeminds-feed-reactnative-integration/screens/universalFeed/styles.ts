@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
   },
   newPostText: {
     fontSize: 15,
-    fontWeight: STYLES.$FONT_WEIGHTS.MEDIUM,
+    fontWeight: STYLES.$FONT_WEIGHT.MEDIUM,
     color: STYLES.$COLORS.whiteTextColor,
     fontFamily: STYLES.$FONT_TYPES.BOLD,
     marginLeft: STYLES.$MARGINS.SMALL,

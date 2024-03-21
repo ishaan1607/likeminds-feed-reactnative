@@ -8,13 +8,7 @@ import {
   View,
 } from "react-native";
 import { styles } from "./styles";
-import {
-  LMHeader,
-  LMIcon,
-  LMImage,
-  LMLoader,
-  LMVideo,
-} from "@likeminds.community/feed-rn-ui";
+
 import {
   APP_TITLE,
   CREATE_POST_PERMISSION,
@@ -37,6 +31,8 @@ import {
 } from "../../context";
 import STYLES from "../../constants/Styles";
 import { showToastMessage } from "../../store/actions/toast";
+import { LMHeader, LMImage, LMLoader, LMVideo } from "../../components";
+import { LMIcon } from "../../uiComponents";
 
 const UniversalFeed = ({ navigation, route ,children}) => {
   return (
@@ -95,7 +91,6 @@ const UniversalFeedComponent = React.memo(() => {
             {uploadingMediaAttachmentType === DOCUMENT_ATTACHMENT_TYPE && (
               <LMIcon
                 assetPath={require("../../assets/images/pdf_icon3x.png")}
-                type="png"
                 iconStyle={styles.uploadingDocumentStyle}
                 height={styles.uploadingPdfIconSize.height}
                 width={styles.uploadingPdfIconSize.width}

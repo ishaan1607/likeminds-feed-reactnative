@@ -10,7 +10,6 @@ import React, {
   MutableRefObject,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { LMAttachmentUI, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { mentionToRouteConverter, uploadFilesToAWS } from "../utils";
 import { addPost, setUploadAttachments } from "../store/actions/createPost";
 import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js";
@@ -21,6 +20,7 @@ import { RootStackParamList } from "../models/RootStackParamsList";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { showToastMessage } from "../store/actions/toast";
 import { FlatList } from "react-native";
+import { LMAttachmentUI, LMPostUI } from "../models";
 
 interface UniversalFeedContextProps {
   children: ReactNode;

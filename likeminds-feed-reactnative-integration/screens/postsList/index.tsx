@@ -7,7 +7,6 @@ import {
   View,
 } from "react-native";
 import { styles } from "./styles";
-import { LMPost, LMPostUI, LMLoader } from "@likeminds.community/feed-rn-ui";
 import {
   IMAGE_ATTACHMENT_TYPE,
   NAVIGATED_FROM_COMMENT,
@@ -35,6 +34,9 @@ import {
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
 import { FlashList } from "@shopify/flash-list";
+import LMPost from "../../components/LMPost/LMPost";
+import { LMPostUI } from "../../models";
+import { LMLoader } from "../../components";
 
 const PostsList = ({ route, children }: any) => {
   const {
@@ -125,115 +127,42 @@ const PostsListComponent = React.memo(() => {
                   post={item}
                   // header props
                   headerProps={{
-                    post: item,
                     postMenu: {
-                      postId: item?.id,
-                      menuItems: item?.menuItems,
                       modalPosition: modalPosition,
                       modalVisible: showActionListModal,
                       onCloseModal: closePostActionListModal,
                       onSelected: (postId, itemId) =>
                         onMenuItemSelect(postId, itemId, item?.isPinned),
-                      ...postListStyle?.header?.postMenu,
-                    },
-                    onTap: () => {
-                      postListStyle?.header?.onTap();
-                    },
-                    showMenuIcon: postListStyle?.header?.showMenuIcon
-                      ? postListStyle?.header?.showMenuIcon
-                      : true,
-                    showMemberStateLabel: postListStyle?.header
-                      ?.showMemberStateLabel
-                      ? postListStyle?.header?.showMemberStateLabel
-                      : true,
-                    profilePicture: postListStyle?.header?.profilePicture,
-                    titleText: postListStyle?.header?.titleText,
-                    createdAt: postListStyle?.header?.createdAt,
-                    memberStateViewStyle:
-                      postListStyle?.header?.memberStateViewStyle,
-                    memberStateTextStyle:
-                      postListStyle?.header?.memberStateTextStyle,
-                    postHeaderViewStyle:
-                      postListStyle?.header?.postHeaderViewStyle,
-                    pinIcon: postListStyle?.header?.pinIcon,
-                    menuIcon: postListStyle?.header?.menuIcon,
+                    }
                   }}
                   // footer props
                   footerProps={{
-                    isLiked: item?.isLiked,
-                    isSaved: item?.isSaved,
-                    likesCount: item?.likesCount,
-                    commentsCount: item?.commentsCount,
-                    showBookMarkIcon: postListStyle?.footer?.showBookMarkIcon
-                      ? postListStyle?.footer?.showBookMarkIcon
-                      : true,
-                    showShareIcon: postListStyle?.footer?.showShareIcon
-                      ? postListStyle?.footer?.showShareIcon
-                      : true,
                     likeIconButton: {
-                      ...postListStyle?.footer?.likeIconButton,
                       onTap: () => {
                         postLikeHandler(item?.id);
-                        postListStyle?.footer?.likeIconButton?.onTap();
                       },
                     },
                     saveButton: {
-                      ...postListStyle?.footer?.saveButton,
                       onTap: () => {
                         savePostHandler(item?.id, item?.isSaved);
-                        postListStyle?.footer?.saveButton?.onTap();
                       },
                     },
                     likeTextButton: {
-                      ...postListStyle?.footer?.likeTextButton,
                       onTap: () => {
                           dispatch(postLikesClear());
                         navigation.navigate(POST_LIKES_LIST, [POST_LIKES, item?.id]);
-                        postListStyle?.footer?.likeTextButton?.onTap();
                       },
                     },
                     commentButton: {
-                      ...postListStyle?.footer?.commentButton,
                       onTap: () => {
                         dispatch(clearPostDetail());
                         navigation.navigate(POST_DETAIL, [
                           item?.id,
                           NAVIGATED_FROM_COMMENT,
                         ]);
-                        postListStyle?.footer?.commentButton?.onTap();
                       },
                     },
-                    shareButton: postListStyle?.footer?.shareButton,
-                    footerBoxStyle: postListStyle?.footer?.footerBoxStyle,
                   }}
-                  mediaProps={{
-                    attachments: item?.attachments ? item.attachments : [],
-                    imageProps: postListStyle?.media?.image,
-                    videoProps: {
-                      ...postListStyle?.media?.video,
-                      videoUrl: "",
-                      showControls: postListStyle?.media?.video?.showControls
-                        ? postListStyle?.media?.video?.showControls
-                        : true,
-                    },
-                    carouselProps: {
-                      ...postListStyle?.media?.carousel,
-                      attachments: item?.attachments ? item.attachments : [],
-                      videoItem: {
-                        ...postListStyle?.media?.carousel?.videoItem,
-                        videoUrl: "",
-                        showControls: postListStyle?.media?.carousel?.videoItem
-                          ?.showControls
-                          ? postListStyle?.media?.carousel?.videoItem
-                              ?.showControls
-                          : true,
-                      },
-                    },
-                    documentProps: postListStyle?.media?.document,
-                    linkPreviewProps: postListStyle?.media?.linkPreview,
-                    postMediaStyle: postListStyle?.media?.postMediaStyle,
-                  }}
-                  contentProps={postListStyle?.postContent}
                 />
               </TouchableOpacity>
             )}
