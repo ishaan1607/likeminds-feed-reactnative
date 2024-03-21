@@ -1,8 +1,6 @@
 import React from 'react';
 import {
-  ContextProvider,
   CreatePost,
-  LMFeedProvider,
   PostDetail,
   PostLikesList,
   PostsList,
