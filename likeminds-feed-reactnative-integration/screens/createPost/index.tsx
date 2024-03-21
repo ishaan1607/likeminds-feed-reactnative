@@ -69,6 +69,12 @@ const CreatePostComponent = React.memo(() => {
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, createPostStyle, postDetailStyle } =
     LMFeedContextStyles;
+    const customTextInputStyle = createPostStyle?.createPostTextInputStyle
+    const customAddMoreAttachmentsButton = createPostStyle?.addMoreAttachmentsButton
+    const customCreatePostScreenHeader = createPostStyle?.createPostScreenHeader
+    const customAttachmentOptionsStyle = createPostStyle?.attachmentOptionsStyle
+    const postHeaderStyle = postListStyle?.header
+    const postMediaStyle = postListStyle?.media
   const {
     navigation,
     postToEdit,
@@ -120,7 +126,7 @@ const CreatePostComponent = React.memo(() => {
         <View style={styles.profileContainer}>
           {/* profile image */}
           <LMProfilePicture
-            {...postListStyle?.header?.profilePicture}
+            {...postHeaderStyle?.profilePicture}
             fallbackText={{
               children: <Text>{nameInitials(memberData.name)}</Text>,
             }}
@@ -138,25 +144,25 @@ const CreatePostComponent = React.memo(() => {
         </View>
         {/* text input field */}
         <LMInputText
-          {...createPostStyle?.createPostTextInputStyle}
+          {...customTextInputStyle}
           placeholderText={
-            createPostStyle?.createPostTextInputStyle?.placeholderText
-              ? createPostStyle?.createPostTextInputStyle?.placeholderText
+            customTextInputStyle?.placeholderText
+              ? customTextInputStyle?.placeholderText
               : CREATE_POST_PLACEHOLDER_TEXT
           }
           placeholderTextColor={
-            createPostStyle?.createPostTextInputStyle?.placeholderTextColor
-              ? createPostStyle?.createPostTextInputStyle?.placeholderTextColor
+            customTextInputStyle?.placeholderTextColor
+              ? customTextInputStyle?.placeholderTextColor
               : "#0F1E3D66"
           }
           inputTextStyle={[
             styles.textInputView,
-            createPostStyle?.createPostTextInputStyle?.inputTextStyle,
+            customTextInputStyle?.inputTextStyle,
           ]}
           multilineField={
-            createPostStyle?.createPostTextInputStyle?.multilineField !=
+            customTextInputStyle?.multilineField !=
             undefined
-              ? createPostStyle?.createPostTextInputStyle?.multilineField
+              ? customTextInputStyle?.multilineField
               : true
           }
           inputRef={myRef}
@@ -164,8 +170,8 @@ const CreatePostComponent = React.memo(() => {
           onType={handleInputChange}
           autoFocus={postToEdit ? true : false}
           textValueStyle={
-            createPostStyle?.createPostTextInputStyle?.textValueStyle
-              ? createPostStyle?.createPostTextInputStyle?.textValueStyle
+            customTextInputStyle?.textValueStyle
+              ? customTextInputStyle?.textValueStyle
               : { fontSize: 16 }
           }
           partTypes={[
@@ -173,7 +179,7 @@ const CreatePostComponent = React.memo(() => {
               trigger: "@", // Should be a single character like '@' or '#'
               textStyle: {
                 color: "#007AFF",
-                ...createPostStyle?.createPostTextInputStyle?.mentionTextStyle,
+                ...customTextInputStyle?.mentionTextStyle,
               }, // The mention style in the input
             },
           ]}
@@ -215,12 +221,12 @@ const CreatePostComponent = React.memo(() => {
                     key={item?.id}
                   >
                     <LMProfilePicture
-                      {...postListStyle?.header?.profilePicture}
+                      {...postHeaderStyle?.profilePicture}
                       fallbackText={{
-                        ...postListStyle?.header?.profilePicture?.fallbackText,
-                        children: postListStyle?.header?.profilePicture
+                        ...postHeaderStyle?.profilePicture?.fallbackText,
+                        children: postHeaderStyle?.profilePicture
                           ?.fallbackText?.children ? (
-                          postListStyle?.header?.profilePicture?.fallbackText
+                          postHeaderStyle?.profilePicture?.fallbackText
                             ?.children
                         ) : (
                           <Text>{nameInitials(item?.name)}</Text>
@@ -228,12 +234,12 @@ const CreatePostComponent = React.memo(() => {
                       }}
                       fallbackTextBoxStyle={[
                         styles.taggingListProfileBoxStyle,
-                        postListStyle?.header?.profilePicture
+                        postHeaderStyle?.profilePicture
                           ?.fallbackTextBoxStyle,
                       ]}
                       size={
-                        postListStyle?.header?.profilePicture?.size
-                          ? postListStyle?.header?.profilePicture?.size
+                        postHeaderStyle?.profilePicture?.size
+                          ? postHeaderStyle?.profilePicture?.size
                           : 40
                       }
                     />
@@ -283,18 +289,18 @@ const CreatePostComponent = React.memo(() => {
           ) : formattedMediaAttachments ? (
             formattedMediaAttachments?.length > 1 ? (
               <LMCarousel
-                {...postListStyle?.media?.carousel}
+                {...postMediaStyle?.carousel}
                 attachments={formattedMediaAttachments}
                 showCancel={
-                  postListStyle?.media?.carousel?.showCancel != undefined
-                    ? postListStyle?.media?.carousel?.showCancel
+                  postMediaStyle?.carousel?.showCancel != undefined
+                    ? postMediaStyle?.carousel?.showCancel
                     : postToEdit
                     ? false
                     : true
                 }
                 onCancel={(index) => {
                   removeMediaAttachment(index);
-                  postListStyle?.media?.carousel?.onCancel();
+                  postMediaStyle?.carousel?.onCancel();
                 }}
               />
             ) : (
@@ -303,18 +309,18 @@ const CreatePostComponent = React.memo(() => {
                 {formattedMediaAttachments[0]?.attachmentType ===
                   IMAGE_ATTACHMENT_TYPE && (
                   <LMImage
-                    {...postListStyle?.media?.image}
+                    {...postMediaStyle?.image}
                     imageUrl={`${formattedMediaAttachments[0]?.attachmentMeta.url}`}
                     showCancel={
-                      postListStyle?.media?.image?.showCancel != undefined
-                        ? postListStyle?.media?.image?.showCancel
+                      postMediaStyle?.image?.showCancel != undefined
+                        ? postMediaStyle?.image?.showCancel
                         : postToEdit
                         ? false
                         : true
                     }
                     onCancel={() => {
                       removeSingleAttachment();
-                      postListStyle?.media?.image?.onCancel();
+                      postMediaStyle?.image?.onCancel();
                     }}
                   />
                 )}
@@ -322,28 +328,28 @@ const CreatePostComponent = React.memo(() => {
                 {formattedMediaAttachments[0]?.attachmentType ===
                   VIDEO_ATTACHMENT_TYPE && (
                   <LMVideo
-                    {...postListStyle?.media?.video}
+                    {...postMediaStyle?.video}
                     videoUrl={`${formattedMediaAttachments[0]?.attachmentMeta.url}`}
                     showCancel={
-                      postListStyle?.media?.video?.showCancel != undefined
-                        ? postListStyle?.media?.video?.showCancel
+                      postMediaStyle?.video?.showCancel != undefined
+                        ? postMediaStyle?.video?.showCancel
                         : postToEdit
                         ? false
                         : true
                     }
                     showControls={
-                      postListStyle?.media?.video?.showControls != undefined
-                        ? postListStyle?.media?.video?.showControls
+                      postMediaStyle?.video?.showControls != undefined
+                        ? postMediaStyle?.video?.showControls
                         : true
                     }
                     looping={
-                      postListStyle?.media?.video?.looping != undefined
-                        ? postListStyle?.media?.video?.looping
+                      postMediaStyle?.video?.looping != undefined
+                        ? postMediaStyle?.video?.looping
                         : false
                     }
                     onCancel={() => {
                       removeSingleAttachment();
-                      postListStyle?.media?.video?.onCancel();
+                      postMediaStyle?.video?.onCancel();
                     }}
                   />
                 )}
@@ -354,23 +360,23 @@ const CreatePostComponent = React.memo(() => {
           {formattedDocumentAttachments &&
             formattedDocumentAttachments.length >= 1 && (
               <LMDocument
-                {...postListStyle?.media?.document}
+                {...postMediaStyle?.document}
                 attachments={formattedDocumentAttachments}
                 showCancel={
-                  postListStyle?.media?.document?.showCancel != undefined
-                    ? postListStyle?.media?.document?.showCancel
+                  postMediaStyle?.document?.showCancel != undefined
+                    ? postMediaStyle?.document?.showCancel
                     : postToEdit
                     ? false
                     : true
                 }
                 showMoreText={
-                  postListStyle?.media?.document?.showMoreText != undefined
-                    ? postListStyle?.media?.document?.showMoreText
+                  postMediaStyle?.document?.showMoreText != undefined
+                    ? postMediaStyle?.document?.showMoreText
                     : false
                 }
                 onCancel={(index) => {
                   removeDocumentAttachment(index);
-                  postListStyle?.media?.document?.onCancel();
+                  postMediaStyle?.document?.onCancel();
                 }}
               />
             )}
@@ -380,11 +386,11 @@ const CreatePostComponent = React.memo(() => {
             showLinkPreview &&
             formattedLinkAttachments.length >= 1 && (
               <LMLinkPreview
-                {...postListStyle?.media?.linkPreview}
+                {...postMediaStyle?.linkPreview}
                 attachments={formattedLinkAttachments}
                 showCancel={
-                  postListStyle?.media?.linkPreview?.showCancel != undefined
-                    ? postListStyle?.media?.linkPreview?.showCancel
+                  postMediaStyle?.linkPreview?.showCancel != undefined
+                    ? postMediaStyle?.linkPreview?.showCancel
                     : postToEdit
                     ? false
                     : true
@@ -393,7 +399,7 @@ const CreatePostComponent = React.memo(() => {
                   setShowLinkPreview(false);
                   setClosedOnce(true);
                   setFormattedLinkAttachments([]);
-                  postListStyle?.media?.linkPreview?.onCancel();
+                  postMediaStyle?.linkPreview?.onCancel();
                 }}
               />
             )}
@@ -409,26 +415,26 @@ const CreatePostComponent = React.memo(() => {
                   : formattedDocumentAttachments.length > 0
                   ? handleDocument()
                   : {},
-                  createPostStyle?.addMoreAttachmentsButton?.onTap();
+                  customAddMoreAttachmentsButton?.onTap();
               }}
               icon={{
                 assetPath: require("../../assets/images/plusAdd_icon3x.png"),
                 height: 20,
                 width: 20,
-                ...createPostStyle?.addMoreAttachmentsButton?.icon,
+                ...customAddMoreAttachmentsButton?.icon,
               }}
               text={{
                 children: <Text>{ADD_MORE_MEDIA}</Text>,
                 textStyle: styles.addMoreButtonText,
-                ...createPostStyle?.addMoreAttachmentsButton?.text,
+                ...customAddMoreAttachmentsButton?.text,
               }}
               buttonStyle={StyleSheet.flatten([
                 styles.addMoreButtonView,
-                createPostStyle?.addMoreAttachmentsButton?.buttonStyle,
+                customAddMoreAttachmentsButton?.buttonStyle,
               ])}
-              placement={createPostStyle?.addMoreAttachmentsButton?.placement}
+              placement={customAddMoreAttachmentsButton?.placement}
               isClickable={
-                createPostStyle?.addMoreAttachmentsButton?.isClickable
+                customAddMoreAttachmentsButton?.isClickable
               }
             />
           )}
@@ -459,24 +465,24 @@ const CreatePostComponent = React.memo(() => {
     <SafeAreaView style={styles.container}>
       {/* screen header section*/}
       <LMHeader
-        {...createPostStyle?.createPostScreenHeader}
+        {...customCreatePostScreenHeader}
         showBackArrow={
-          createPostStyle?.createPostScreenHeader?.showBackArrow != undefined
-            ? createPostStyle?.createPostScreenHeader?.showBackArrow
+          customCreatePostScreenHeader?.showBackArrow != undefined
+            ? customCreatePostScreenHeader?.showBackArrow
             : true
         }
         onBackPress={() => {
           navigation.goBack();
-          createPostStyle?.createPostScreenHeader?.onBackPress &&
-            createPostStyle?.createPostScreenHeader?.onBackPress();
+          customCreatePostScreenHeader?.onBackPress &&
+            customCreatePostScreenHeader?.onBackPress();
         }}
         heading={
           postToEdit
-            ? createPostStyle?.createPostScreenHeader?.editPostHeading
-              ? createPostStyle?.createPostScreenHeader?.editPostHeading
+            ? customCreatePostScreenHeader?.editPostHeading
+              ? customCreatePostScreenHeader?.editPostHeading
               : "Edit Post"
-            : createPostStyle?.createPostScreenHeader?.createPostHeading
-            ? createPostStyle?.createPostScreenHeader?.createPostHeading
+            : customCreatePostScreenHeader?.createPostHeading
+            ? customCreatePostScreenHeader?.createPostHeading
             : "Create a Post"
         }
         rightComponent={
@@ -504,8 +510,8 @@ const CreatePostComponent = React.memo(() => {
             }
             onPress={() => checkNetInfo()}
           >
-            {createPostStyle?.createPostScreenHeader?.rightComponent ? (
-              createPostStyle?.createPostScreenHeader?.rightComponent
+            {customCreatePostScreenHeader?.rightComponent ? (
+              customCreatePostScreenHeader?.rightComponent
             ) : (
               <Text style={styles.headerRightComponentText}>
                 {postToEdit ? SAVE_POST_TEXT : ADD_POST_TEXT}
@@ -530,7 +536,7 @@ const CreatePostComponent = React.memo(() => {
         <View
           style={[
             styles.selectionOptionsView,
-            createPostStyle?.attachmentOptionsStyle?.attachmentOptionsView,
+            customAttachmentOptionsStyle?.attachmentOptionsView,
           ]}
         >
           {/* add photos button */}
@@ -538,23 +544,23 @@ const CreatePostComponent = React.memo(() => {
             activeOpacity={0.8}
             style={[
               styles.optionItemView,
-              createPostStyle?.attachmentOptionsStyle?.photoAttachmentView,
+              customAttachmentOptionsStyle?.photoAttachmentView,
             ]}
             onPress={() => {
               handleGallery(SELECT_IMAGE);
-              createPostStyle?.attachmentOptionsStyle
+              customAttachmentOptionsStyle
                 ?.onPhotoAttachmentOptionClick &&
-                createPostStyle?.attachmentOptionsStyle?.onPhotoAttachmentOptionClick();
+                customAttachmentOptionsStyle?.onPhotoAttachmentOptionClick();
             }}
           >
             <LMIcon
               assetPath={require("../../assets/images/gallery_icon3x.png")}
-              {...createPostStyle?.attachmentOptionsStyle?.photoAttachmentIcon}
+              {...customAttachmentOptionsStyle?.photoAttachmentIcon}
             />
             <LMText
               children={<Text>{ADD_IMAGES}</Text>}
               textStyle={styles.selectionOptionstext}
-              {...createPostStyle?.attachmentOptionsStyle
+              {...customAttachmentOptionsStyle
                 ?.photoAttachmentTextStyle}
             />
           </TouchableOpacity>
@@ -563,23 +569,23 @@ const CreatePostComponent = React.memo(() => {
             activeOpacity={0.8}
             style={[
               styles.optionItemView,
-              createPostStyle?.attachmentOptionsStyle?.videoAttachmentView,
+              customAttachmentOptionsStyle?.videoAttachmentView,
             ]}
             onPress={() => {
               handleGallery(SELECT_VIDEO);
-              createPostStyle?.attachmentOptionsStyle
+              customAttachmentOptionsStyle
                 ?.onVideoAttachmentOptionClick &&
-                createPostStyle?.attachmentOptionsStyle?.onVideoAttachmentOptionClick();
+                customAttachmentOptionsStyle?.onVideoAttachmentOptionClick();
             }}
           >
             <LMIcon
               assetPath={require("../../assets/images/video_icon3x.png")}
-              {...createPostStyle?.attachmentOptionsStyle?.videoAttachmentIcon}
+              {...customAttachmentOptionsStyle?.videoAttachmentIcon}
             />
             <LMText
               children={<Text>{ADD_VIDEOS}</Text>}
               textStyle={styles.selectionOptionstext}
-              {...createPostStyle?.attachmentOptionsStyle
+              {...customAttachmentOptionsStyle
                 ?.videoAttachmentTextStyle}
             />
           </TouchableOpacity>
@@ -588,23 +594,23 @@ const CreatePostComponent = React.memo(() => {
             activeOpacity={0.8}
             style={[
               styles.optionItemView,
-              createPostStyle?.attachmentOptionsStyle?.filesAttachmentView,
+              customAttachmentOptionsStyle?.filesAttachmentView,
             ]}
             onPress={() => {
               handleDocument();
-              createPostStyle?.attachmentOptionsStyle
+              customAttachmentOptionsStyle
                 ?.onFilesAttachmentOptionClick &&
-                createPostStyle?.attachmentOptionsStyle?.onFilesAttachmentOptionClick();
+                customAttachmentOptionsStyle?.onFilesAttachmentOptionClick();
             }}
           >
             <LMIcon
               assetPath={require("../../assets/images/paperClip_icon3x.png")}
-              {...createPostStyle?.attachmentOptionsStyle?.filesAttachmentIcon}
+              {...customAttachmentOptionsStyle?.filesAttachmentIcon}
             />
             <LMText
               children={<Text>{ADD_FILES}</Text>}
               textStyle={styles.selectionOptionstext}
-              {...createPostStyle?.attachmentOptionsStyle
+              {...customAttachmentOptionsStyle
                 ?.filesAttachmentTextStyle}
             />
           </TouchableOpacity>
