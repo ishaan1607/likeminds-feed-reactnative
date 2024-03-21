@@ -128,7 +128,7 @@ const LMDocument = React.memo(
                             },
                           ])}
                         >
-                          {item?.attachmentMeta?.pageCount}
+                          {item?.attachmentMeta?.pageCount > 1 ? `${item?.attachmentMeta?.pageCount} Pages` : `${item?.attachmentMeta?.pageCount} Page` }
                         </Text>
                         <Image
                           source={require("../../../assets/images/single_dot3x.png")}

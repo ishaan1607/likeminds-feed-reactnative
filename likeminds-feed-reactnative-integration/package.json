@@ -1,6 +1,6 @@
 {
   "name": "@likeminds.community/feed-rn-core",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "index.ts",
   "private": false,
@@ -42,5 +42,17 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.24"
+  },
+  "peerDependencies": {
+    "@react-native-community/netinfo": ">=11.3.0",
+    "react": ">=18.2.0",
+    "react-native": ">=0.71.1",
+    "react-native-document-picker": ">=9.1.0",
+    "react-native-gesture-handler": ">=2.14.0",
+    "react-native-image-picker": ">=7.1.0",
+    "react-native-toast-message": ">=2.2.0",
+    "@react-navigation/native": ">=6.1.7",
+    "@react-navigation/native-stack": ">=6.9.18",
+    "@react-navigation/stack": ">=6.3.20"
   }
 }

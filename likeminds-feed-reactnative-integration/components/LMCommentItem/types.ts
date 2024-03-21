@@ -21,5 +21,6 @@ export interface LMCommentProps {
   timeStampStyle?: TextStyle; // props for time stamp text
   viewMoreRepliesProps?: LMTextProps; // props for view more text
   onTapReplies?: (data: (repliesArray: Array<LMCommentUI>) => void) => void; // callback function to be executed on click of replies
-  commentMenu: LMPostMenuProps; // this represents the post menu props
+  commentMenu: LMPostMenuProps; // this represents the post menu props;
+  isRepliesVisible?: boolean
 }

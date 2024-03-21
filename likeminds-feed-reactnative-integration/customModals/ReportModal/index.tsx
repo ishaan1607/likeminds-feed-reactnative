@@ -76,7 +76,7 @@ const ReportModal = ({
     const reportTagsResponse = await dispatch(
       getReportTags(
         GetReportTagsRequest.builder().settype(payload.type).build(),
-        true
+        false
       )
     );
     return reportTagsResponse;
@@ -112,7 +112,7 @@ const ReportModal = ({
             .setTagId(payload.tagId)
             .setUuid(payload.uuid)
             .build(),
-          true
+          false
         )
       );
       // toast message action
