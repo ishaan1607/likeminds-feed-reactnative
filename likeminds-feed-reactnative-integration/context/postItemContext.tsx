@@ -11,7 +11,6 @@ import { LMPostMediaProps } from "../components/LMPost/LMPostMedia/types";
   
   interface LMPostContextProps {
     children: ReactNode;
-    // navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
     navigation: any;
     post: LMPostUI;
     headerProps?: LMPostHeaderProps;
@@ -21,7 +20,6 @@ import { LMPostMediaProps } from "../components/LMPost/LMPostMedia/types";
   }
   
   export interface LMPostContextValues {
-    // navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
     navigation: any;
     children: ReactNode;
     post: LMPostUI;
