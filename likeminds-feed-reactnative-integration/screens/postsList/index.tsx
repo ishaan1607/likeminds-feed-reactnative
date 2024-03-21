@@ -133,16 +133,6 @@ const onMenuItemSelect = (
             data={feedData}
             renderItem={({ item }: { item: LMPostUI }) => (
               <TouchableOpacity
-                // disabled={
-                //   item?.attachments &&
-                //   item?.attachments?.filter(
-                //     (media) =>
-                //       media?.attachmentType === IMAGE_ATTACHMENT_TYPE ||
-                //       media?.attachmentType === VIDEO_ATTACHMENT_TYPE
-                //   ).length >= 2
-                //     ? true
-                //     : false
-                // }
                 activeOpacity={0.8}
                 style={{ backgroundColor: "#e0e0e0" }}
                 onPress={() => {

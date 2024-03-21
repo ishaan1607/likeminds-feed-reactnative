@@ -14,6 +14,7 @@ const LMPostHeader = React.memo(() => {
   const { post, headerProps }: LMPostContextValues = useLMPostContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle } = LMFeedContextStyles;
+  const customPostHeaderStyle = postListStyle?.header
   const memberData = useAppSelector((state) => state.login.member);
 
   const [modalPosition, setModalPosition] = useState(
@@ -23,12 +24,12 @@ const LMPostHeader = React.memo(() => {
     headerProps?.postMenu?.modalVisible
   );
   const showMenuIcon =
-    postListStyle?.header?.showMenuIcon != undefined
-      ? postListStyle?.header?.showMenuIcon
+    customPostHeaderStyle?.showMenuIcon != undefined
+      ? customPostHeaderStyle?.showMenuIcon
       : true;
   const showMemberStateLabel =
-    postListStyle?.header?.showMemberStateLabel != undefined
-      ? postListStyle?.header?.showMemberStateLabel
+    customPostHeaderStyle?.showMemberStateLabel != undefined
+      ? customPostHeaderStyle?.showMemberStateLabel
       : true;
 
   // this function closes the menu list modal
@@ -50,29 +51,29 @@ const LMPostHeader = React.memo(() => {
     <View
       style={StyleSheet.flatten([
         styles.postHeader,
-        postListStyle?.header?.postHeaderViewStyle,
+        customPostHeaderStyle?.postHeaderViewStyle,
       ])}
     >
       {/* author detail section */}
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() => postListStyle?.header?.onTap(post?.user)}
+        onPress={() => customPostHeaderStyle?.onTap(post?.user)}
       >
         <View style={styles.alignRow}>
           <LMProfilePicture
             fallbackText={{
               children: nameInitials(post?.user?.name),
               textStyle:
-                postListStyle?.header?.profilePicture?.fallbackTextStyle,
+                customPostHeaderStyle?.profilePicture?.fallbackTextStyle,
             }}
             imageUrl={post?.user?.imageUrl}
-            onTap={postListStyle?.header?.profilePicture?.onTap}
-            size={postListStyle?.header?.profilePicture?.size}
+            onTap={customPostHeaderStyle?.profilePicture?.onTap}
+            size={customPostHeaderStyle?.profilePicture?.size}
             fallbackTextBoxStyle={
-              postListStyle?.header?.profilePicture?.fallbackTextBoxStyle
+              customPostHeaderStyle?.profilePicture?.fallbackTextBoxStyle
             }
             profilePictureStyle={
-              postListStyle?.header?.profilePicture?.profilePictureStyle
+              customPostHeaderStyle?.profilePicture?.profilePictureStyle
             }
           />
           {/* author details */}
@@ -83,7 +84,7 @@ const LMPostHeader = React.memo(() => {
                 selectable={false}
                 textStyle={StyleSheet.flatten([
                   styles.postAuthorName,
-                  postListStyle?.header?.titleText,
+                  customPostHeaderStyle?.titleText,
                 ])}
               >
                 {post?.user?.name}
@@ -93,13 +94,13 @@ const LMPostHeader = React.memo(() => {
                 <View
                   style={StyleSheet.flatten([
                     styles.labelView,
-                    postListStyle?.header?.memberStateViewStyle,
+                    customPostHeaderStyle?.memberStateViewStyle,
                   ])}
                 >
                   <LMText
                     textStyle={StyleSheet.flatten([
                       styles.labelText,
-                      postListStyle?.header?.memberStateTextStyle,
+                      customPostHeaderStyle?.memberStateTextStyle,
                     ])}
                   >{`Admin`}</LMText>
                 </View>
@@ -112,7 +113,7 @@ const LMPostHeader = React.memo(() => {
                 selectable={false}
                 textStyle={StyleSheet.flatten([
                   styles.postedDetail,
-                  postListStyle?.header?.createdAt,
+                  customPostHeaderStyle?.createdAt,
                 ])}
               >
                 {timeStamp(Number(post?.createdAt)) ===
@@ -133,7 +134,7 @@ const LMPostHeader = React.memo(() => {
                   <LMText
                     textStyle={StyleSheet.flatten([
                       styles.postedDetail,
-                      postListStyle?.header?.createdAt,
+                      customPostHeaderStyle?.createdAt,
                     ])}
                   >{`Edited`}</LMText>
                 </>
@@ -156,23 +157,23 @@ const LMPostHeader = React.memo(() => {
             {
               <LMIcon
                 assetPath={
-                  postListStyle?.header?.pinIcon?.assetPath
-                    ? postListStyle?.header?.pinIcon?.assetPath
+                  customPostHeaderStyle?.pinIcon?.assetPath
+                    ? customPostHeaderStyle?.pinIcon?.assetPath
                     : require("../../../assets/images/pin_icon3x.png")
                 }
-                iconStyle={postListStyle?.header?.pinIcon?.iconStyle ? postListStyle?.header?.pinIcon?.iconStyle : styles.iconSize}
-                iconUrl={postListStyle?.header?.pinIcon?.iconUrl}
-                color={postListStyle?.header?.pinIcon?.color}
+                iconStyle={customPostHeaderStyle?.pinIcon?.iconStyle ? customPostHeaderStyle?.pinIcon?.iconStyle : styles.iconSize}
+                iconUrl={customPostHeaderStyle?.pinIcon?.iconUrl}
+                color={customPostHeaderStyle?.pinIcon?.color}
                 width={
-                  postListStyle?.header?.pinIcon?.width ? postListStyle?.header?.pinIcon?.width : 20
+                  customPostHeaderStyle?.pinIcon?.width ? customPostHeaderStyle?.pinIcon?.width : 20
                 }
                 height={
-                  postListStyle?.header?.pinIcon?.height
-                    ? postListStyle?.header?.pinIcon?.height
+                  customPostHeaderStyle?.pinIcon?.height
+                    ? customPostHeaderStyle?.pinIcon?.height
                     : 20
                 }
-                boxFit={postListStyle?.header?.pinIcon?.boxFit}
-                boxStyle={postListStyle?.header?.pinIcon?.boxStyle}
+                boxFit={customPostHeaderStyle?.pinIcon?.boxFit}
+                boxStyle={customPostHeaderStyle?.pinIcon?.boxStyle}
               />
             }
           </>
@@ -187,25 +188,25 @@ const LMPostHeader = React.memo(() => {
             {showMenuIcon && (
               <LMIcon
                 assetPath={
-                  postListStyle?.header?.menuIcon?.assetPath
-                    ? postListStyle?.header?.menuIcon?.assetPath
+                  customPostHeaderStyle?.menuIcon?.assetPath
+                    ? customPostHeaderStyle?.menuIcon?.assetPath
                     : require("../../../assets/images/three_dots3x.png")
                 }
-                iconStyle={postListStyle?.header?.menuIcon?.iconStyle ? postListStyle?.header?.menuIcon?.iconStyle : styles.iconSize}
-                iconUrl={postListStyle?.header?.menuIcon?.iconUrl}
-                color={postListStyle?.header?.menuIcon?.color}
+                iconStyle={customPostHeaderStyle?.menuIcon?.iconStyle ? customPostHeaderStyle?.menuIcon?.iconStyle : styles.iconSize}
+                iconUrl={customPostHeaderStyle?.menuIcon?.iconUrl}
+                color={customPostHeaderStyle?.menuIcon?.color}
                 width={
-                  postListStyle?.header?.menuIcon?.width
-                    ? postListStyle?.header?.menuIcon.width
+                  customPostHeaderStyle?.menuIcon?.width
+                    ? customPostHeaderStyle?.menuIcon.width
                     : 20
                 }
                 height={
-                  postListStyle?.header?.menuIcon?.height
-                    ? postListStyle?.header?.menuIcon.height
+                  customPostHeaderStyle?.menuIcon?.height
+                    ? customPostHeaderStyle?.menuIcon.height
                     : 20
                 }
-                boxFit={postListStyle?.header?.menuIcon?.boxFit}
-                boxStyle={postListStyle?.header?.menuIcon?.boxStyle}
+                boxFit={customPostHeaderStyle?.menuIcon?.boxFit}
+                boxStyle={customPostHeaderStyle?.menuIcon?.boxStyle}
               />
             )}
           </>
@@ -220,9 +221,9 @@ const LMPostHeader = React.memo(() => {
         modalPosition={modalPosition}
         modalVisible={showPostMenuModal}
         onCloseModal={closePostMenuModal}
-        menuItemTextStyle={postListStyle?.header?.postMenu?.menuItemTextStyle}
-        menuViewStyle={postListStyle?.header?.postMenu?.menuViewStyle}
-        backdropColor={postListStyle?.header?.postMenu?.backdropColor}
+        menuItemTextStyle={customPostHeaderStyle?.postMenu?.menuItemTextStyle}
+        menuViewStyle={customPostHeaderStyle?.postMenu?.menuViewStyle}
+        backdropColor={customPostHeaderStyle?.postMenu?.backdropColor}
       />
     </View>
   );

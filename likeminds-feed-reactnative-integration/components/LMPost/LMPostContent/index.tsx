@@ -16,9 +16,10 @@ const LMPostContent = React.memo(() => {
   const { post }: LMPostContextValues = useLMPostContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle } = LMFeedContextStyles;
+  const postContentStyle = postListStyle?.postContent
 
-  const MAX_LINES = postListStyle?.postContent?.visibleLines
-    ? postListStyle?.postContent?.visibleLines
+  const MAX_LINES = postContentStyle?.visibleLines
+    ? postContentStyle?.visibleLines
     : MAX_DEFAULT_POST_CONTENT_LINES;
   const [showText, setShowText] = useState(false);
   const [numberOfLines, setNumberOfLines] = useState<number>();
@@ -44,7 +45,7 @@ const LMPostContent = React.memo(() => {
   return (
     <View
       style={StyleSheet.flatten([
-        postListStyle?.postContent?.postContentViewStyle,
+        postContentStyle?.postContentViewStyle,
         { paddingHorizontal: 16, paddingTop: 15 },
       ])}
     >
@@ -53,7 +54,7 @@ const LMPostContent = React.memo(() => {
         maxLines={numberOfLines}
         textStyle={StyleSheet.flatten([
           styles.contentText,
-          postListStyle?.postContent?.textStyle
+          postContentStyle?.textStyle
         ])}
         onTextLayout={(e) => onTextLayout(e)}
       >
@@ -71,13 +72,13 @@ const LMPostContent = React.memo(() => {
           <LMText
             textStyle={StyleSheet.flatten([
               styles.showMoreText,
-              postListStyle?.postContent?.showMoreText?.textStyle,
+              postContentStyle?.showMoreText?.textStyle,
             ])}
           >
             {showText
               ? ""
-              : postListStyle?.postContent?.showMoreText?.children
-              ? postListStyle?.postContent?.showMoreText.children
+              : postContentStyle?.showMoreText?.children
+              ? postContentStyle?.showMoreText.children
               : "See More"}
           </LMText>
         </TouchableOpacity>

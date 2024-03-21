@@ -21,6 +21,7 @@ const LMPostMedia = React.memo(() => {
   const { post }: LMPostContextValues = useLMPostContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle } = LMFeedContextStyles;
+  const customPostMediaStyle = postListStyle?.media
   // this handles the rendering of posts with single attachment
   const renderSingleAttachment = () => {
     switch (post?.attachments && post?.attachments[0]?.attachmentType) {
@@ -34,7 +35,7 @@ const LMPostMedia = React.memo(() => {
                   : ""
                 : ""
             }
-            {...postListStyle?.media?.image}
+            {...customPostMediaStyle?.image}
           />
         );
       }
@@ -48,7 +49,7 @@ const LMPostMedia = React.memo(() => {
                   : ""
                 : ""
             }
-            {...postListStyle?.media?.video}
+            {...customPostMediaStyle?.video}
           />
         );
       }
@@ -56,7 +57,7 @@ const LMPostMedia = React.memo(() => {
         return (
           <LMDocument
             attachments={post?.attachments}
-            {...postListStyle?.media?.document}
+            {...customPostMediaStyle?.document}
           />
         );
       }
@@ -64,7 +65,7 @@ const LMPostMedia = React.memo(() => {
         return (
           <LMLinkPreview
             attachments={post?.attachments}
-            {...postListStyle?.media?.linkPreview}
+            {...customPostMediaStyle?.linkPreview}
           />
         );
       }
@@ -96,7 +97,7 @@ const LMPostMedia = React.memo(() => {
     <View
       style={StyleSheet.flatten([
         { paddingBottom: 5, paddingTop: 15 },
-        postListStyle?.media?.postMediaStyle,
+        customPostMediaStyle?.postMediaStyle,
       ])}
     >
       {post?.attachments && post?.attachments?.length > 1 ? (
@@ -108,9 +109,9 @@ const LMPostMedia = React.memo(() => {
         ).length >= 2 ? (
           <LMCarousel
             attachments={getData(IMAGE_ATTACHMENT_TYPE, VIDEO_ATTACHMENT_TYPE)}
-            {...postListStyle?.media?.carousel}
-            imageItem={postListStyle?.media?.image}
-            videoItem={postListStyle?.media?.video}
+            {...customPostMediaStyle?.carousel}
+            imageItem={customPostMediaStyle?.image}
+            videoItem={customPostMediaStyle?.video}
           />
         ) : (
           // this section renders if there are multiple attachments but the image or video attachments are less than 2
@@ -120,7 +121,7 @@ const LMPostMedia = React.memo(() => {
             ) && (
               <LMImage
                 imageUrl={getUrl(IMAGE_ATTACHMENT_TYPE)}
-                {...postListStyle?.media?.image}
+                {...customPostMediaStyle?.image}
               />
             )}
             {post?.attachments?.find(
@@ -128,7 +129,7 @@ const LMPostMedia = React.memo(() => {
             ) && (
               <LMVideo
                 videoUrl={getUrl(VIDEO_ATTACHMENT_TYPE)}
-                {...postListStyle?.media?.video}
+                {...customPostMediaStyle?.video}
               />
             )}
             {post?.attachments?.find(
@@ -136,7 +137,7 @@ const LMPostMedia = React.memo(() => {
             ) && (
               <LMDocument
                 attachments={getData(DOCUMENT_ATTACHMENT_TYPE)}
-                {...postListStyle?.media?.document}
+                {...customPostMediaStyle?.document}
               />
             )}
             {post?.attachments?.every(
@@ -144,7 +145,7 @@ const LMPostMedia = React.memo(() => {
             ) && (
               <LMLinkPreview
                 attachments={post?.attachments}
-                {...postListStyle?.media?.linkPreview}
+                {...customPostMediaStyle?.linkPreview}
               />
             )}
           </>

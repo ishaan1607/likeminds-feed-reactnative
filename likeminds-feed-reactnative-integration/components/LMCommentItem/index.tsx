@@ -60,6 +60,7 @@ const LMCommentItem = React.memo(
     const [showPostMenuModal, setShowPostMenuModal] = useState(
       commentMenu?.modalVisible
     );
+    const customLikeIcon = likeIconButton?.icon
 
     // this handles the show more functionality
     const onTextLayout = (event) => {
@@ -211,20 +212,20 @@ const LMCommentItem = React.memo(
                   ? likeIconButton?.activeIcon?.assetPath
                     ? likeIconButton.activeIcon.assetPath
                     : require("../../assets/images/heart_red_icon3x.png")
-                  : likeIconButton?.icon?.assetPath
+                  : customLikeIcon?.assetPath
                   ? likeIconButton.icon.assetPath
                   : require("../../assets/images/heart_icon3x.png"),
-                iconUrl: likeIconButton?.icon?.iconUrl,
-                iconStyle: likeIconButton?.icon?.iconStyle,
-                color: likeIconButton?.icon?.color,
-                height: likeIconButton?.icon?.height
+                iconUrl: customLikeIcon?.iconUrl,
+                iconStyle: customLikeIcon?.iconStyle,
+                color: customLikeIcon?.color,
+                height: customLikeIcon?.height
                   ? likeIconButton.icon.height
                   : 20.5,
-                width: likeIconButton?.icon?.width
+                width: customLikeIcon?.width
                   ? likeIconButton.icon.width
                   : 20.5,
-                boxFit: likeIconButton?.icon?.boxFit,
-                boxStyle: likeIconButton?.icon?.boxStyle,
+                boxFit: customLikeIcon?.boxFit,
+                boxStyle: customLikeIcon?.boxStyle,
               }}
               buttonStyle={styles.likeIconButton}
             />

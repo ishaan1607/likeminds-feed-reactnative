@@ -27,30 +27,31 @@ const PostLikesListComponent = React.memo(() => {
     usePostLikesListContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, postLikesListStyle } = LMFeedContextStyles;
+  const customScreenHeader = postLikesListStyle?.screenHeader
   return (
     <SafeAreaView style={styles.mainContainer}>
       <LMHeader
-        {...postLikesListStyle?.screenHeader}
+        {...customScreenHeader}
         showBackArrow={
-          postLikesListStyle?.screenHeader?.showBackArrow != undefined
-            ? postLikesListStyle?.screenHeader?.showBackArrow
+          customScreenHeader?.showBackArrow != undefined
+            ? customScreenHeader?.showBackArrow
             : true
         }
         heading={
-          postLikesListStyle?.screenHeader?.heading
-            ? postLikesListStyle?.screenHeader?.heading
+          customScreenHeader?.heading
+            ? customScreenHeader?.heading
             : "Likes"
         }
         subHeading={
-          postLikesListStyle?.screenHeader?.subHeading
-            ? postLikesListStyle?.screenHeader?.subHeading
+          customScreenHeader?.subHeading
+            ? customScreenHeader?.subHeading
             : totalLikes > 1
             ? `${totalLikes} likes`
             : `${totalLikes} like`
         }
         onBackPress={() => {
           navigation.goBack();
-          postLikesListStyle?.screenHeader?.onBackPress();
+          customScreenHeader?.onBackPress();
         }}
       />
       {/* post likes list */}
