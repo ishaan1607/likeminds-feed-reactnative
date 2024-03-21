@@ -424,8 +424,6 @@ const CreatePostComponent = React.memo(() => {
                 showCancel={
                   postMediaStyle?.linkPreview?.showCancel != undefined
                     ? postMediaStyle?.linkPreview?.showCancel
-                    : postToEdit
-                    ? false
                     : true
                 }
                 onCancel={() => {
