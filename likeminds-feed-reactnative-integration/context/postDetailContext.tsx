@@ -123,11 +123,13 @@ export interface PostDetailContextValues {
   refreshing: boolean;
   localRefresh: boolean;
   commentFocus: boolean;
-  routeParams: string;
+  routeParams: boolean;
+  navigatedFromComments: boolean;
   isKeyboardVisible: boolean;
   keyboardFocusOnReply: boolean;
   setKeyboardFocusOnReply: Dispatch<SetStateAction<boolean>>;
-  setRouteParams: Dispatch<SetStateAction<string>>;
+  setRouteParams: Dispatch<SetStateAction<boolean>>;
+  setNavigatedFromComments: Dispatch<SetStateAction<boolean>>;
   setCommentFocus: Dispatch<SetStateAction<boolean>>;
   setLocalRefresh: Dispatch<SetStateAction<boolean>>;
   setRefreshing: Dispatch<SetStateAction<boolean>>;
@@ -253,6 +255,7 @@ export const PostDetailContextProvider = ({
   const [routeParams, setRouteParams] = useState(
     route.params[1] === NAVIGATED_FROM_COMMENT
   );
+  const [navigatedFromComments, setNavigatedFromComments] = useState(route.params[1] === NAVIGATED_FROM_COMMENT)
   const isKeyboardVisible = Keyboard.isVisible();
 
   const LMFeedContextStyles = useLMFeedStyles();
@@ -540,6 +543,9 @@ export const PostDetailContextProvider = ({
     };
     setCommentToAdd("");
     setCommentFocus(false);
+    setKeyboardFocusOnReply(false);
+    setEditCommentFocus(false);
+    setRouteParams(false);
     // handles adding comment locally
     dispatch(addCommentStateHandler({ payload, loggedInUser }));
     // calls new comment api
@@ -553,6 +559,7 @@ export const PostDetailContextProvider = ({
         true
       )
     );
+    Keyboard.dismiss();
     return commentAddResponse;
   };
 
@@ -569,6 +576,10 @@ export const PostDetailContextProvider = ({
     };
     setCommentToAdd("");
     setReplyOnComment({ textInputFocus: false, commentId: "" });
+    setKeyboardFocusOnReply(false);
+    setEditCommentFocus(false);
+    setCommentFocus(false);
+    setRouteParams(false);
     dispatch(replyCommentStateHandler({ payload, loggedInUser }));
     // call reply on comment api
     const replyAddResponse = await dispatch(
@@ -582,6 +593,7 @@ export const PostDetailContextProvider = ({
         true
       )
     );
+    Keyboard.dismiss();
     return replyAddResponse;
   };
 
@@ -769,6 +781,10 @@ export const PostDetailContextProvider = ({
     if (editCommentResponse) {
       setEditCommentFocus(false);
       setCommentToAdd("");
+      setKeyboardFocusOnReply(false);
+      setCommentFocus(false);
+      setRouteParams(false);
+      Keyboard.dismiss();
     }
     return editCommentResponse;
   };
@@ -889,11 +905,13 @@ export const PostDetailContextProvider = ({
     localRefresh,
     commentFocus,
     routeParams,
+    navigatedFromComments,
     isKeyboardVisible,
     keyboardFocusOnReply,
     setKeyboardFocusOnReply,
 
     setRouteParams,
+    setNavigatedFromComments,
     setCommentFocus,
     setLocalRefresh,
     setRefreshing,

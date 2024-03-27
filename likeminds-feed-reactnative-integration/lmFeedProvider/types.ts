@@ -231,16 +231,20 @@ interface PostDetailStyleProps {
     userTagNameStyle?: TextStyle;
   };
   commentTextInputStyle?: {
-    containerStyle?: ViewStyle;
     inputTextStyle?: TextStyle;
     placeholderText?: string;
     placeholderTextColor?: string;
-    disabled?: boolean;
-    rightIcon?: LMButtonProps;
-    autoFocus?: boolean;
-    plainTextStyle?: TextStyle;
+    rightIcon?: {
+      text?: LMTextProps;
+      icon?: LMIconProps;
+      onTap?: (value?: any) => void;
+      placement?: "start" | "end";
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
+    textValueStyle?: TextStyle;
     mentionTextStyle?: TextStyle;
-    multilineField?: boolean
+    multilineField?: boolean;
   };
 }
 
@@ -248,16 +252,20 @@ interface CreatePostStyleProps {
   userNameTextStyle?: TextStyle;
   createPostTextStyle?: TextStyle;
   createPostTextInputStyle?: {
-    containerStyle?: ViewStyle;
     inputTextStyle?: TextStyle;
     placeholderText?: string;
     placeholderTextColor?: string;
-    disabled?: boolean;
-    rightIcon?: LMButtonProps;
-    autoFocus?: boolean;
-    plainTextStyle?: TextStyle;
+    rightIcon?: {
+      text?: LMTextProps;
+      icon?: LMIconProps;
+      onTap?: (value?: any) => void;
+      placement?: "start" | "end";
+      buttonStyle?: ViewStyle;
+      isClickable?: boolean;
+    };
+    textValueStyle?: TextStyle;
     mentionTextStyle?: TextStyle;
-    multilineField?: boolean
+    multilineField?: boolean;
   };
 }
 
