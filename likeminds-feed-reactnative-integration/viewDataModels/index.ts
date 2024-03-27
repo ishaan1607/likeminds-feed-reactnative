@@ -17,17 +17,7 @@ import {
   VIDEO_ATTACHMENT_TYPE,
 } from '../constants/Strings';
 import {IComment} from '@likeminds.community/feed-js';
-import {
-  LMAttachmentMetaUI,
-  LMAttachmentUI,
-  LMCommentUI,
-  LMLikeUI,
-  LMMenuItemsUI,
-  LMOGTagsUI,
-  LMPostUI,
-  LMSDKClientInfoUI,
-  LMUserUI,
-} from 'likeminds_feed_reactnative_ui';
+import { LMAttachmentMetaUI, LMAttachmentUI, LMLikeUI, LMMenuItemsUI, LMOGTagsUI, LMPostUI, LMSDKClientInfoUI, LMUserUI } from '../models';
 
 /**
  * @param data: [GetFeedResponse]
@@ -302,7 +292,7 @@ export function convertToLMCommentUI(
   postId: string,
   data: IComment[],
   user: {[key: string]: LMUserUI},
-): LMCommentUI[] {
+): any[] {
   return data?.map((item: IComment) => {
     return {
       id: item.Id,

@@ -9,12 +9,7 @@ import React, {
   useRef,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import {
-  LMCommentUI,
-  LMPost,
-  LMPostUI,
-  LMUserUI,
-} from "likeminds_feed_reactnative_ui";
+
 import {
   DELETE_COMMENT_MENU_ITEM,
   DELETE_POST_MENU_ITEM,
@@ -78,6 +73,8 @@ import { postLikesClear } from "../store/actions/postLikes";
 import { showToastMessage } from "../store/actions/toast";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../models/RootStackParamsList";
+import LMPost from "../components/LMPost/LMPost";
+import { LMCommentUI, LMPostUI, LMUserUI } from "../models";
 
 interface PostDetailContextProps {
   children: ReactNode;
@@ -92,6 +89,12 @@ interface PostDetailContextProps {
 
 export interface PostDetailContextValues {
   navigation: NativeStackNavigationProp<RootStackParamList, "PostDetail">;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
   postDetail: LMPostUI;
   modalPosition: {};
   showActionListModal: false;
@@ -190,6 +193,8 @@ export interface PostDetailContextValues {
   handleInputChange: (event: string) => void;
   loadData: (newPage: number) => void;
   handleLoadMore: () => void;
+  showRepliesOfCommentId: string;
+  setShowRepliesOfCommentId: Dispatch<SetStateAction<string>>;
 }
 
 const PostDetailContext = createContext<PostDetailContextValues | undefined>(
@@ -257,6 +262,7 @@ export const PostDetailContextProvider = ({
   );
   const [navigatedFromComments, setNavigatedFromComments] = useState(route.params[1] === NAVIGATED_FROM_COMMENT)
   const isKeyboardVisible = Keyboard.isVisible();
+  const [showRepliesOfCommentId, setShowRepliesOfCommentId] = useState('')
 
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle } = LMFeedContextStyles;
@@ -273,7 +279,7 @@ export const PostDetailContextProvider = ({
           .setpage(1)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
     setLocalRefresh(false);
@@ -310,7 +316,7 @@ export const PostDetailContextProvider = ({
     const postLikeResponse = await dispatch(
       likePost(
         LikePostRequest.builder().setpostId(payload.postId).build(),
-        true
+        false
       )
     );
     return postLikeResponse;
@@ -337,7 +343,7 @@ export const PostDetailContextProvider = ({
       const savePostResponse = await dispatch(
         savePost(
           SavePostRequest.builder().setpostId(payload.postId).build(),
-          true
+          false
         )
       );
       await dispatch(
@@ -364,7 +370,7 @@ export const PostDetailContextProvider = ({
     };
     dispatch(pinPostStateHandler(payload.postId));
     const pinPostResponse = await dispatch(
-      pinPost(PinPostRequest.builder().setpostId(payload.postId).build(), true)
+      pinPost(PinPostRequest.builder().setpostId(payload.postId).build(), false)
     );
     if (pinPostResponse) {
       dispatch(
@@ -476,7 +482,7 @@ export const PostDetailContextProvider = ({
           .setpage(commentPageNumber)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
     return getPostResponse;
@@ -497,7 +503,7 @@ export const PostDetailContextProvider = ({
           .setpage(pageNo)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
 
@@ -525,7 +531,7 @@ export const PostDetailContextProvider = ({
           .setcommentId(payload.commentId)
           .setpostId(payload.postId)
           .build(),
-        true
+        false
       )
     );
     return commentLikeResponse;
@@ -556,7 +562,7 @@ export const PostDetailContextProvider = ({
           .settext(payload.newComment)
           .setTempId(`${payload.tempId}`)
           .build(),
-        true
+        false
       )
     );
     Keyboard.dismiss();
@@ -574,6 +580,7 @@ export const PostDetailContextProvider = ({
       tempId: `${-currentDate.getTime()}`,
       commentId: commentId,
     };
+    setShowRepliesOfCommentId(replyOnComment?.commentId)
     setCommentToAdd("");
     setReplyOnComment({ textInputFocus: false, commentId: "" });
     setKeyboardFocusOnReply(false);
@@ -590,7 +597,7 @@ export const PostDetailContextProvider = ({
           .setTempId(`${payload.tempId}`)
           .setText(payload.newComment)
           .build(),
-        true
+        false
       )
     );
     Keyboard.dismiss();
@@ -609,110 +616,41 @@ export const PostDetailContextProvider = ({
         post={postDetail}
         // header props
         headerProps={{
-          post: postDetail,
           postMenu: {
-            postId: postDetail?.id,
-            menuItems: postDetail?.menuItems,
             modalPosition: modalPosition,
             modalVisible: showActionListModal,
             onCloseModal: closePostActionListModal,
             onSelected: (postId, itemId) =>
-              onMenuItemSelect(postId, itemId, postDetail?.isPinned),
-            ...postListStyle?.header?.postMenu,
-          },
-          onTap: () => {
-            postListStyle?.header?.onTap();
-          },
-          showMenuIcon: postListStyle?.header?.showMenuIcon
-            ? postListStyle?.header?.showMenuIcon
-            : true,
-          showMemberStateLabel: postListStyle?.header?.showMemberStateLabel
-            ? postListStyle?.header?.showMemberStateLabel
-            : true,
-          profilePicture: postListStyle?.header?.profilePicture,
-          titleText: postListStyle?.header?.titleText,
-          createdAt: postListStyle?.header?.createdAt,
-          memberStateViewStyle: postListStyle?.header?.memberStateViewStyle,
-          memberStateTextStyle: postListStyle?.header?.memberStateTextStyle,
-          postHeaderViewStyle: postListStyle?.header?.postHeaderViewStyle,
-          pinIcon: postListStyle?.header?.pinIcon,
-          menuIcon: postListStyle?.header?.menuIcon,
+            onMenuItemSelect(postId, itemId, postDetail?.isPinned),
+          }
         }}
         // footer props
         footerProps={{
-          isLiked: postDetail?.isLiked,
-          isSaved: postDetail?.isSaved,
-          likesCount: postDetail?.likesCount,
-          commentsCount: postDetail?.commentsCount,
-          showBookMarkIcon: postListStyle?.footer?.showBookMarkIcon
-            ? postListStyle?.footer?.showBookMarkIco
-            : true,
-          showShareIcon: postListStyle?.footer?.showShareIcon
-            ? postListStyle?.footer?.showShareIcon
-            : true,
           likeIconButton: {
-            ...postListStyle?.footer?.likeIconButton,
             onTap: () => {
               postLikeHandler(postDetail?.id);
-              postListStyle?.footer?.likeIconButton?.onTap();
             },
           },
           saveButton: {
-            ...postListStyle?.footer?.saveButton,
             onTap: () => {
               savePostHandler(postDetail?.id, postDetail?.isSaved);
-              postListStyle?.footer?.saveButton?.onTap();
             },
           },
           likeTextButton: {
-            ...postListStyle?.footer?.likeTextButton,
             onTap: () => {
               dispatch(postLikesClear());
               navigation.navigate(POST_LIKES_LIST, [
                 POST_LIKES,
                 postDetail?.id,
               ]);
-              postListStyle?.footer?.likeTextButton?.onTap();
             },
           },
           commentButton: {
-            ...postListStyle?.footer?.commentButton,
             onTap: () => {
               setCommentFocus(true);
-              postListStyle?.footer?.commentButton?.onTap();
-            },
-          },
-          shareButton: postListStyle?.footer?.shareButton,
-          footerBoxStyle: postListStyle?.footer?.footerBoxStyle,
+            }
+          }
         }}
-        // media props
-        mediaProps={{
-          attachments: postDetail?.attachments ? postDetail.attachments : [],
-          imageProps: postListStyle?.media?.image,
-          videoProps: {
-            ...postListStyle?.media?.video,
-            videoUrl: "",
-            showControls: postListStyle?.media?.video?.showControls
-              ? postListStyle?.media?.video?.showControls
-              : true,
-          },
-          carouselProps: {
-            ...postListStyle?.media?.carousel,
-            attachments: postDetail?.attachments ? postDetail.attachments : [],
-            videoItem: {
-              ...postListStyle?.media?.carousel?.videoItem,
-              videoUrl: "",
-              showControls: postListStyle?.media?.carousel?.videoItem
-                ?.showControls
-                ? postListStyle?.media?.carousel?.videoItem?.showControls
-                : true,
-            },
-          },
-          documentProps: postListStyle?.media?.document,
-          linkPreviewProps: postListStyle?.media?.linkPreview,
-          postMediaStyle: postListStyle?.media?.postMediaStyle,
-        }}
-        contentProps={postListStyle?.postContent}
       />
     );
   };
@@ -775,7 +713,7 @@ export const PostDetailContextProvider = ({
           .setpostId(postDetail?.id)
           .settext(payload.commentText)
           .build(),
-        true
+        false
       )
     );
     if (editCommentResponse) {
@@ -816,7 +754,7 @@ export const PostDetailContextProvider = ({
               .setpage(1)
               .setpageSize(10)
               .build(),
-            true
+            false
           )
         );
         if (mentionListLength > 0) {
@@ -852,7 +790,7 @@ export const PostDetailContextProvider = ({
           .setpage(newPage)
           .setpageSize(10)
           .build(),
-        true
+        false
       )
     );
     if (taggingListResponse) {
@@ -876,6 +814,7 @@ export const PostDetailContextProvider = ({
 
   const contextValues: PostDetailContextValues = {
     navigation,
+    route,
     postDetail,
     modalPosition,
     showActionListModal,
@@ -960,6 +899,8 @@ export const PostDetailContextProvider = ({
     handleInputChange,
     loadData,
     handleLoadMore,
+    showRepliesOfCommentId,
+    setShowRepliesOfCommentId
   };
 
   return (

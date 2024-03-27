@@ -10,17 +10,16 @@ import React, {
   MutableRefObject,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { LMAttachmentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { mentionToRouteConverter, uploadFilesToAWS } from "../utils";
 import { addPost, setUploadAttachments } from "../store/actions/createPost";
 import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js";
 import { refreshFeed } from "../store/actions/feed";
-import { FlashList } from "@shopify/flash-list";
 import { POST_UPLOADED, RIGHT_CREATE_POST, STATE_ADMIN } from "../constants/Strings";
 import { RootStackParamList } from "../models/RootStackParamsList";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { showToastMessage } from "../store/actions/toast";
 import { FlatList } from "react-native";
+import { LMAttachmentUI, LMPostUI } from "../models";
 
 interface UniversalFeedContextProps {
   children: ReactNode;
@@ -116,7 +115,7 @@ export const UniversalFeedContextProvider = ({
     await dispatch(
       refreshFeed(
         GetFeedRequest.builder().setpage(1).setpageSize(20).build(),
-        true
+        false
       )
     );
     setLocalRefresh(false);
@@ -147,7 +146,7 @@ export const UniversalFeedContextProvider = ({
           .setAttachments([...updatedAttachments, ...linkAttachments])
           .setText(postContentText)
           .build(),
-        true
+        false
       )
     );
     if (addPostResponse) {
@@ -157,7 +156,7 @@ export const UniversalFeedContextProvider = ({
           allAttachment: [],
           linkData: [],
           conText: "",
-        }) as any
+        })
       );
       await onRefresh();
       listRef.current?.scrollToIndex({ animated: true, index: 0 });
@@ -191,7 +190,7 @@ export const UniversalFeedContextProvider = ({
     const itemSaved = item?.isSaved;
     const itemText = item?.text;
 
-    return `${id}${itemSaved}`;
+    return `${id}`;
   };
 
   const contextValues: UniversalFeedContextValues = {

@@ -16,24 +16,22 @@ import {
   COMMENT_LIKES,
   COMMENT_TYPE,
   POST_TYPE,
-  VIEW_MORE_TEXT
+  VIEW_MORE_TEXT,
 } from "../../constants/Strings";
 import { DeleteModal, ReportModal } from "../../customModals";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { styles } from "./styles";
 import Layout from "../../constants/Layout";
-import {
-  replaceLastMention,
-} from "../../utils";
+import { nameInitials, replaceLastMention } from "../../utils";
 import { useLMFeedStyles } from "../../lmFeedProvider";
 import { useAppDispatch } from "../../store/store";
-import {
-  clearComments
-} from "../../store/actions/postDetail";
+import { clearComments } from "../../store/actions/postDetail";
 import {
   PostDetailContextProvider,
   PostDetailContextValues,
+  PostDetailCustomisableMethodsContextProvider,
   usePostDetailContext,
+  usePostDetailCustomisableMethodsContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -97,7 +95,7 @@ const PostDetail = ({
   );
 };
 
-const PostDetailComponent = React.memo(() => {  
+const PostDetailComponent = React.memo(() => {
   const dispatch = useAppDispatch();
   const {
     keyboardIsVisible,
@@ -169,23 +167,23 @@ const PostDetailComponent = React.memo(() => {
   return (
     <SafeAreaView edges={["left", "right", "top"]} style={styles.flexView}>
       <KeyboardAvoidingView
-       enabled={true}
-       behavior={"height"}
+        enabled={true}
+        behavior={"height"}
         style={styles.flexView}
       >
         {/* header view */}
         <LMHeader
           showBackArrow={
-            postDetailStyle?.screenHeader?.showBackArrow
-              ? postDetailStyle?.screenHeader?.showBackArrow
+            customScreenHeader?.showBackArrow != undefined
+              ? customScreenHeader?.showBackArrow
               : true
           }
           heading={
             customScreenHeader?.heading ? customScreenHeader?.heading : "Post"
           }
           subHeading={
-            postDetailStyle?.screenHeader?.subHeading
-              ? postDetailStyle?.screenHeader?.subHeading
+            customScreenHeader?.subHeading
+              ? customScreenHeader?.subHeading
               : postDetail?.id
               ? postDetail?.commentsCount > 1
                 ? `${postDetail?.commentsCount} comments`
@@ -195,7 +193,7 @@ const PostDetailComponent = React.memo(() => {
           onBackPress={() => {
             Keyboard.dismiss();
             navigation.navigate(UNIVERSAL_FEED);
-            postDetailStyle?.screenHeader?.onBackPress();
+            customScreenHeader?.onBackPress();
           }}
           rightComponent={customScreenHeader?.rightComponent}
           backIcon={customScreenHeader?.backIcon}
@@ -306,7 +304,7 @@ const PostDetailComponent = React.memo(() => {
                             replyTextProps={{
                               ...customCommentItemStyle?.replyTextProps,
                               onTap: () => {
-                                setKeyboardFocusOnReply(true)
+                                setKeyboardFocusOnReply(true);
                                 setReplyOnComment({
                                   textInputFocus: true,
                                   commentId: item?.id,
@@ -326,7 +324,7 @@ const PostDetailComponent = React.memo(() => {
                               ) : (
                                 <Text>{VIEW_MORE_TEXT}</Text>
                               ),
-                              textStyle: postDetailStyle?.commentItemStyle
+                              textStyle: customCommentItemStyle
                                 ?.viewMoreRepliesProps?.textStyle
                                 ? customCommentItemStyle?.viewMoreRepliesProps
                                     ?.textStyle
@@ -354,19 +352,18 @@ const PostDetailComponent = React.memo(() => {
                                 postHeaderStyle?.postMenu?.backdropColor,
                             }}
                             menuIcon={{
-                              ...postDetailStyle?.commentItemStyle?.menuIcon,
+                              ...postHeaderStyle?.menuIcon,
                               onTap: () => {
                                 setReplyOnComment({
                                   textInputFocus: false,
                                   commentId: "",
                                 });
-                                postDetailStyle?.commentItemStyle?.menuIcon?.onTap();
+                                postHeaderStyle?.menuIcon?.onTap();
                               },
                             }}
                             // this executes on click of like icon of comment
                             likeIconButton={{
-                              ...postDetailStyle?.commentItemStyle
-                                ?.likeIconButton,
+                              ...postListStyle?.footer?.likeIconButton,
                               onTap: (id) => {
                                 commentLikeHandlerProp
                                   ? commentLikeHandlerProp(item?.postId, id)
@@ -376,16 +373,15 @@ const PostDetailComponent = React.memo(() => {
                             }}
                             // this executes on click of like text of comment
                             likeTextButton={{
-                              ...postDetailStyle?.commentItemStyle
-                                ?.likeTextButton,
+                              ...postListStyle?.footer?.likeTextButton,
                               onTap: (id) => {
-                                dispatch(postLikesClear())
+                                dispatch(postLikesClear());
                                 navigation.navigate(POST_LIKES_LIST, [
                                   COMMENT_LIKES,
                                   id,
                                   item?.postId,
                                 ]);
-                                postDetailStyle?.commentItemStyle?.likeTextButton?.onTap();
+                                postListStyle?.footer?.likeTextButton?.onTap();
                               },
                             }}
                             commentUserNameStyle={
@@ -395,13 +391,13 @@ const PostDetailComponent = React.memo(() => {
                               customCommentItemStyle?.commentContentProps
                             }
                             showMoreProps={
-                              postDetailStyle?.commentItemStyle?.showMoreProps
+                              postListStyle?.postContent?.showMoreText
                             }
                             repliesCountTextStyle={
                               customCommentItemStyle?.repliesCountTextStyle
                             }
                             timeStampStyle={
-                              postDetailStyle?.commentItemStyle?.timeStampStyle
+                              customCommentItemStyle?.timeStampStyle
                             }
                           />
                         )}
@@ -462,8 +458,8 @@ const PostDetailComponent = React.memo(() => {
               customReplyingViewStyle?.replyingView,
             ]}
           >
-            {postDetailStyle?.replyingViewStyle?.replyingText ? (
-              postDetailStyle?.replyingViewStyle?.replyingText
+            {customReplyingViewStyle?.replyingText?.children ? (
+              <LMText {...customReplyingViewStyle?.replyingText} />
             ) : (
               <Text
                 style={[
@@ -482,6 +478,7 @@ const PostDetailComponent = React.memo(() => {
                   commentId: "",
                 })
               }
+              style={customReplyingViewStyle?.cancelReplyIcon?.boxStyle}
             >
               {customReplyingViewStyle?.cancelReplyIcon?.assetPath ||
               customReplyingViewStyle?.cancelReplyIcon?.iconUrl ? (
@@ -528,7 +525,7 @@ const PostDetailComponent = React.memo(() => {
                   : Layout.normalize(64),
                 maxHeight: 300,
               },
-              postDetailStyle?.userTaggingListStyle?.taggingListView,
+              postDetailStyle?.userTaggingListStyle?.taggingListView
             ]}
           >
             <FlatList
@@ -550,13 +547,12 @@ const PostDetailComponent = React.memo(() => {
                     }}
                     style={[
                       styles.taggingListItem,
-                      postDetailStyle?.userTaggingListStyle?.userTagView,
+                      postDetailStyle?.userTaggingListStyle?.userTagView
                     ]}
                     key={item?.id}
                   >
                     <LMProfilePicture
-                      {...postDetailStyle?.userTaggingListStyle
-                        ?.userTagProfileImageStyle}
+                      {...postHeaderStyle?.profilePicture}
                       fallbackText={{
                         ...postHeaderStyle?.profilePicture?.fallbackText,
                         children: postHeaderStyle?.profilePicture?.fallbackText
@@ -564,19 +560,16 @@ const PostDetailComponent = React.memo(() => {
                           postHeaderStyle?.profilePicture?.fallbackText
                             ?.children
                         ) : (
-                          <Text>{getNameInitials(item?.name)}</Text>
+                          <Text>{nameInitials(item?.name)}</Text>
                         ),
                       }}
                       fallbackTextBoxStyle={[
                         styles.taggingListProfileBoxStyle,
-                        postDetailStyle?.userTaggingListStyle
-                          ?.userTagProfileImageStyle?.fallbackTextBoxStyle,
+                        postHeaderStyle?.profilePicture?.fallbackTextBoxStyle,
                       ]}
                       size={
-                        postDetailStyle?.userTaggingListStyle
-                          ?.userTagProfileImageStyle?.size
-                          ? postDetailStyle?.userTaggingListStyle
-                              ?.userTagProfileImageStyle?.size
+                        postHeaderStyle?.profilePicture?.size
+                          ? postHeaderStyle?.profilePicture?.size
                           : 40
                       }
                     />
@@ -619,7 +612,7 @@ const PostDetailComponent = React.memo(() => {
 
         {/* input field */}
         <LMInputText
-          {...postDetailStyle?.commentTextInputStyle}
+          {...customCommentTextInput}
           inputText={commentToAdd}
           onType={handleInputChange}
           inputTextStyle={[
@@ -634,8 +627,8 @@ const PostDetailComponent = React.memo(() => {
             customCommentTextInput?.inputTextStyle,
           ]}
           autoFocus={
-            postDetailStyle?.commentTextInputStyle?.autoFocus
-              ? postDetailStyle?.commentTextInputStyle?.autoFocus
+            customCommentTextInput?.autoFocus != undefined
+              ? customCommentTextInput?.autoFocus
               : routeParams
               ? true
               : keyboardFocusOnReply
@@ -645,13 +638,13 @@ const PostDetailComponent = React.memo(() => {
               : commentFocus
           }
           placeholderText={
-            postDetailStyle?.commentTextInputStyle?.placeholderText
-              ? postDetailStyle?.commentTextInputStyle?.placeholderText
+            customCommentTextInput?.placeholderText
+              ? customCommentTextInput?.placeholderText
               : "Write a comment"
           }
           placeholderTextColor={
-            postDetailStyle?.commentTextInputStyle?.placeholderTextColor
-              ? postDetailStyle?.commentTextInputStyle?.placeholderTextColor
+            customCommentTextInput?.placeholderTextColor
+              ? customCommentTextInput?.placeholderTextColor
               : "#9B9B9B"
           }
           inputRef={myRef}
@@ -685,8 +678,8 @@ const PostDetailComponent = React.memo(() => {
               : false,
           }}
           multilineField={
-            postDetailStyle?.commentTextInputStyle?.multilineField
-              ? postDetailStyle?.commentTextInputStyle?.multilineField
+            customCommentTextInput?.multilineField != undefined
+              ? customCommentTextInput?.multilineField
               : true
           }
           partTypes={[

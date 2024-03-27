@@ -1,11 +1,5 @@
 import { View, SafeAreaView, FlatList } from "react-native";
 import React from "react";
-import {
-  LMHeader,
-  LMLikeUI,
-  LMMemberListItem,
-  LMLoader,
-} from "likeminds_feed_reactnative_ui";
 import { styles } from "./styles";
 import {
   PostLikesListContextProvider,
@@ -13,6 +7,8 @@ import {
   usePostLikesListContext,
 } from "../../context";
 import { useLMFeedStyles } from "../../lmFeedProvider";
+import { LMHeader, LMLoader, LMMemberListItem } from "../../components";
+import { LMLikeUI } from "../../models";
 
 const PostLikesList = ({ navigation, route, children }) => {
   return (
@@ -30,16 +26,33 @@ const PostLikesListComponent = React.memo(() => {
   const { totalLikes, postLike, navigation }: PostLikesListContextValues =
     usePostLikesListContext();
   const LMFeedContextStyles = useLMFeedStyles();
-  const { postListStyle ,postLikesListStyle} = LMFeedContextStyles;
+  const { postListStyle, postLikesListStyle } = LMFeedContextStyles;
+  const customScreenHeader = postLikesListStyle?.screenHeader
   return (
     <SafeAreaView style={styles.mainContainer}>
       <LMHeader
-        showBackArrow
-        heading="Likes"
-        subHeading={
-          totalLikes > 1 ? `${totalLikes} likes` : `${totalLikes} like`
+        {...customScreenHeader}
+        showBackArrow={
+          customScreenHeader?.showBackArrow != undefined
+            ? customScreenHeader?.showBackArrow
+            : true
         }
-        onBackPress={() => navigation.goBack()}
+        heading={
+          customScreenHeader?.heading
+            ? customScreenHeader?.heading
+            : "Likes"
+        }
+        subHeading={
+          customScreenHeader?.subHeading
+            ? customScreenHeader?.subHeading
+            : totalLikes > 1
+            ? `${totalLikes} likes`
+            : `${totalLikes} like`
+        }
+        onBackPress={() => {
+          navigation.goBack();
+          customScreenHeader?.onBackPress();
+        }}
       />
       {/* post likes list */}
       {postLike?.length > 0 ? (
@@ -50,7 +63,11 @@ const PostLikesListComponent = React.memo(() => {
               <LMMemberListItem
                 likes={item}
                 profilePictureProps={postListStyle?.header?.profilePicture}
-                boxStyle = {postLikesListStyle?.likeListItemStyle}
+                boxStyle={postLikesListStyle?.likeListItemStyle}
+                nameProps={{ textStyle: postLikesListStyle?.userNameTextStyle }}
+                customTitleProps={{
+                  textStyle: postLikesListStyle?.userDesignationTextStyle,
+                }}
               />
             );
           }}

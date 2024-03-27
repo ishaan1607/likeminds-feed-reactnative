@@ -8,13 +8,7 @@ import {
   View,
 } from "react-native";
 import { styles } from "./styles";
-import {
-  LMHeader,
-  LMIcon,
-  LMImage,
-  LMLoader,
-  LMVideo,
-} from "likeminds_feed_reactnative_ui";
+
 import {
   APP_TITLE,
   CREATE_POST_PERMISSION,
@@ -33,19 +27,57 @@ import { useAppDispatch } from "../../store/store";
 import {
   UniversalFeedContextProvider,
   UniversalFeedContextValues,
+  UniversalFeedCustomisableMethodsContextProvider,
   useUniversalFeedContext,
 } from "../../context";
 import STYLES from "../../constants/Styles";
 import { showToastMessage } from "../../store/actions/toast";
+import { LMHeader, LMImage, LMLoader, LMVideo } from "../../components";
+import { LMIcon } from "../../uiComponents";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../models";
 
-const UniversalFeed = ({ navigation, route ,children}) => {
+interface UniversalFeedProps {
+  children: React.ReactNode;
+  navigation: NativeStackNavigationProp<RootStackParamList, "UniversalFeed">;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
+  postLikeHandlerProp: (id: string) => void;
+  savePostHandlerProp: (id: string, saved?: boolean) => void;
+  selectPinPostProp: (id: string, pinned?: boolean) => void;
+  selectEditPostProp: (id: string) => void;
+  onSelectCommentCountProp: (id: string) => void;
+}
+
+const UniversalFeed = ({
+  navigation,
+  route,
+  children,
+  postLikeHandlerProp,
+  savePostHandlerProp,
+  selectPinPostProp,
+  selectEditPostProp,
+  onSelectCommentCountProp,
+}: UniversalFeedProps) => {
   return (
     <UniversalFeedContextProvider
       navigation={navigation}
       route={route}
       children={children}
     >
-      <UniversalFeedComponent />
+      <UniversalFeedCustomisableMethodsContextProvider
+        postLikeHandlerProp={postLikeHandlerProp}
+        savePostHandlerProp={savePostHandlerProp}
+        selectEditPostProp={selectEditPostProp}
+        selectPinPostProp={selectPinPostProp}
+        onSelectCommentCountProp={onSelectCommentCountProp}
+      >
+        <UniversalFeedComponent />
+      </UniversalFeedCustomisableMethodsContextProvider>
     </UniversalFeedContextProvider>
   );
 };
@@ -95,7 +127,6 @@ const UniversalFeedComponent = React.memo(() => {
             {uploadingMediaAttachmentType === DOCUMENT_ATTACHMENT_TYPE && (
               <LMIcon
                 assetPath={require("../../assets/images/pdf_icon3x.png")}
-                type="png"
                 iconStyle={styles.uploadingDocumentStyle}
                 height={styles.uploadingPdfIconSize.height}
                 width={styles.uploadingPdfIconSize.width}
@@ -118,7 +149,6 @@ const UniversalFeedComponent = React.memo(() => {
       {/* create post button section */}
       <TouchableOpacity
         activeOpacity={0.8}
-        disabled={feedData?.length > 0 ? false : true}
         style={[
           styles.newPostButtonView,
           showCreatePost

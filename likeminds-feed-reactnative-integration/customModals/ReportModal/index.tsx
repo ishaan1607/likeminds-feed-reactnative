@@ -29,13 +29,13 @@ import {
   REPORT_TAGS_TYPE,
   SOMETHING_WENT_WRONG,
 } from "../../constants/Strings";
-import { LMLoader } from "likeminds_feed_reactnative_ui";
 import { SafeAreaView } from "react-native";
-import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { getReportTags, postReport } from "../../store/actions/feed";
 import Toast from "react-native-toast-message";
 import { showToastMessage } from "../../store/actions/toast";
+import { LMLoader } from "../../components";
+import { LMCommentUI, LMPostUI } from "../../models";
 
 // interface for post report api request
 interface ReportRequest {
@@ -76,7 +76,7 @@ const ReportModal = ({
     const reportTagsResponse = await dispatch(
       getReportTags(
         GetReportTagsRequest.builder().settype(payload.type).build(),
-        true
+        false
       )
     );
     return reportTagsResponse;
@@ -112,7 +112,7 @@ const ReportModal = ({
             .setTagId(payload.tagId)
             .setUuid(payload.uuid)
             .build(),
-          true
+          false
         )
       );
       // toast message action

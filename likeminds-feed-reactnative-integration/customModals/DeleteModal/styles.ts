@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   textHeading: {
     color: STYLES.$COLORS.darkTextColor,
     fontSize: STYLES.$FONT_SIZES.LARGE,
-    fontWeight: STYLES.$FONT_WEIGHTS.MEDIUM,
+    fontWeight: STYLES.$FONT_WEIGHT.MEDIUM,
     fontFamily: STYLES.$FONT_TYPES.MEDIUM,
     marginVertical: STYLES.$MARGINS.SMALL,
   },
@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
   },
   deleteTextBtn: {
     color: '#5046e5',
-    fontWeight: STYLES.$FONT_WEIGHTS.MEDIUM,
+    fontWeight: STYLES.$FONT_WEIGHT.MEDIUM,
     fontSize: 15,
     fontFamily: STYLES.$FONT_TYPES.MEDIUM,
   },
   cancelTextBtn: {
     color: '#9b9b9b',
-    fontWeight: STYLES.$FONT_WEIGHTS.MEDIUM,
+    fontWeight: STYLES.$FONT_WEIGHT.MEDIUM,
     fontSize: 15,
     fontFamily: STYLES.$FONT_TYPES.MEDIUM,
     marginRight: 40,

@@ -1,4 +1,4 @@
-import { convertToMentionValues } from "likeminds_feed_reactnative_ui/components/LMInputText/utils";
+import { convertToMentionValues } from "../uiComponents/LMInputText/utils";
 
 export const routeToMentionConverter = (content: string) => {
   return convertToMentionValues(

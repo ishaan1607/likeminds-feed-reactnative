@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   textHeading: {
     color: STYLES.$COLORS.darkTextColor,
     fontSize: STYLES.$FONT_SIZES.LARGE,
-    fontWeight: STYLES.$FONT_WEIGHTS.MEDIUM,
+    fontWeight: STYLES.$FONT_WEIGHT.MEDIUM,
     fontFamily: STYLES.$FONT_TYPES.MEDIUM,
     marginVertical: STYLES.$MARGINS.SMALL,
     paddingHorizontal: STYLES.$PADDINGS.MEDIUM,

@@ -4,9 +4,9 @@ import styles from "./styles";
 import { GetReportTagsRequest } from "@likeminds.community/feed-js";
 import STYLES from "../../constants/Styles";
 import { DELETE_TAGS_TYPE, DELETION_REASON } from "../../constants/Strings";
-import { LMLoader } from "likeminds_feed_reactnative_ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { getReportTags } from "../../store/actions/feed";
+import { LMLoader } from "../../components";
 
 // delete reason's modal props
 interface DeleteReasonsModalProps {
@@ -36,7 +36,7 @@ const DeleteReasonsModal = ({
     const reportTagsResponse = await dispatch(
       getReportTags(
         GetReportTagsRequest.builder().settype(payload.type).build(),
-        true
+        false
       )
     );
     return reportTagsResponse;

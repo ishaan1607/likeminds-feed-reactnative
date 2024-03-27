@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   textHeading: {
     color: STYLES.$COLORS.darkTextColor,
     fontSize: STYLES.$FONT_SIZES.LARGE,
-    fontWeight: STYLES.$FONT_WEIGHTS.MEDIUM,
+    fontWeight: STYLES.$FONT_WEIGHT.MEDIUM,
     fontFamily: STYLES.$FONT_TYPES.MEDIUM,
   },
   text: {
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   reportBtnText: {
     color: STYLES.$COLORS.whiteTextColor,
     fontSize: STYLES.$FONT_SIZES.LARGE,
-    fontWeight: STYLES.$FONT_WEIGHTS.BOLD,
+    fontWeight: STYLES.$FONT_WEIGHT.BOLD,
     fontFamily: STYLES.$FONT_TYPES.MEDIUM,
   },
   disabledReportBtn: {
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   titleText: {
     color: STYLES.$COLORS.RED,
     fontSize: STYLES.$FONT_SIZES.XXL,
-    fontWeight: STYLES.$FONT_WEIGHTS.MEDIUM,
+    fontWeight: STYLES.$FONT_WEIGHT.MEDIUM,
     fontFamily: STYLES.$FONT_TYPES.MEDIUM,
   },
   contentView: {

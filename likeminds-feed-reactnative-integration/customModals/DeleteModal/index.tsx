@@ -26,7 +26,6 @@ import {
   SOMETHING_WENT_WRONG,
 } from "../../constants/Strings";
 import STYLES from "../../constants/Styles";
-import { LMCommentUI, LMPostUI } from "likeminds_feed_reactnative_ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { deletePost, deletePostStateHandler } from "../../store/actions/feed";
 import { deleteComment, deleteCommentStateHandler } from "../../store/actions/postDetail";
@@ -34,6 +33,7 @@ import Toast from "react-native-toast-message";
 import { showToastMessage } from "../../store/actions/toast";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../models/RootStackParamsList";
+import { LMCommentUI, LMPostUI } from "../../models";
 
 // delete modal's props
 interface DeleteModalProps {
@@ -79,13 +79,13 @@ const DeleteModal = ({
           DeletePostRequest.builder()
             .setdeleteReason(payload.deleteReason)
             .setpostId(payload.postId)
-            .build(),true
+            .build(),false
         ),
       );
       // toast message action
       if (deletePostResponse) {
         setDeletionReason("");
-        navigation.goBack();
+        navigation?.goBack();
         dispatch(
           showToastMessage({
             isToast: true,
@@ -126,7 +126,7 @@ const DeleteModal = ({
               .setcommentId(payload.commentId)
               .setpostId(payload.postId)
               .setreason(payload.deleteReason)
-              .build(), true
+              .build(), false
           ),
         );
         setDeletionReason("");

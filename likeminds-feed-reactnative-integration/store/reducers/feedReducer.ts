@@ -1,4 +1,3 @@
-import { LMPostUI } from "likeminds_feed_reactnative_ui";
 import { convertToLMPostUI, convertUniversalFeedPosts } from "../../viewDataModels";
 import { PIN_POST_ID, PIN_THIS_POST, UNPIN_POST_ID, UNPIN_THIS_POST } from "../../constants/Strings";
 import {
@@ -11,19 +10,23 @@ import {
   SAVE_POST_STATE,
   EDIT_POST_SUCCESS,
   CREATE_COMMENT_SUCCESS,
-  DELETE_COMMENT_STATE
+  DELETE_COMMENT_STATE,
+  AUTO_PLAY_POST_VIDEO
 } from '../types/types';
+import { LMPostUI } from "../../models";
 
 export interface FeedReducerState {
   feed: LMPostUI[],
   users: {},
-  reportTags: {}
+  reportTags: {},
+  autoPlayVideoPostId: ''
 }
 
 export const initialState: FeedReducerState = {
   feed: [],
   users: {},
-  reportTags: {}
+  reportTags: {},
+  autoPlayVideoPostId: ''
 }
 export const feedReducer = (
   state = initialState,
@@ -155,6 +158,9 @@ export const feedReducer = (
         }
       });
       return {...state};
+    }
+    case AUTO_PLAY_POST_VIDEO: {
+      return {...state, autoPlayVideoPostId: action.body};
     }
     default:
       return state;
