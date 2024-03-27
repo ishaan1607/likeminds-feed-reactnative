@@ -190,7 +190,7 @@ export const UniversalFeedContextProvider = ({
     const itemSaved = item?.isSaved;
     const itemText = item?.text;
 
-    return `${id}${itemSaved}`;
+    return `${id}`;
   };
 
   const contextValues: UniversalFeedContextValues = {

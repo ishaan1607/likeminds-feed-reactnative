@@ -29,22 +29,56 @@ import { clearComments } from "../../store/actions/postDetail";
 import {
   PostDetailContextProvider,
   PostDetailContextValues,
+  PostDetailCustomisableMethodsContextProvider,
   usePostDetailContext,
+  usePostDetailCustomisableMethodsContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LMCommentItem, LMHeader, LMLoader } from "../../components";
-import { LMUserUI } from "../../models";
+import { LMUserUI, RootStackParamList } from "../../models";
 import { LMIcon, LMInputText, LMProfilePicture, LMText } from "../../uiComponents";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-const PostDetail = ({ navigation, route, children }) => {
+interface PostDetailProps {
+  children: React.ReactNode;
+  navigation: NativeStackNavigationProp<RootStackParamList, "PostDetail">;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
+  getCommentsRepliesProp: (    postId: string,
+    commentId: string,
+    repliesResponseCallback: any,
+    pageNo: number) => void;
+  addNewCommentProp: (postId: string) => void;
+  addNewReplyProp: (postId: string, commentId: string) => void;
+  commentLikeHandlerProp: (postId: string, commentId: string) => void;
+  onCommentMenuItemSelectProp: (commentId: string, itemId?: number) => void;
+}
+
+const PostDetail = ({ navigation, route, children,  onCommentMenuItemSelectProp,
+  getCommentsRepliesProp,
+  commentLikeHandlerProp,
+  addNewCommentProp,
+  addNewReplyProp}: PostDetailProps) => {
   return (
     <PostDetailContextProvider
       navigation={navigation}
       route={route}
       children={children}
     >
+      <PostDetailCustomisableMethodsContextProvider
+      getCommentsRepliesProp={getCommentsRepliesProp}
+      commentLikeHandlerProp={commentLikeHandlerProp}
+      addNewCommentProp={addNewCommentProp}
+      onCommentMenuItemSelectProp={onCommentMenuItemSelectProp}
+      addNewReplyProp={addNewReplyProp}
+      >
       <PostDetailComponent />
+      </PostDetailCustomisableMethodsContextProvider>
     </PostDetailContextProvider>
   );
 };
@@ -104,6 +138,11 @@ const PostDetailComponent = React.memo(() => {
 
   const LMFeedContextStyles = useLMFeedStyles();
   const { postDetailStyle, postListStyle } = LMFeedContextStyles;
+  const {onCommentMenuItemSelectProp,
+    getCommentsRepliesProp,
+    commentLikeHandlerProp,
+    addNewCommentProp,
+    addNewReplyProp} = usePostDetailCustomisableMethodsContext()
   const postHeaderStyle = postListStyle?.header
   const customScreenHeader = postDetailStyle?.screenHeader
   const customCommentItemStyle = postDetailStyle?.commentItemStyle
@@ -214,7 +253,10 @@ const PostDetailComponent = React.memo(() => {
                             // this calls the getCommentsReplies function on click of number of child replies text
                             onTapReplies={(repliesResponseCallback) => {
                               dispatch(clearComments(item?.id));
-                              getCommentsReplies(
+                              getCommentsRepliesProp ? getCommentsRepliesProp( item?.postId,
+                                item?.id,
+                                repliesResponseCallback,
+                                1) : getCommentsReplies(
                                 item?.postId,
                                 item?.id,
                                 repliesResponseCallback,
@@ -274,7 +316,7 @@ const PostDetailComponent = React.memo(() => {
                               modalVisible: showCommentActionListModal,
                               onCloseModal: closeCommentActionListModal,
                               onSelected: (commentId, itemId) =>
-                                onCommentMenuItemSelect(commentId, itemId),
+                              onCommentMenuItemSelectProp ? onCommentMenuItemSelectProp(commentId, itemId) : onCommentMenuItemSelect(commentId, itemId),
                               menuItemTextStyle:
                                 postHeaderStyle?.postMenu
                                   ?.menuItemTextStyle,
@@ -297,7 +339,7 @@ const PostDetailComponent = React.memo(() => {
                             likeIconButton={{
                               ...postListStyle?.footer?.likeIconButton,
                               onTap: (id) => {
-                                commentLikeHandler(item?.postId, id);
+                                commentLikeHandlerProp ? commentLikeHandlerProp(item?.postId, id) :  commentLikeHandler(item?.postId, id);
                                 postListStyle?.footer?.likeIconButton?.onTap();
                               },
                             }}
@@ -565,8 +607,8 @@ const PostDetailComponent = React.memo(() => {
                 ? editCommentFocus
                   ? commentEdit()
                   : replyOnComment.textInputFocus
-                  ? addNewReply(postDetail?.id, replyOnComment.commentId)
-                  : addNewComment(postDetail?.id)
+                  ? addNewReplyProp ? addNewReplyProp(postDetail?.id, replyOnComment.commentId) : addNewReply(postDetail?.id, replyOnComment.commentId)
+                  : addNewCommentProp ? addNewCommentProp(postDetail?.id) :addNewComment(postDetail?.id)
                 : {};
               Keyboard.dismiss()
               setAllTags([]);

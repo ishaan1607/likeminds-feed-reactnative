@@ -62,6 +62,12 @@ interface CreatePostContextProps {
 
 export interface CreatePostContextValues {
   navigation: NativeStackNavigationProp<RootStackParamList, "CreatePost">;
+  route: {
+    key: string;
+    name: string;
+    params: { postId: string };
+    path: undefined;
+  };
   memberData: LMUserUI;
   formattedDocumentAttachments: Array<LMAttachmentUI>;
   formattedMediaAttachments: Array<LMAttachmentUI>;
@@ -544,6 +550,7 @@ export const CreatePostContextProvider = ({
 
   const contextValues: CreatePostContextValues = {
     navigation,
+    route,
     memberData,
     formattedDocumentAttachments,
     formattedMediaAttachments,

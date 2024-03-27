@@ -89,6 +89,12 @@ interface PostDetailContextProps {
 
 export interface PostDetailContextValues {
   navigation: NativeStackNavigationProp<RootStackParamList, "PostDetail">;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
   postDetail: LMPostUI;
   modalPosition: {};
   showActionListModal: false;
@@ -792,6 +798,7 @@ export const PostDetailContextProvider = ({
 
   const contextValues: PostDetailContextValues = {
     navigation,
+    route,
     postDetail,
     modalPosition,
     showActionListModal,

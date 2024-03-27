@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import {LMButton} from "../../../uiComponents";
+import { LMButton } from "../../../uiComponents";
 import { styles } from "./styles";
 import { LMPostContextValues, useLMPostContext } from "../../../context";
 import { useLMFeedStyles } from "../../../lmFeedProvider";
@@ -9,12 +9,16 @@ const LMPostFooter = React.memo(() => {
   const { post, footerProps }: LMPostContextValues = useLMPostContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle } = LMFeedContextStyles;
-  const footerStyle = postListStyle?.footer
+  const footerStyle = postListStyle?.footer;
 
   const [liked, setLiked] = useState(post?.isLiked);
   const [likeCount, setLikeCount] = useState(post?.likesCount);
-  const showBookMarkIcon = footerStyle?.showBookMarkIcon != undefined ? footerStyle?.showBookMarkIcon : true;
-  const showShareIcon = footerStyle?.showShareIcon != undefined ? footerStyle?.showShareIcon : true
+  const showBookMarkIcon =
+    footerStyle?.showBookMarkIcon != undefined
+      ? footerStyle?.showBookMarkIcon
+      : true;
+  const showShareIcon =
+    footerStyle?.showShareIcon != undefined ? footerStyle?.showShareIcon : true;
   // handling like state and likes count locally
   useEffect(() => {
     setLiked(post?.isLiked);
@@ -22,7 +26,7 @@ const LMPostFooter = React.memo(() => {
   }, [post?.isLiked, post?.likesCount]);
   const likesCountHandler = () => {
     footerStyle?.likeIconButton?.onTap && footerStyle?.likeIconButton?.onTap();
-    footerProps?.likeIconButton?.onTap()
+    footerProps?.likeIconButton?.onTap();
     //  todo : handle later
     // setLiked(!liked);
     // if (liked) {
@@ -32,7 +36,12 @@ const LMPostFooter = React.memo(() => {
     // }
   };
   return (
-    <View style={StyleSheet.flatten([styles.postFooter, footerStyle?.footerBoxStyle])}>
+    <View
+      style={StyleSheet.flatten([
+        styles.postFooter,
+        footerStyle?.footerBoxStyle,
+      ])}
+    >
       {/* like and comment view */}
       <View style={styles.alignRow}>
         {/* like section */}
@@ -72,7 +81,11 @@ const LMPostFooter = React.memo(() => {
             onTap={
               footerProps?.likeTextButton?.onTap
                 ? likeCount >= 1
-                  ? () =>{footerProps?.likeTextButton?.onTap(), footerStyle?.likeTextButton?.onTap && footerStyle?.likeTextButton?.onTap()}
+                  ? () => {
+                      footerProps?.likeTextButton?.onTap(),
+                        footerStyle?.likeTextButton?.onTap &&
+                          footerStyle?.likeTextButton?.onTap();
+                    }
                   : () => null
                 : () => null
             }
@@ -104,7 +117,11 @@ const LMPostFooter = React.memo(() => {
         {/* comment section */}
         <View style={StyleSheet.flatten([styles.alignRow])}>
           <LMButton
-            onTap={footerStyle?.commentButton?.onTap ? footerStyle?.commentButton.onTap : footerProps?.commentButton?.onTap}
+            onTap={
+              footerStyle?.commentButton?.onTap
+                ? footerStyle?.commentButton.onTap
+                : footerProps?.commentButton?.onTap
+            }
             text={{
               children:
                 post?.commentsCount > 0
@@ -131,7 +148,9 @@ const LMPostFooter = React.memo(() => {
               height: footerStyle?.commentButton?.icon?.height
                 ? footerStyle?.commentButton.icon.height
                 : 20,
-              width: footerStyle?.commentButton?.icon?.width ? footerStyle?.commentButton.icon.width : 20,
+              width: footerStyle?.commentButton?.icon?.width
+                ? footerStyle?.commentButton.icon.width
+                : 20,
               boxFit: footerStyle?.commentButton?.icon?.boxFit,
               boxStyle: footerStyle?.commentButton?.icon?.boxStyle,
             }}
@@ -151,45 +170,39 @@ const LMPostFooter = React.memo(() => {
         style={StyleSheet.flatten([
           styles.alignRow,
           showBookMarkIcon &&
-          showShareIcon&& { width: "16%", justifyContent: "space-between" },
+            showShareIcon && { width: "16%", justifyContent: "space-between" },
         ])}
       >
         {/* save section */}
         {showBookMarkIcon && (
           <LMButton
-            onTap={footerStyle?.saveButton?.onTap ? footerStyle?.saveButton.onTap : footerProps?.saveButton?.onTap}
+            onTap={
+              footerStyle?.saveButton?.onTap
+                ? footerStyle?.saveButton.onTap
+                : footerProps?.saveButton?.onTap
+            }
             text={footerStyle?.saveButton?.text}
             icon={{
-              assetPath: footerStyle?.saveButton?.icon?.assetPath
+              assetPath: post?.isSaved
+                ? footerStyle?.saveButton?.activeIcon?.assetPath
+                  ? footerStyle?.saveButton.activeIcon.assetPath
+                  : require("../../../assets/images/saved_bookmark_icon3x.png")
+                : footerStyle?.saveButton?.icon?.assetPath
                 ? footerStyle?.saveButton.icon.assetPath
                 : require("../../../assets/images/bookmark_icon3x.png"),
               iconUrl: footerStyle?.saveButton?.icon?.iconUrl,
               iconStyle: footerStyle?.saveButton?.icon?.iconStyle,
               color: footerStyle?.saveButton?.icon?.color,
-              height: footerStyle?.saveButton?.icon?.height ? footerStyle?.saveButton.icon.height : 18,
-              width: footerStyle?.saveButton?.icon?.width ? footerStyle?.saveButton.icon.width : 18,
+              height: footerStyle?.saveButton?.icon?.height
+                ? footerStyle?.saveButton.icon.height
+                : 18,
+              width: footerStyle?.saveButton?.icon?.width
+                ? footerStyle?.saveButton.icon.width
+                : 18,
               boxFit: footerStyle?.saveButton?.icon?.boxFit,
               boxStyle: footerStyle?.saveButton?.icon?.boxStyle,
             }}
             placement={footerStyle?.saveButton?.placement}
-            isActive={post?.isSaved}
-            activeIcon={{
-              assetPath: footerStyle?.saveButton?.activeIcon?.assetPath
-                ? footerStyle?.saveButton.activeIcon.assetPath
-                : require("../../../assets/images/saved_bookmark_icon3x.png"),
-              iconUrl: footerStyle?.saveButton?.activeIcon?.iconUrl,
-              iconStyle: footerStyle?.saveButton?.activeIcon?.iconStyle,
-              color: footerStyle?.saveButton?.activeIcon?.color,
-              height: footerStyle?.saveButton?.activeIcon?.height
-                ? footerStyle?.saveButton.activeIcon.height
-                : 18,
-              width: footerStyle?.saveButton?.activeIcon?.width
-                ? footerStyle?.saveButton.activeIcon.width
-                : 18,
-              boxFit: footerStyle?.saveButton?.activeIcon?.boxFit,
-              boxStyle: footerStyle?.saveButton?.activeIcon?.boxStyle,
-            }}
-            activeText={footerStyle?.saveButton?.activeText}
             buttonStyle={
               footerStyle?.saveButton?.buttonStyle
                 ? footerStyle?.saveButton.buttonStyle
@@ -202,7 +215,11 @@ const LMPostFooter = React.memo(() => {
         {/* share section */}
         {showShareIcon && (
           <LMButton
-            onTap={footerStyle?.shareButton?.onTap ? footerStyle?.shareButton.onTap : () => null}
+            onTap={
+              footerStyle?.shareButton?.onTap
+                ? footerStyle?.shareButton.onTap
+                : () => null
+            }
             text={footerStyle?.shareButton?.text}
             icon={{
               assetPath: footerStyle?.shareButton?.icon?.assetPath
@@ -211,8 +228,12 @@ const LMPostFooter = React.memo(() => {
               iconUrl: footerStyle?.shareButton?.icon?.iconUrl,
               iconStyle: footerStyle?.shareButton?.icon?.iconStyle,
               color: footerStyle?.shareButton?.icon?.color,
-              height: footerStyle?.shareButton?.icon?.height ? footerStyle?.shareButton.icon.height : 18,
-              width: footerStyle?.shareButton?.icon?.width ? footerStyle?.shareButton.icon.width : 18,
+              height: footerStyle?.shareButton?.icon?.height
+                ? footerStyle?.shareButton.icon.height
+                : 18,
+              width: footerStyle?.shareButton?.icon?.width
+                ? footerStyle?.shareButton.icon.width
+                : 18,
               boxFit: footerStyle?.shareButton?.icon?.boxFit,
               boxStyle: footerStyle?.shareButton?.icon?.boxStyle,
             }}
@@ -230,6 +251,6 @@ const LMPostFooter = React.memo(() => {
       </View>
     </View>
   );
-})
+});
 
 export default LMPostFooter;

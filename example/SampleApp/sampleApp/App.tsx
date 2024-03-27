@@ -1,8 +1,6 @@
 import React from 'react';
 import {
-  ContextProvider,
   CreatePost,
-  LMFeedProvider,
   PostDetail,
   PostLikesList,
   PostsList,
@@ -15,7 +13,7 @@ import {
   LMOverlayProvider
 } from '@likeminds.community/feed-rn-core';
 import {myClient} from '.';
-import {Text, ViewStyle} from 'react-native';
+import { ViewStyle} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './RootNavigation';

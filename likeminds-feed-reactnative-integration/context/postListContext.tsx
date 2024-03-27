@@ -27,6 +27,7 @@ import _ from "lodash";
 import {
   DELETE_POST_MENU_ITEM,
   EDIT_POST_MENU_ITEM,
+  NAVIGATED_FROM_COMMENT,
   PIN_POST_MENU_ITEM,
   POST_PIN_SUCCESS,
   POST_SAVED_SUCCESS,
@@ -36,13 +37,14 @@ import {
   SOMETHING_WENT_WRONG,
   UNPIN_POST_MENU_ITEM,
 } from "../constants/Strings";
-import { CREATE_POST } from "../constants/screenNames";
+import { CREATE_POST, POST_DETAIL } from "../constants/screenNames";
 import { useLMFeedStyles } from "../lmFeedProvider";
 import { showToastMessage } from "../store/actions/toast";
 import { RootStackParamList } from "../models/RootStackParamsList";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { LMPostUI } from "../models";
 import { LMLoader } from "../components";
+import { clearPostDetail } from "../store/actions/postDetail";
 
 interface PostListContextProps {
   children: ReactNode;
@@ -76,11 +78,7 @@ export interface PostListContextValues {
   renderLoader: () => void;
   getPostDetail: () => LMPostUI;
   handleDeletePost: (visible: boolean) => void;
-  onMenuItemSelect: (
-    postId: string,
-    itemId?: number,
-    pinnedValue?: boolean
-  ) => void;
+  handleEditPost: (id: string) => void;
   fetchFeed: () => void;
   postLikeHandler: (id: string) => void;
   savePostHandler: (id: string, saved?: boolean) => void;
@@ -89,6 +87,7 @@ export interface PostListContextValues {
   closePostActionListModal: () => void;
   handlePinPost: (id: string, pinned?: boolean) => void;
   handleReportPost: () => void;
+  onTapCommentCount:(id: string) => void;
 }
 
 const PostListContext = createContext<PostListContextValues | undefined>(
@@ -107,7 +106,7 @@ export const usePostListContext = () => {
 
 export const PostListContextProvider = ({
   children,
-  navigation,
+  navigation
 }: PostListContextProps) => {
   const dispatch = useAppDispatch();
   const feedData = useAppSelector((state) => state.feed.feed);
@@ -256,26 +255,19 @@ export const PostListContextProvider = ({
     setDeleteModal(visible);
   };
 
-  // this function returns the id of the item selected from menu list and handles further functionalities accordingly
-  const onMenuItemSelect = (
-    postId: string,
-    itemId?: number,
-    pinnedValue?: boolean
-  ) => {
-    setSelectedMenuItemPostId(postId);
-    if (itemId === PIN_POST_MENU_ITEM || itemId === UNPIN_POST_MENU_ITEM) {
-      handlePinPost(postId, pinnedValue);
-    }
-    if (itemId === REPORT_POST_MENU_ITEM) {
-      handleReportPost();
-    }
-    if (itemId === DELETE_POST_MENU_ITEM) {
-      handleDeletePost(true);
-    }
-    if (itemId === EDIT_POST_MENU_ITEM) {
-      navigation.navigate(CREATE_POST, {postId});
-    }
-  };
+  // this function handles the click on edit option of overlayMenu
+  const handleEditPost = (postId) => {
+    navigation.navigate(CREATE_POST, {postId});
+  }
+
+  // this handles the click on comment count section of footer
+  const onTapCommentCount = (postId) => {
+    dispatch(clearPostDetail());
+    navigation.navigate(POST_DETAIL, [
+      postId,
+      NAVIGATED_FROM_COMMENT,
+    ]);
+  }
 
   // this function gets the detail pf post whose menu item is clicked
   const getPostDetail = () => {
@@ -310,7 +302,7 @@ export const PostListContextProvider = ({
     renderLoader,
     getPostDetail,
     handleDeletePost,
-    onMenuItemSelect,
+    handleEditPost,
     fetchFeed,
     postLikeHandler,
     debouncedLikeFunction,
@@ -318,7 +310,8 @@ export const PostListContextProvider = ({
     closePostActionListModal,
     handlePinPost,
     handleReportPost,
-    savePostHandler
+    savePostHandler,
+    onTapCommentCount
   };
 
   return (

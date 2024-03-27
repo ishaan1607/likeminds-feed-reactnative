@@ -8,11 +8,16 @@ import {
 } from "react-native";
 import { styles } from "./styles";
 import {
+  DELETE_POST_MENU_ITEM,
+  EDIT_POST_MENU_ITEM,
   IMAGE_ATTACHMENT_TYPE,
   NAVIGATED_FROM_COMMENT,
   NAVIGATED_FROM_POST,
+  PIN_POST_MENU_ITEM,
   POST_LIKES,
   POST_TYPE,
+  REPORT_POST_MENU_ITEM,
+  UNPIN_POST_MENU_ITEM,
   VIDEO_ATTACHMENT_TYPE,
 } from "../../constants/Strings";
 import {
@@ -31,6 +36,7 @@ import {
   UniversalFeedContextValues,
   usePostListContext,
   useUniversalFeedContext,
+  useUniversalFeedCustomisableMethodsContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
 import LMPost from "../../components/LMPost/LMPost";
@@ -69,7 +75,6 @@ const PostsListComponent = React.memo(() => {
     modalPosition,
     showActionListModal,
     closePostActionListModal,
-    onMenuItemSelect,
     postLikeHandler,
     debouncedSaveFunction,
     savePostHandler,
@@ -82,11 +87,37 @@ const PostsListComponent = React.memo(() => {
     getPostDetail,
     setShowReportModal,
     handleDeletePost,
-    debouncedLikeFunction
+    onTapCommentCount,
+    debouncedLikeFunction,
+    setSelectedMenuItemPostId,
+    handlePinPost,
+    handleReportPost,
+    handleEditPost
   }: PostListContextValues = usePostListContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, loaderStyle } = LMFeedContextStyles;
-
+  const { postLikeHandlerProp, savePostHandlerProp, onSelectCommentCountProp, selectEditPostProp, selectPinPostProp} = useUniversalFeedCustomisableMethodsContext()
+  
+// this function returns the id of the item selected from menu list and handles further functionalities accordingly
+const onMenuItemSelect = (
+  postId: string,
+  itemId?: number,
+  pinnedValue?: boolean
+) => {
+  setSelectedMenuItemPostId(postId);
+  if (itemId === PIN_POST_MENU_ITEM || itemId === UNPIN_POST_MENU_ITEM) {
+    selectPinPostProp ? selectPinPostProp(postId, pinnedValue) : handlePinPost(postId, pinnedValue);
+  }
+  if (itemId === REPORT_POST_MENU_ITEM) {
+     handleReportPost();
+  }
+  if (itemId === DELETE_POST_MENU_ITEM) {
+     handleDeletePost(true);
+  }
+  if (itemId === EDIT_POST_MENU_ITEM) {
+   selectEditPostProp ? selectEditPostProp(postId) : handleEditPost(postId)
+  }
+};
   return (
     <>
       {/* posts list section */}
@@ -122,19 +153,20 @@ const PostsListComponent = React.memo(() => {
                       modalVisible: showActionListModal,
                       onCloseModal: closePostActionListModal,
                       onSelected: (postId, itemId) =>
-                        onMenuItemSelect(postId, itemId, item?.isPinned),
-                    }
+                       {
+                       onMenuItemSelect(postId, itemId, item?.isPinned)},
+                    },
                   }}
                   // footer props
                   footerProps={{
                     likeIconButton: {
                       onTap: () => {
-                        postLikeHandler(item?.id);
+                        postLikeHandlerProp ? postLikeHandlerProp(item?.id) : postLikeHandler(item?.id);
                       },
                     },
                     saveButton: {
                       onTap: () => {
-                        savePostHandler(item?.id, item?.isSaved);
+                        savePostHandlerProp ? savePostHandlerProp(item?.id, item?.isSaved) : savePostHandler(item?.id, item?.isSaved);
                       },
                     },
                     likeTextButton: {
@@ -145,11 +177,7 @@ const PostsListComponent = React.memo(() => {
                     },
                     commentButton: {
                       onTap: () => {
-                        dispatch(clearPostDetail());
-                        navigation.navigate(POST_DETAIL, [
-                          item?.id,
-                          NAVIGATED_FROM_COMMENT,
-                        ]);
+                        onSelectCommentCountProp ? onSelectCommentCountProp(item?.id) : onTapCommentCount(item?.id)
                       },
                     },
                   }}
