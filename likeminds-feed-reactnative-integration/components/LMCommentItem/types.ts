@@ -22,5 +22,8 @@ export interface LMCommentProps {
   viewMoreRepliesProps?: LMTextProps; // props for view more text
   onTapReplies?: (data: (repliesArray: Array<LMCommentUI>) => void) => void; // callback function to be executed on click of replies
   commentMenu: LMPostMenuProps; // this represents the post menu props;
-  isRepliesVisible?: boolean
+  isRepliesVisible?: boolean;
+  onCommentOverflowMenuClick: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => void;
 }

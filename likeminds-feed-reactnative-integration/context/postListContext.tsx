@@ -29,6 +29,7 @@ import {
   EDIT_POST_MENU_ITEM,
   NAVIGATED_FROM_COMMENT,
   PIN_POST_MENU_ITEM,
+  POST_LIKES,
   POST_PIN_SUCCESS,
   POST_SAVED_SUCCESS,
   POST_UNPIN_SUCCESS,
@@ -37,7 +38,11 @@ import {
   SOMETHING_WENT_WRONG,
   UNPIN_POST_MENU_ITEM,
 } from "../constants/Strings";
-import { CREATE_POST, POST_DETAIL } from "../constants/screenNames";
+import {
+  CREATE_POST,
+  POST_DETAIL,
+  POST_LIKES_LIST,
+} from "../constants/screenNames";
 import { useLMFeedStyles } from "../lmFeedProvider";
 import { showToastMessage } from "../store/actions/toast";
 import { RootStackParamList } from "../models/RootStackParamsList";
@@ -45,10 +50,14 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { LMPostUI } from "../models";
 import { LMLoader } from "../components";
 import { clearPostDetail } from "../store/actions/postDetail";
+import { postLikesClear } from "../store/actions/postLikes";
 
 interface PostListContextProps {
   children: ReactNode;
-  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList' | 'UniversalFeed'>;
+  navigation: NativeStackNavigationProp<
+    RootStackParamList,
+    "PostsList" | "UniversalFeed"
+  >;
   route: {
     key: string;
     name: string;
@@ -58,18 +67,22 @@ interface PostListContextProps {
 }
 
 export interface PostListContextValues {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'PostsList' | 'UniversalFeed'>;
+  navigation: NativeStackNavigationProp<
+    RootStackParamList,
+    "PostsList" | "UniversalFeed"
+  >;
   feedData: Array<LMPostUI>;
   accessToken: string;
   showLoader: number;
   feedPageNumber: number;
-  modalPosition: {x:number, y:number};
+  modalPosition: { x: number; y: number };
   showActionListModal: boolean;
   selectedMenuItemPostId: string;
   showDeleteModal: boolean;
   showReportModal: boolean;
   feedFetching: boolean;
   setFeedFetching: Dispatch<SetStateAction<boolean>>;
+  setModalPosition: Dispatch<SetStateAction<{ x: number; y: number }>>;
   setShowReportModal: Dispatch<SetStateAction<boolean>>;
   setDeleteModal: Dispatch<SetStateAction<boolean>>;
   setSelectedMenuItemPostId: Dispatch<SetStateAction<string>>;
@@ -83,11 +96,15 @@ export interface PostListContextValues {
   postLikeHandler: (id: string) => void;
   savePostHandler: (id: string, saved?: boolean) => void;
   debouncedSaveFunction: (id: string, saved?: boolean) => void;
-  debouncedLikeFunction:(id: string) => void;
+  debouncedLikeFunction: (id: string) => void;
   closePostActionListModal: () => void;
   handlePinPost: (id: string, pinned?: boolean) => void;
   handleReportPost: () => void;
-  onTapCommentCount:(id: string) => void;
+  onTapCommentCount: (id: string) => void;
+  onTapLikeCount: (id: string) => void;
+  onOverlayMenuClick: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => void;
 }
 
 const PostListContext = createContext<PostListContextValues | undefined>(
@@ -106,14 +123,14 @@ export const usePostListContext = () => {
 
 export const PostListContextProvider = ({
   children,
-  navigation
+  navigation,
 }: PostListContextProps) => {
   const dispatch = useAppDispatch();
   const feedData = useAppSelector((state) => state.feed.feed);
   const accessToken = useAppSelector((state) => state.login.accessToken);
   const showLoader = useAppSelector((state) => state.loader.count);
   const [feedPageNumber, setFeedPageNumber] = useState(1);
-  const modalPosition = { x: 0, y: 0 };
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [showActionListModal, setShowActionListModal] = useState(false);
   const [selectedMenuItemPostId, setSelectedMenuItemPostId] = useState("");
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -196,7 +213,7 @@ export const PostListContextProvider = ({
         showToastMessage({
           isToast: true,
           message: saved ? POST_UNSAVED_SUCCESS : POST_SAVED_SUCCESS,
-        }),
+        })
       );
       return savePostResponse;
     } catch (error) {
@@ -204,7 +221,7 @@ export const PostListContextProvider = ({
         showToastMessage({
           isToast: true,
           message: SOMETHING_WENT_WRONG,
-        }),
+        })
       );
     }
   }
@@ -225,6 +242,15 @@ export const PostListContextProvider = ({
     setShowActionListModal(false);
   };
 
+  // this function is executed on the click of menu icon & handles the position and visibility of the modal
+  const onOverlayMenuClick = (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => {
+    const { pageX, pageY } = event.nativeEvent;
+    setShowActionListModal(true);
+    setModalPosition({ x: pageX, y: pageY });
+  };
+
   // this function handles the functionality on the pin option
   const handlePinPost = async (id: string, pinned?: boolean) => {
     const payload = {
@@ -239,7 +265,7 @@ export const PostListContextProvider = ({
         showToastMessage({
           isToast: true,
           message: pinned ? POST_UNPIN_SUCCESS : POST_PIN_SUCCESS,
-        }),
+        })
       );
     }
     return pinPostResponse;
@@ -257,17 +283,19 @@ export const PostListContextProvider = ({
 
   // this function handles the click on edit option of overlayMenu
   const handleEditPost = (postId) => {
-    navigation.navigate(CREATE_POST, {postId});
-  }
+    navigation.navigate(CREATE_POST, { postId });
+  };
 
   // this handles the click on comment count section of footer
   const onTapCommentCount = (postId) => {
     dispatch(clearPostDetail());
-    navigation.navigate(POST_DETAIL, [
-      postId,
-      NAVIGATED_FROM_COMMENT,
-    ]);
-  }
+    navigation.navigate(POST_DETAIL, [postId, NAVIGATED_FROM_COMMENT]);
+  };
+
+  const onTapLikeCount = (id) => {
+    dispatch(postLikesClear());
+    navigation.navigate(POST_LIKES_LIST, [POST_LIKES, id]);
+  };
 
   // this function gets the detail pf post whose menu item is clicked
   const getPostDetail = () => {
@@ -311,7 +339,10 @@ export const PostListContextProvider = ({
     handlePinPost,
     handleReportPost,
     savePostHandler,
-    onTapCommentCount
+    onTapCommentCount,
+    onTapLikeCount,
+    onOverlayMenuClick,
+    setModalPosition
   };
 
   return (

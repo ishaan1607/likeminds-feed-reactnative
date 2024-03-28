@@ -10,8 +10,9 @@ import React, {
   MutableRefObject,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { Platform, TextInput } from "react-native";
+import { Alert, Platform, TextInput } from "react-native";
 import {
+  NetworkUtil,
   detectMentions,
   detectURLs,
   mentionToRouteConverter,
@@ -36,7 +37,7 @@ import {
   convertToLMPostUI,
 } from "../viewDataModels";
 import _ from "lodash";
-import { editPost, getDecodedUrl } from "../store/actions/createPost";
+import { editPost, getDecodedUrl, setUploadAttachments } from "../store/actions/createPost";
 import {
   DecodeURLRequest,
   EditPostRequest,
@@ -118,6 +119,8 @@ export interface CreatePostContextValues {
   handleInputChange: (event: string) => void;
   loadData: (newPage: number) => void;
   handleLoadMore: () => void;
+  onPostClick: (allMedia:Array<LMAttachmentUI>, linkData: Array<LMAttachmentUI>, content: string) => void;
+  handleScreenBackPress: () => void;
 }
 
 const CreatePostContext = createContext<CreatePostContextValues | undefined>(
@@ -226,6 +229,26 @@ export const CreatePostContextProvider = ({
         }
       }
     });
+  };
+
+  // this handles the functionality of creating or editing post
+  const onPostClick = async (allMedia:Array<LMAttachmentUI>, linkData: Array<LMAttachmentUI>, content: string) => {
+    const isConnected = await NetworkUtil.isNetworkAvailable();
+    if (isConnected) {
+      postToEdit
+        ? postEdit()
+        :
+          dispatch(
+            setUploadAttachments({
+              mediaAttachmentData: allMedia,
+              linkAttachmentData: linkData,
+              postContentData: content.trim(),
+            })
+          );
+      navigation.goBack();
+    } else {
+      Alert.alert("", "Please check your internet connection");
+    }
   };
 
   // function handles the slection of documents
@@ -548,6 +571,11 @@ export const CreatePostContextProvider = ({
     }
   };
 
+  // this handles the functionality on back press
+  const handleScreenBackPress = () => {
+    navigation.goBack();
+  }
+
   const contextValues: CreatePostContextValues = {
     navigation,
     route,
@@ -599,6 +627,8 @@ export const CreatePostContextProvider = ({
     handleInputChange,
     loadData,
     handleLoadMore,
+    onPostClick,
+    handleScreenBackPress
   };
 
   return (

@@ -39,7 +39,6 @@ const LMInputText: FC<LMInputTextProps> = React.memo(({
   keyboardType,
   multilineField,
   secureText,
-  disabled,
   rightIcon,
   autoFocus,
   textValueStyle,
@@ -154,7 +153,6 @@ const LMInputText: FC<LMInputTextProps> = React.memo(({
         keyboardType={keyboardType ? keyboardType : "default"}
         multiline={multilineField ? multilineField : false}
         secureTextEntry={secureText ? secureText : false}
-        editable={disabled != undefined ? !disabled : true}
       >
         <Text style={textValueStyle}>
           {parts.map(({ text, partType, data }, index) =>

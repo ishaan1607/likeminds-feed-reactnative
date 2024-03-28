@@ -43,7 +43,7 @@ import {
   LMProfilePicture,
   LMText,
 } from "../../uiComponents";
-import { LMUserUI, RootStackParamList } from "../../models";
+import { LMAttachmentUI, LMUserUI, RootStackParamList } from "../../models";
 import {
   LMCarousel,
   LMDocument,
@@ -66,6 +66,8 @@ interface CreatePostProps {
   };
   handleGalleryProp: (type: string) => void;
   handleDocumentProp: () => void;
+  onPostClickProp: (allMedia:Array<LMAttachmentUI>, linkData: Array<LMAttachmentUI>, content: string) => void;
+  handleScreenBackPressProp: () => void;
 }
 
 const CreatePost = ({
@@ -73,25 +75,24 @@ const CreatePost = ({
   route,
   children,
   handleDocumentProp,
-  handleGalleryProp
+  handleGalleryProp,
+  onPostClickProp,
+  handleScreenBackPressProp
 }: CreatePostProps) => {
   return (
-    <CreatePostContextProvider
-      navigation={navigation}
-      route={route}
-      children={children}
-    >
+  
       <CreatePostCustomisableMethodsContextProvider
         handleDocumentProp={handleDocumentProp}
         handleGalleryProp={handleGalleryProp}
+        onPostClickProp={onPostClickProp}
+        handleScreenBackPressProp={handleScreenBackPressProp}
       >
         <CreatePostComponent />
       </CreatePostCustomisableMethodsContextProvider>
-    </CreatePostContextProvider>
   );
 };
 
-const CreatePostComponent = React.memo(() => {
+const CreatePostComponent = () => {
   const dispatch = useAppDispatch();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, createPostStyle, postDetailStyle } =
@@ -135,11 +136,15 @@ const CreatePostComponent = React.memo(() => {
     setShowLinkPreview,
     postDetail,
     postEdit,
+    onPostClick,
+    handleScreenBackPress
   }: CreatePostContextValues = useCreatePostContext();
 
   const {
     handleDocumentProp,
-    handleGalleryProp
+    handleGalleryProp,
+    onPostClickProp,
+    handleScreenBackPressProp
   } = useCreatePostCustomisableMethodsContext();
 
   // this renders the post detail UI
@@ -473,25 +478,6 @@ const CreatePostComponent = React.memo(() => {
     );
   };
 
-  const checkNetInfo = async () => {
-    const isConnected = await NetworkUtil.isNetworkAvailable();
-    if (isConnected) {
-      postToEdit
-        ? postEdit()
-        : // store the media for uploading and navigate to feed screen
-          dispatch(
-            setUploadAttachments({
-              mediaAttachmentData: allAttachment,
-              linkAttachmentData: formattedLinkAttachments,
-              postContentData: postContentText.trim(),
-            })
-          );
-      navigation.goBack();
-    } else {
-      Alert.alert("", "Please check your internet connection");
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       {/* screen header section*/}
@@ -503,9 +489,7 @@ const CreatePostComponent = React.memo(() => {
             : true
         }
         onBackPress={() => {
-          navigation.goBack();
-          customCreatePostScreenHeader?.onBackPress &&
-            customCreatePostScreenHeader?.onBackPress();
+          handleScreenBackPressProp ? handleScreenBackPressProp() : handleScreenBackPress()
         }}
         heading={
           postToEdit
@@ -539,7 +523,7 @@ const CreatePostComponent = React.memo(() => {
                 ? styles.enabledOpacity
                 : styles.disabledOpacity
             }
-            onPress={() => checkNetInfo()}
+            onPress={() => onPostClickProp ? onPostClickProp(allAttachment,formattedLinkAttachments, postContentText) : onPostClick(allAttachment,formattedLinkAttachments, postContentText)}
           >
             {customCreatePostScreenHeader?.rightComponent ? (
               customCreatePostScreenHeader?.rightComponent
@@ -649,6 +633,6 @@ const CreatePostComponent = React.memo(() => {
       )}
     </SafeAreaView>
   );
-});
+};
 
 export { CreatePost };

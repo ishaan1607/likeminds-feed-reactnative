@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Linking,
+  Image,
 } from "react-native";
 import React from "react";
 import { LMLinkPreviewProps } from "./types";
@@ -52,9 +53,9 @@ const LMLinkPreview = React.memo(
           ])}
         >
           {attachments && previewAttachmentData?.image && (
-            <LMImage
-              imageUrl={previewAttachmentData?.image}
-              imageStyle={StyleSheet.flatten([
+            <Image
+              source={{ uri: previewAttachmentData?.image }}
+              style={StyleSheet.flatten([
                 styles.previewImage,
                 linkImageStyle,
                 {
@@ -66,9 +67,6 @@ const LMLinkPreview = React.memo(
                       : "flex",
                 },
               ])}
-              height={220}
-              boxStyle={styles.previewImageView}
-              boxFit="contain"
             />
           )}
           {/* link preview data */}
@@ -133,7 +131,14 @@ const LMLinkPreview = React.memo(
               {cancelButton ? (
                 <LMButton
                   {...cancelButton}
-                  onTap={onCancel ? () => {onCancel(); cancelButton?.onTap()} : () => null}
+                  onTap={
+                    onCancel
+                      ? () => {
+                          onCancel();
+                          cancelButton?.onTap();
+                        }
+                      : () => null
+                  }
                 />
               ) : (
                 <LMButton

@@ -40,6 +40,7 @@ const LMCommentItem = React.memo(
     onTapReplies,
     commentMenu,
     isRepliesVisible,
+    onCommentOverflowMenuClick
   }: LMCommentProps) => {
     const MAX_LINES = commentMaxLines
       ? commentMaxLines
@@ -123,16 +124,13 @@ const LMCommentItem = React.memo(
     const onOverflowMenuClick = (event: {
       nativeEvent: { pageX: number; pageY: number };
     }) => {
-      const { pageX, pageY } = event.nativeEvent;
-      setShowPostMenuModal(true);
-      setModalPosition({ x: pageX, y: pageY });
+      onCommentOverflowMenuClick(event)   
       menuIcon?.onTap();
     };
 
     // this function closes the menu list modal
     const closeCommentMenuModal = () => {
       commentMenu?.onCloseModal();
-      setShowPostMenuModal(false);
     };
 
     // this sets the comment's like value and likeCount locally
@@ -444,8 +442,8 @@ const LMCommentItem = React.memo(
           postId={comment?.id}
           menuItems={comment?.menuItems}
           onSelected={commentMenu?.onSelected}
-          modalPosition={modalPosition}
-          modalVisible={showPostMenuModal}
+          modalPosition={commentMenu?.modalPosition}
+          modalVisible={commentMenu?.modalVisible}
           onCloseModal={closeCommentMenuModal}
           menuItemTextStyle={commentMenu?.menuItemTextStyle}
           menuViewStyle={commentMenu?.menuViewStyle}

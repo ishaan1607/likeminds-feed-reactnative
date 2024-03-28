@@ -1,3 +1,4 @@
+import { LMMenuItemsUI } from "../models";
 import React, { createContext, ReactNode, useContext } from "react";
 
 export interface UniversalFeedCallbacksContextProps {
@@ -7,6 +8,13 @@ export interface UniversalFeedCallbacksContextProps {
   selectPinPostProp: (id: string, pinned?: boolean) => void;
   selectEditPostProp: (id: string) => void;
   onSelectCommentCountProp: (id: string) => void;
+  onTapLikeCountProps: (id: string) => void;
+  handleDeletePostProps: (visible: boolean, postId: string, isCM: boolean) => void;
+  handleReportPostProps: (postId: string) => void;
+  newPostButtonClickProps: () => void;
+  onOverlayMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }, menuItems: LMMenuItemsUI, postId: string) => void;
 }
 
 export interface UniversalFeedCustomisableMethodsContext {
@@ -15,6 +23,13 @@ export interface UniversalFeedCustomisableMethodsContext {
   selectPinPostProp: (id: string, pinned?: boolean) => void;
   selectEditPostProp: (id: string) => void;
   onSelectCommentCountProp: (id: string) => void;
+  onTapLikeCountProps: (id: string) => void;
+  handleDeletePostProps: (visible: boolean, postId: string, isCM: boolean) => void;
+  handleReportPostProps: (postId: string) => void;
+  newPostButtonClickProps: () => void;
+  onOverlayMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  },menuItems: LMMenuItemsUI, postId: string) => void;
 }
 
 const UniversalFeedCustomisableMethodsContext = createContext<
@@ -38,6 +53,11 @@ export const UniversalFeedCustomisableMethodsContextProvider = ({
   selectPinPostProp,
   selectEditPostProp,
   onSelectCommentCountProp,
+  onTapLikeCountProps,
+  handleDeletePostProps,
+  handleReportPostProps,
+  newPostButtonClickProps,
+  onOverlayMenuClickProp
 }: UniversalFeedCallbacksContextProps) => {
   const contextValues: UniversalFeedCustomisableMethodsContext = {
     postLikeHandlerProp,
@@ -45,6 +65,11 @@ export const UniversalFeedCustomisableMethodsContextProvider = ({
     selectPinPostProp,
     selectEditPostProp,
     onSelectCommentCountProp,
+    onTapLikeCountProps,
+    handleDeletePostProps,
+    handleReportPostProps,
+    newPostButtonClickProps,
+    onOverlayMenuClickProp
   };
 
   return (

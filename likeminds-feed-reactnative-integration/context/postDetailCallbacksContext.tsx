@@ -1,3 +1,4 @@
+import { LMMenuItemsUI } from "../models";
 import React, { createContext, ReactNode, useContext } from "react";
 
 export interface PostDetailCallbacksContextProps {
@@ -9,7 +10,13 @@ export interface PostDetailCallbacksContextProps {
   addNewCommentProp: (postId: string) => void;
   addNewReplyProp: (postId: string, commentId: string) => void;
   commentLikeHandlerProp: (postId: string, commentId: string) => void;
-  onCommentMenuItemSelectProp: (commentId: string, itemId?: number) => void;
+  handleReportCommentProp: (commentId: string) => void;
+  handleDeleteCommentProp: (visible: boolean,commentId: string) => void;
+  handleEditCommentProp: (commentId: string) => void;
+  handleScreenBackPressProp: () => void;
+  onCommentOverflowMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  },menuItems: LMMenuItemsUI, commentId: string) => void;
 }
 
 export interface PostDetailCustomisableMethodsContext {
@@ -20,7 +27,13 @@ export interface PostDetailCustomisableMethodsContext {
   addNewCommentProp: (postId: string) => void;
   addNewReplyProp: (postId: string, commentId: string) => void;
   commentLikeHandlerProp: (postId: string, commentId: string) => void;
-  onCommentMenuItemSelectProp: (commentId: string, itemId?: number) => void;
+  handleReportCommentProp: (commentId: string) => void;
+  handleDeleteCommentProp: (visible: boolean,commentId: string) => void;
+  handleEditCommentProp: (commentId: string) => void;
+  handleScreenBackPressProp: () => void;
+  onCommentOverflowMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  },menuItems: LMMenuItemsUI, commentId: string) => void;
 }
 
 const PostDetailCustomisableMethodsContext = createContext<
@@ -39,18 +52,26 @@ export const usePostDetailCustomisableMethodsContext = () => {
 
 export const PostDetailCustomisableMethodsContextProvider = ({
   children,
-  onCommentMenuItemSelectProp,
   getCommentsRepliesProp,
   commentLikeHandlerProp,
   addNewCommentProp,
-  addNewReplyProp
+  addNewReplyProp,
+  handleDeleteCommentProp,
+  handleEditCommentProp,
+  handleReportCommentProp,
+  handleScreenBackPressProp,
+  onCommentOverflowMenuClickProp
 }: PostDetailCallbacksContextProps) => {
   const contextValues: PostDetailCustomisableMethodsContext = {
-    onCommentMenuItemSelectProp,
     getCommentsRepliesProp,
     commentLikeHandlerProp,
     addNewCommentProp,
-    addNewReplyProp
+    addNewReplyProp,
+    handleDeleteCommentProp,
+    handleEditCommentProp,
+    handleReportCommentProp,
+    handleScreenBackPressProp,
+    onCommentOverflowMenuClickProp
   };
 
   return (

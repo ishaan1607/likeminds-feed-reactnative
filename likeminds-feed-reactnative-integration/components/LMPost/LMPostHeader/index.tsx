@@ -35,16 +35,14 @@ const LMPostHeader = React.memo(() => {
   // this function closes the menu list modal
   const closePostMenuModal = () => {
     headerProps?.postMenu?.onCloseModal();
-    setShowPostMenuModal(false);
   };
 
   // this function is executed on the click of menu icon & handles the position and visibility of the modal
   const onThreedotsClick = (event: {
     nativeEvent: { pageX: number; pageY: number };
   }) => {
-    const { pageX, pageY } = event.nativeEvent;
-    setShowPostMenuModal(true);
-    setModalPosition({ x: pageX, y: pageY });
+    headerProps?.onOverlayMenuClick(event)
+ 
   };
 
   return (
@@ -218,8 +216,8 @@ const LMPostHeader = React.memo(() => {
         postId={post?.id}
         menuItems={post?.menuItems}
         onSelected={headerProps?.postMenu?.onSelected}
-        modalPosition={modalPosition}
-        modalVisible={showPostMenuModal}
+        modalPosition={headerProps?.postMenu?.modalPosition}
+        modalVisible={ headerProps?.postMenu?.modalVisible}
         onCloseModal={closePostMenuModal}
         menuItemTextStyle={customPostHeaderStyle?.postMenu?.menuItemTextStyle}
         menuViewStyle={customPostHeaderStyle?.postMenu?.menuViewStyle}

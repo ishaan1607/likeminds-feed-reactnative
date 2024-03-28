@@ -266,7 +266,6 @@ interface PostDetailStyleProps {
     inputTextStyle?: TextStyle;
     placeholderText?: string;
     placeholderTextColor?: string;
-    disabled?: boolean;
     rightIcon?: {
       text?: LMTextProps;
       icon?: LMIconProps;
@@ -285,7 +284,6 @@ interface CreatePostStyleProps {
   userNameTextStyle?: TextStyle;
   createPostScreenHeader?: {
     showBackArrow?: boolean;
-    onBackPress?: () => void;
     editPostHeading?: string;
     createPostHeading?: string;
     rightComponent?: React.ReactNode;
@@ -299,7 +297,6 @@ interface CreatePostStyleProps {
     inputTextStyle?: TextStyle;
     placeholderText?: string;
     placeholderTextColor?: string;
-    disabled?: boolean;
     rightIcon?: {
       text?: LMTextProps;
       icon?: LMIconProps;
@@ -311,29 +308,6 @@ interface CreatePostStyleProps {
     textValueStyle?: TextStyle;
     mentionTextStyle?: TextStyle;
     multilineField?: boolean;
-  };
-  attachmentOptionsStyle?: {
-    attachmentOptionsView?: ViewStyle;
-    photoAttachmentView?: ViewStyle;
-    photoAttachmentIcon?: LMIconProps;
-    photoAttachmentTextStyle?: LMTextProps;
-    onPhotoAttachmentOptionClick?: () => void;
-    videoAttachmentView?: ViewStyle;
-    videoAttachmentIcon?: LMIconProps;
-    videoAttachmentTextStyle?: LMTextProps;
-    onVideoAttachmentOptionClick?: () => void;
-    filesAttachmentView?: ViewStyle;
-    filesAttachmentIcon?: LMIconProps;
-    filesAttachmentTextStyle?: LMTextProps;
-    onFilesAttachmentOptionClick?: () => void;
-  };
-  addMoreAttachmentsButton?: {
-    text?: LMTextProps;
-    icon?: LMIconProps;
-    onTap?: (value?: any) => void;
-    placement?: "start" | "end";
-    buttonStyle?: ViewStyle;
-    isClickable?: boolean;
   };
 }
 

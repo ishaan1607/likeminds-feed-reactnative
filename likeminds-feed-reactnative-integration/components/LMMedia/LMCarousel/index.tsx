@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import { LMCarouselProps } from "./types";
@@ -65,7 +65,7 @@ const LMCarousel = React.memo(({
         inactiveIndicatorStyle,
       ])}
       renderItem={({ item, index }) => (
-        <>
+        <View onStartShouldSetResponder={() => true}>
           {/* this section render image */}
           {item?.attachmentType === IMAGE_ATTACHMENT_TYPE && (
             <LMImage
@@ -121,7 +121,7 @@ const LMCarousel = React.memo(({
               cancelButton={cancelButton}
             />
           )}
-        </>
+        </View>
       )}
     />
   );
