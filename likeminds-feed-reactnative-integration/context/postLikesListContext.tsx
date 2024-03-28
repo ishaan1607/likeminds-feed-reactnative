@@ -31,6 +31,7 @@ export interface PostLikesListContextValues {
   totalLikes: number;
   postLikesList: (id: string) => void;
   commentLikesList: (id: string, postId: string) => void;
+  handleScreenBackPress: () => void;
 }
 
 const PostLikesListContext = createContext<
@@ -105,12 +106,17 @@ export const PostLikesListContextProvider = ({
     }
   }, [route.params]);
 
+  const handleScreenBackPress = () => {
+    navigation.goBack();
+  }
+
   const contextValues: PostLikesListContextValues = {
     navigation,
     postLike,
     totalLikes,
     postLikesList,
     commentLikesList,
+    handleScreenBackPress
   };
 
   return (

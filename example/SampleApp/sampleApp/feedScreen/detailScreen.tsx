@@ -2,7 +2,7 @@ import React from 'react';
 import {PostDetail, usePostDetailContext} from '@likeminds.community/feed-rn-core';
 
 const DetailScreen = ({navigation}) => {
-  const {route, getCommentsReplies, addNewComment, addNewReply, commentLikeHandler, onCommentMenuItemSelect} = usePostDetailContext();
+  const {route, getCommentsReplies, addNewComment, addNewReply, commentLikeHandler, handleDeleteComment, handleEditComment, handleReportComment, handleScreenBackPress, onCommentOverflowMenuClick} = usePostDetailContext();
 
   const customGetCommentsRepliesProp = (postId, commentId, repliesResponseCallback, pageNo) => {
     console.log('before getComment');
@@ -24,10 +24,30 @@ const DetailScreen = ({navigation}) => {
     commentLikeHandler(postId, commentId);
     console.log('after like comment');
   };
-  const customOnCommentMenuItemSelectProp = (commentId, itemId) => {
-    console.log('before comment menu select');
-    onCommentMenuItemSelect(commentId, itemId);
-    console.log('after comment menu select');
+  const customOnCommentDelete = (visible) => {
+    console.log('before comment delete');
+    handleDeleteComment(visible);
+    console.log('after comment delete');
+  };
+  const customOnCommentEdit = (commentId) => {
+    console.log('before comment edit');
+    handleEditComment(commentId);
+    console.log('after comment edit');
+  };
+  const customOnCommentReport = () => {
+    console.log('before comment report');
+    handleReportComment();
+    console.log('after comment report');
+  };
+  const customBackHandler = () => {
+    console.log('before back click');
+    handleScreenBackPress()
+    console.log('after back click');
+  };
+  const customCommentOverlayMenuCick = (event) => {
+    console.log('before comment menuItemClick');
+    onCommentOverflowMenuClick(event);
+    console.log('after comment menuItemClick');
   };
   return (
     <PostDetail
@@ -37,7 +57,11 @@ const DetailScreen = ({navigation}) => {
       addNewCommentProp={(id) => customAddNewCommentProp(id)}
       addNewReplyProp={(postId, commentId) => customAddNewReplyProp(postId, commentId)}
       commentLikeHandlerProp={(postId, commentId) => customCommentLikeHandlerProp(postId, commentId)}
-      onCommentMenuItemSelectProp={(commentId, itemId) => customOnCommentMenuItemSelectProp(commentId, itemId)}
+      handleDeleteCommentProp={(visible) => customOnCommentDelete(visible)}
+      handleEditCommentProp={(id) => customOnCommentEdit(id)}
+      handleReportCommentProp={() => customOnCommentReport()}
+      handleScreenBackPressProp={() => customBackHandler()}
+      onCommentOverflowMenuClickProp={(event) => customCommentOverlayMenuCick(event)}
     />
   );
 };

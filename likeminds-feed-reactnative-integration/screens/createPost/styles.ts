@@ -90,8 +90,9 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     width: '100%',
     position: 'relative',
-    borderColor: '#000',
+    borderColor: 'grey',
     overflow: 'hidden',
+    borderTopWidth:0.5,
     backgroundColor: '#fff',
   },
   taggingListItem: {

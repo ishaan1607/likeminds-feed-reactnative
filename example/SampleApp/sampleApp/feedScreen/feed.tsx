@@ -8,8 +8,12 @@ const Feed = ({route}) => {
     handleEditPost,
     handlePinPost,
     onTapCommentCount,
+    onTapLikeCount,
+    handleDeletePost,
+    handleReportPost,
+    onOverlayMenuClick
   } = usePostListContext();
-  const {navigation} = useUniversalFeedContext()
+  const {navigation, newPostButtonClick} = useUniversalFeedContext()
 
   const customPostLike = (postId) => {
     console.log('before like ');
@@ -33,6 +37,31 @@ const Feed = ({route}) => {
     onTapCommentCount(postId);
     console.log('after comment select', postId);
   };
+  const customHandleLikeCountClick = (postId) => {
+    console.log('before like count select');
+    onTapLikeCount(postId);
+    console.log('after like count select', postId);
+  };
+  const customHandleDelete = (visible) => {
+    console.log('before delete select');
+    handleDeletePost(visible);
+    console.log('after delete select', visible);
+  };
+  const customHandleReport = () => {
+    console.log('before report select');
+    handleReportPost();
+    console.log('after report select');
+  };
+  const customHandleNewPostButton = () => {
+    console.log('before new post');
+    newPostButtonClick();
+    console.log('after new post');
+  };
+  const customOverlayMenuCick = (event) => {
+    console.log('before menuItemClick');
+    onOverlayMenuClick(event);
+    console.log('after menuItemClick');
+  };
   return (
       <UniversalFeed
         navigation={navigation}
@@ -42,6 +71,11 @@ const Feed = ({route}) => {
         onSelectCommentCountProp={(id) => customHandleCommentClick(id)}
         selectEditPostProp={(id) => customHandleEdit(id)}
         selectPinPostProp={(id, pinned) => customHandlePin(id, pinned)}
+        onTapLikeCountProps={(id) => customHandleLikeCountClick(id)}
+        handleDeletePostProps={(visible) => customHandleDelete(visible)}
+        handleReportPostProps={() => customHandleReport()}
+        newPostButtonClickProps={() => customHandleNewPostButton()}
+        onOverlayMenuClickProp={(event) => customOverlayMenuCick(event)}
       >
       </UniversalFeed>
   );

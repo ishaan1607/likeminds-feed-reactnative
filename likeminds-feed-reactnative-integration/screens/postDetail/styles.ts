@@ -76,6 +76,8 @@ export const styles = StyleSheet.create({
     width: '100%',
     position: 'relative',
     overflow: 'hidden',
+    borderColor: 'grey',
+    borderTopWidth:0.5,
     backgroundColor: '#fff',
   },
   taggingListItem: {

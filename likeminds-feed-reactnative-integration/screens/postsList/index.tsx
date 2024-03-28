@@ -49,17 +49,12 @@ const PostsList = ({ route, children }: any) => {
     navigation
   }: UniversalFeedContextValues = useUniversalFeedContext();
   return (
-    <PostListContextProvider
-      navigation={navigation}
-      route={route}
-      children={children}
-    >
-      <PostsListComponent />
-    </PostListContextProvider>
+   
+      <PostsListComponent /> 
   );
 };
 
-const PostsListComponent = React.memo(() => {
+const PostsListComponent = () => {
   const dispatch = useAppDispatch();
   const {
     listRef,
@@ -92,11 +87,13 @@ const PostsListComponent = React.memo(() => {
     setSelectedMenuItemPostId,
     handlePinPost,
     handleReportPost,
-    handleEditPost
+    handleEditPost,
+    onTapLikeCount,
+    onOverlayMenuClick
   }: PostListContextValues = usePostListContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, loaderStyle } = LMFeedContextStyles;
-  const { postLikeHandlerProp, savePostHandlerProp, onSelectCommentCountProp, selectEditPostProp, selectPinPostProp} = useUniversalFeedCustomisableMethodsContext()
+  const { postLikeHandlerProp, savePostHandlerProp, onSelectCommentCountProp, selectEditPostProp, selectPinPostProp, onTapLikeCountProps, handleDeletePostProps, handleReportPostProps, onOverlayMenuClickProp} = useUniversalFeedCustomisableMethodsContext()
   
 // this function returns the id of the item selected from menu list and handles further functionalities accordingly
 const onMenuItemSelect = (
@@ -109,10 +106,10 @@ const onMenuItemSelect = (
     selectPinPostProp ? selectPinPostProp(postId, pinnedValue) : handlePinPost(postId, pinnedValue);
   }
   if (itemId === REPORT_POST_MENU_ITEM) {
-     handleReportPost();
+    handleReportPostProps ? handleReportPostProps() : handleReportPost();
   }
   if (itemId === DELETE_POST_MENU_ITEM) {
-     handleDeletePost(true);
+    handleDeletePostProps ? handleDeletePostProps(true) : handleDeletePost(true);
   }
   if (itemId === EDIT_POST_MENU_ITEM) {
    selectEditPostProp ? selectEditPostProp(postId) : handleEditPost(postId)
@@ -156,6 +153,7 @@ const onMenuItemSelect = (
                        {
                        onMenuItemSelect(postId, itemId, item?.isPinned)},
                     },
+                    onOverlayMenuClick: (event) => {onOverlayMenuClickProp ? onOverlayMenuClickProp(event) : onOverlayMenuClick(event)}
                   }}
                   // footer props
                   footerProps={{
@@ -171,8 +169,7 @@ const onMenuItemSelect = (
                     },
                     likeTextButton: {
                       onTap: () => {
-                          dispatch(postLikesClear());
-                        navigation.navigate(POST_LIKES_LIST, [POST_LIKES, item?.id]);
+                        onTapLikeCountProps ? onTapLikeCountProps(item?.id) : onTapLikeCount(item?.id)
                       },
                     },
                     commentButton: {
@@ -189,7 +186,7 @@ const onMenuItemSelect = (
               setFeedPageNumber(feedPageNumber + 1);
             }}
             keyExtractor={item => keyExtractor(item)}
-            ListFooterComponent={<>{showLoader > 0 && renderLoader()}</>}
+            ListFooterComponent={<>{renderLoader()}</>}
             onViewableItemsChanged={({changed, viewableItems}) => {
               if (changed) {
                 if (viewableItems) {
@@ -233,6 +230,6 @@ const onMenuItemSelect = (
       )}
     </>
   );
-});
+};
 
 export { PostsList };

@@ -15,14 +15,21 @@ import { POST_LIKES_LIST, UNIVERSAL_FEED } from "../../constants/screenNames";
 import {
   COMMENT_LIKES,
   COMMENT_TYPE,
+  DELETE_COMMENT_MENU_ITEM,
+  EDIT_COMMENT_MENU_ITEM,
   POST_TYPE,
+  REPORT_COMMENT_MENU_ITEM,
   VIEW_MORE_TEXT,
 } from "../../constants/Strings";
 import { DeleteModal, ReportModal } from "../../customModals";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { styles } from "./styles";
 import Layout from "../../constants/Layout";
-import { nameInitials, replaceLastMention } from "../../utils";
+import {
+  nameInitials,
+  replaceLastMention,
+  routeToMentionConverter,
+} from "../../utils";
 import { useLMFeedStyles } from "../../lmFeedProvider";
 import { useAppDispatch } from "../../store/store";
 import { clearComments } from "../../store/actions/postDetail";
@@ -63,35 +70,44 @@ interface PostDetailProps {
   addNewCommentProp: (postId: string) => void;
   addNewReplyProp: (postId: string, commentId: string) => void;
   commentLikeHandlerProp: (postId: string, commentId: string) => void;
-  onCommentMenuItemSelectProp: (commentId: string, itemId?: number) => void;
+  handleReportCommentProp: () => void;
+  handleDeleteCommentProp: (visible: boolean) => void;
+  handleEditCommentProp: (commentId: string) => void;
+  handleScreenBackPressProp: () => void;
+  onCommentOverflowMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => void;
 }
 
 const PostDetail = ({
   navigation,
   route,
   children,
-  onCommentMenuItemSelectProp,
   getCommentsRepliesProp,
   commentLikeHandlerProp,
   addNewCommentProp,
   addNewReplyProp,
+  handleDeleteCommentProp,
+  handleEditCommentProp,
+  handleReportCommentProp,
+  handleScreenBackPressProp,
+  onCommentOverflowMenuClickProp
 }: PostDetailProps) => {
   return (
-    <PostDetailContextProvider
-      navigation={navigation}
-      route={route}
-      children={children}
-    >
+  
       <PostDetailCustomisableMethodsContextProvider
         getCommentsRepliesProp={getCommentsRepliesProp}
         commentLikeHandlerProp={commentLikeHandlerProp}
         addNewCommentProp={addNewCommentProp}
-        onCommentMenuItemSelectProp={onCommentMenuItemSelectProp}
         addNewReplyProp={addNewReplyProp}
+        handleDeleteCommentProp={handleDeleteCommentProp}
+        handleEditCommentProp={handleEditCommentProp}
+        handleReportCommentProp={handleReportCommentProp}
+        handleScreenBackPressProp={handleScreenBackPressProp}
+        onCommentOverflowMenuClickProp={onCommentOverflowMenuClickProp}
       >
         <PostDetailComponent />
       </PostDetailCustomisableMethodsContextProvider>
-    </PostDetailContextProvider>
   );
 };
 
@@ -114,7 +130,6 @@ const PostDetailComponent = React.memo(() => {
     modalPositionComment,
     localModalVisibility,
     showCommentActionListModal,
-    onCommentMenuItemSelect,
     closeCommentActionListModal,
     commentLikeHandler,
     setCommentPageNumber,
@@ -147,22 +162,56 @@ const PostDetailComponent = React.memo(() => {
     keyboardFocusOnReply,
     setKeyboardFocusOnReply,
     showRepliesOfCommentId,
+    setSelectedMenuItemCommentId,
+    setSelectedMenuItemPostId,
+    handleReportComment,
+    handleEditComment,
+    handleScreenBackPress,
+    onCommentOverflowMenuClick
   }: PostDetailContextValues = usePostDetailContext();
 
   const LMFeedContextStyles = useLMFeedStyles();
   const { postDetailStyle, postListStyle } = LMFeedContextStyles;
   const {
-    onCommentMenuItemSelectProp,
     getCommentsRepliesProp,
     commentLikeHandlerProp,
     addNewCommentProp,
     addNewReplyProp,
+    handleDeleteCommentProp,
+    handleEditCommentProp,
+    handleReportCommentProp,
+    handleScreenBackPressProp,
+    onCommentOverflowMenuClickProp
   } = usePostDetailCustomisableMethodsContext();
   const postHeaderStyle = postListStyle?.header;
   const customScreenHeader = postDetailStyle?.screenHeader;
   const customCommentItemStyle = postDetailStyle?.commentItemStyle;
   const customReplyingViewStyle = postDetailStyle?.replyingViewStyle;
   const customCommentTextInput = postDetailStyle?.commentTextInputStyle;
+
+  // this function returns the id of the item selected from menu list and handles further functionalities accordingly for comment
+  const onCommentMenuItemSelect = async (
+    commentId: string,
+    itemId?: number
+  ) => {
+    setSelectedMenuItemPostId("");
+    setSelectedMenuItemCommentId(commentId);
+    if (itemId === REPORT_COMMENT_MENU_ITEM) {
+      handleReportCommentProp
+        ? handleReportCommentProp()
+        : handleReportComment();
+    }
+    if (itemId === DELETE_COMMENT_MENU_ITEM) {
+      handleDeleteCommentProp
+        ? handleDeleteCommentProp(true)
+        : handleDeleteComment(true);
+    }
+    if (itemId === EDIT_COMMENT_MENU_ITEM) {
+      handleEditCommentProp
+        ? handleEditCommentProp(commentId)
+        : handleEditComment(commentId);
+    }
+  };
 
   return (
     <SafeAreaView edges={["left", "right", "top"]} style={styles.flexView}>
@@ -191,9 +240,7 @@ const PostDetailComponent = React.memo(() => {
               : ""
           }
           onBackPress={() => {
-            Keyboard.dismiss();
-            navigation.navigate(UNIVERSAL_FEED);
-            customScreenHeader?.onBackPress();
+            handleScreenBackPressProp ? handleScreenBackPressProp() : handleScreenBackPress();
           }}
           rightComponent={customScreenHeader?.rightComponent}
           backIcon={customScreenHeader?.backIcon}
@@ -338,12 +385,7 @@ const PostDetailComponent = React.memo(() => {
                               modalVisible: showCommentActionListModal,
                               onCloseModal: closeCommentActionListModal,
                               onSelected: (commentId, itemId) =>
-                                onCommentMenuItemSelectProp
-                                  ? onCommentMenuItemSelectProp(
-                                      commentId,
-                                      itemId
-                                    )
-                                  : onCommentMenuItemSelect(commentId, itemId),
+                                onCommentMenuItemSelect(commentId, itemId),
                               menuItemTextStyle:
                                 postHeaderStyle?.postMenu?.menuItemTextStyle,
                               menuViewStyle:
@@ -399,6 +441,7 @@ const PostDetailComponent = React.memo(() => {
                             timeStampStyle={
                               customCommentItemStyle?.timeStampStyle
                             }
+                            onCommentOverflowMenuClick={(event) => {onCommentOverflowMenuClickProp ? onCommentOverflowMenuClickProp(event) : onCommentOverflowMenuClick(event)}}
                           />
                         )}
                       </>
@@ -525,7 +568,7 @@ const PostDetailComponent = React.memo(() => {
                   : Layout.normalize(64),
                 maxHeight: 300,
               },
-              postDetailStyle?.userTaggingListStyle?.taggingListView
+              postDetailStyle?.userTaggingListStyle?.taggingListView,
             ]}
           >
             <FlatList
@@ -547,7 +590,7 @@ const PostDetailComponent = React.memo(() => {
                     }}
                     style={[
                       styles.taggingListItem,
-                      postDetailStyle?.userTaggingListStyle?.userTagView
+                      postDetailStyle?.userTaggingListStyle?.userTagView,
                     ]}
                     key={item?.id}
                   >

@@ -7,6 +7,13 @@ export interface UniversalFeedCallbacksContextProps {
   selectPinPostProp: (id: string, pinned?: boolean) => void;
   selectEditPostProp: (id: string) => void;
   onSelectCommentCountProp: (id: string) => void;
+  onTapLikeCountProps: (id: string) => void;
+  handleDeletePostProps: (visible: boolean) => void;
+  handleReportPostProps: () => void;
+  newPostButtonClickProps: () => void;
+  onOverlayMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => void;
 }
 
 export interface UniversalFeedCustomisableMethodsContext {
@@ -15,6 +22,13 @@ export interface UniversalFeedCustomisableMethodsContext {
   selectPinPostProp: (id: string, pinned?: boolean) => void;
   selectEditPostProp: (id: string) => void;
   onSelectCommentCountProp: (id: string) => void;
+  onTapLikeCountProps: (id: string) => void;
+  handleDeletePostProps: (visible: boolean) => void;
+  handleReportPostProps: () => void;
+  newPostButtonClickProps: () => void;
+  onOverlayMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => void;
 }
 
 const UniversalFeedCustomisableMethodsContext = createContext<
@@ -38,6 +52,11 @@ export const UniversalFeedCustomisableMethodsContextProvider = ({
   selectPinPostProp,
   selectEditPostProp,
   onSelectCommentCountProp,
+  onTapLikeCountProps,
+  handleDeletePostProps,
+  handleReportPostProps,
+  newPostButtonClickProps,
+  onOverlayMenuClickProp
 }: UniversalFeedCallbacksContextProps) => {
   const contextValues: UniversalFeedCustomisableMethodsContext = {
     postLikeHandlerProp,
@@ -45,6 +64,11 @@ export const UniversalFeedCustomisableMethodsContextProvider = ({
     selectPinPostProp,
     selectEditPostProp,
     onSelectCommentCountProp,
+    onTapLikeCountProps,
+    handleDeletePostProps,
+    handleReportPostProps,
+    newPostButtonClickProps,
+    onOverlayMenuClickProp
   };
 
   return (

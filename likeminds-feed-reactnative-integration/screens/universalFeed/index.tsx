@@ -29,6 +29,7 @@ import {
   UniversalFeedContextValues,
   UniversalFeedCustomisableMethodsContextProvider,
   useUniversalFeedContext,
+  useUniversalFeedCustomisableMethodsContext,
 } from "../../context";
 import STYLES from "../../constants/Styles";
 import { showToastMessage } from "../../store/actions/toast";
@@ -51,6 +52,13 @@ interface UniversalFeedProps {
   selectPinPostProp: (id: string, pinned?: boolean) => void;
   selectEditPostProp: (id: string) => void;
   onSelectCommentCountProp: (id: string) => void;
+  onTapLikeCountProps: (id: string) => void;
+  handleDeletePostProps: (visible: boolean) => void;
+  handleReportPostProps: () => void;
+  newPostButtonClickProps: () => void;
+  onOverlayMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => void;
 }
 
 const UniversalFeed = ({
@@ -62,27 +70,31 @@ const UniversalFeed = ({
   selectPinPostProp,
   selectEditPostProp,
   onSelectCommentCountProp,
+  onTapLikeCountProps,
+  handleDeletePostProps,
+  handleReportPostProps,
+  newPostButtonClickProps,
+  onOverlayMenuClickProp
 }: UniversalFeedProps) => {
   return (
-    <UniversalFeedContextProvider
-      navigation={navigation}
-      route={route}
-      children={children}
-    >
       <UniversalFeedCustomisableMethodsContextProvider
         postLikeHandlerProp={postLikeHandlerProp}
         savePostHandlerProp={savePostHandlerProp}
         selectEditPostProp={selectEditPostProp}
         selectPinPostProp={selectPinPostProp}
         onSelectCommentCountProp={onSelectCommentCountProp}
+        onTapLikeCountProps={onTapLikeCountProps}
+        handleDeletePostProps={handleDeletePostProps}
+        handleReportPostProps={handleReportPostProps}
+        newPostButtonClickProps={newPostButtonClickProps}
+        onOverlayMenuClickProp={onOverlayMenuClickProp}
       >
         <UniversalFeedComponent />
       </UniversalFeedCustomisableMethodsContextProvider>
-    </UniversalFeedContextProvider>
   );
 };
 
-const UniversalFeedComponent = React.memo(() => {
+const UniversalFeedComponent = () => {
   const dispatch = useAppDispatch();
   const {
     feedData,
@@ -91,9 +103,11 @@ const UniversalFeedComponent = React.memo(() => {
     navigation,
     uploadingMediaAttachment,
     uploadingMediaAttachmentType,
+    newPostButtonClick
   }: UniversalFeedContextValues = useUniversalFeedContext();
   const LMFeedContextStyles = useLMFeedStyles();
   const { universalFeedStyle, loaderStyle } = LMFeedContextStyles;
+  const {newPostButtonClickProps} = useUniversalFeedCustomisableMethodsContext()
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -158,21 +172,7 @@ const UniversalFeedComponent = React.memo(() => {
         ]}
         // handles post uploading status and member rights to create post
         onPress={() =>
-          showCreatePost
-            ? postUploading
-              ? dispatch(
-                  showToastMessage({
-                    isToast: true,
-                    message: POST_UPLOAD_INPROGRESS,
-                  })
-                )
-              : navigation.navigate(CREATE_POST)
-            : dispatch(
-                showToastMessage({
-                  isToast: true,
-                  message: CREATE_POST_PERMISSION,
-                })
-              )
+         newPostButtonClickProps ? newPostButtonClickProps() : newPostButtonClick()
         }
       >
         <Image
@@ -189,6 +189,6 @@ const UniversalFeedComponent = React.memo(() => {
       </TouchableOpacity>
     </SafeAreaView>
   );
-});
+};
 
 export { UniversalFeed };

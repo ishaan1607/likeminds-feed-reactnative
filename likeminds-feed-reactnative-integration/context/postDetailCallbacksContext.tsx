@@ -9,7 +9,13 @@ export interface PostDetailCallbacksContextProps {
   addNewCommentProp: (postId: string) => void;
   addNewReplyProp: (postId: string, commentId: string) => void;
   commentLikeHandlerProp: (postId: string, commentId: string) => void;
-  onCommentMenuItemSelectProp: (commentId: string, itemId?: number) => void;
+  handleReportCommentProp: () => void;
+  handleDeleteCommentProp: (visible: boolean) => void;
+  handleEditCommentProp: (commentId: string) => void;
+  handleScreenBackPressProp: () => void;
+  onCommentOverflowMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => void;
 }
 
 export interface PostDetailCustomisableMethodsContext {
@@ -20,7 +26,13 @@ export interface PostDetailCustomisableMethodsContext {
   addNewCommentProp: (postId: string) => void;
   addNewReplyProp: (postId: string, commentId: string) => void;
   commentLikeHandlerProp: (postId: string, commentId: string) => void;
-  onCommentMenuItemSelectProp: (commentId: string, itemId?: number) => void;
+  handleReportCommentProp: () => void;
+  handleDeleteCommentProp: (visible: boolean) => void;
+  handleEditCommentProp: (commentId: string) => void;
+  handleScreenBackPressProp: () => void;
+  onCommentOverflowMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => void;
 }
 
 const PostDetailCustomisableMethodsContext = createContext<
@@ -39,18 +51,26 @@ export const usePostDetailCustomisableMethodsContext = () => {
 
 export const PostDetailCustomisableMethodsContextProvider = ({
   children,
-  onCommentMenuItemSelectProp,
   getCommentsRepliesProp,
   commentLikeHandlerProp,
   addNewCommentProp,
-  addNewReplyProp
+  addNewReplyProp,
+  handleDeleteCommentProp,
+  handleEditCommentProp,
+  handleReportCommentProp,
+  handleScreenBackPressProp,
+  onCommentOverflowMenuClickProp
 }: PostDetailCallbacksContextProps) => {
   const contextValues: PostDetailCustomisableMethodsContext = {
-    onCommentMenuItemSelectProp,
     getCommentsRepliesProp,
     commentLikeHandlerProp,
     addNewCommentProp,
-    addNewReplyProp
+    addNewReplyProp,
+    handleDeleteCommentProp,
+    handleEditCommentProp,
+    handleReportCommentProp,
+    handleScreenBackPressProp,
+    onCommentOverflowMenuClickProp
   };
 
   return (

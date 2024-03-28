@@ -19,6 +19,7 @@ import { LMPostContextProvider, LMPostContextValues, useLMPostContext } from "./
 import { UniversalFeedCustomisableMethodsContextProvider, UniversalFeedCustomisableMethodsContext, useUniversalFeedCustomisableMethodsContext } from "./universalFeedCallbacksContext";
 import { PostDetailCustomisableMethodsContextProvider, PostDetailCustomisableMethodsContext, usePostDetailCustomisableMethodsContext } from "./postDetailCallbacksContext";
 import { CreatePostCustomisableMethodsContextProvider, CreatePostCustomisableMethodsContext, useCreatePostCustomisableMethodsContext } from "./createPostCallbacksContext";
+import { PostLikesCustomisableMethodsContextProvider, PostLikesCustomisableMethodsContext, usePostLikesCustomisableMethodsContext } from "./postLikesListCallbacksContext";
 export {
   UniversalFeedContextProvider,
   UniversalFeedContextValues,
@@ -46,5 +47,8 @@ export {
   usePostDetailCustomisableMethodsContext,
   CreatePostCustomisableMethodsContextProvider,
   CreatePostCustomisableMethodsContext,
-  useCreatePostCustomisableMethodsContext
+  useCreatePostCustomisableMethodsContext,
+  PostLikesCustomisableMethodsContext,
+  PostLikesCustomisableMethodsContextProvider,
+  usePostLikesCustomisableMethodsContext
 };

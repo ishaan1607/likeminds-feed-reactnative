@@ -284,7 +284,6 @@ interface CreatePostStyleProps {
   userNameTextStyle?: TextStyle;
   createPostScreenHeader?: {
     showBackArrow?: boolean;
-    onBackPress?: () => void;
     editPostHeading?: string;
     createPostHeading?: string;
     rightComponent?: React.ReactNode;
