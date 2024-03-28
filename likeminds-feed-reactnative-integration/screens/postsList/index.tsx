@@ -28,7 +28,7 @@ import {
 import _ from "lodash";
 import { DeleteModal, ReportModal } from "../../customModals";
 import { useLMFeedStyles } from "../../lmFeedProvider";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import { clearPostDetail } from "../../store/actions/postDetail";
 import {
   PostListContextProvider,
@@ -94,7 +94,6 @@ const PostsListComponent = () => {
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle, loaderStyle } = LMFeedContextStyles;
   const { postLikeHandlerProp, savePostHandlerProp, onSelectCommentCountProp, selectEditPostProp, selectPinPostProp, onTapLikeCountProps, handleDeletePostProps, handleReportPostProps, onOverlayMenuClickProp} = useUniversalFeedCustomisableMethodsContext()
-  
 // this function returns the id of the item selected from menu list and handles further functionalities accordingly
 const onMenuItemSelect = (
   postId: string,
@@ -106,10 +105,10 @@ const onMenuItemSelect = (
     selectPinPostProp ? selectPinPostProp(postId, pinnedValue) : handlePinPost(postId, pinnedValue);
   }
   if (itemId === REPORT_POST_MENU_ITEM) {
-    handleReportPostProps ? handleReportPostProps() : handleReportPost();
+    handleReportPostProps ? handleReportPostProps(postId) : handleReportPost();
   }
   if (itemId === DELETE_POST_MENU_ITEM) {
-    handleDeletePostProps ? handleDeletePostProps(true) : handleDeletePost(true);
+    handleDeletePostProps ? handleDeletePostProps(true, postId) : handleDeletePost(true);
   }
   if (itemId === EDIT_POST_MENU_ITEM) {
    selectEditPostProp ? selectEditPostProp(postId) : handleEditPost(postId)
@@ -153,7 +152,7 @@ const onMenuItemSelect = (
                        {
                        onMenuItemSelect(postId, itemId, item?.isPinned)},
                     },
-                    onOverlayMenuClick: (event) => {onOverlayMenuClickProp ? onOverlayMenuClickProp(event) : onOverlayMenuClick(event)}
+                    onOverlayMenuClick: (event) => {onOverlayMenuClickProp ? onOverlayMenuClickProp(event,item?.menuItems, item?.id) : onOverlayMenuClick(event)}
                   }}
                   // footer props
                   footerProps={{

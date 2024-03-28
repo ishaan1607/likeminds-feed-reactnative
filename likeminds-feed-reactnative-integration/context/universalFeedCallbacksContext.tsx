@@ -1,3 +1,4 @@
+import { LMMenuItemsUI } from "../models";
 import React, { createContext, ReactNode, useContext } from "react";
 
 export interface UniversalFeedCallbacksContextProps {
@@ -8,12 +9,12 @@ export interface UniversalFeedCallbacksContextProps {
   selectEditPostProp: (id: string) => void;
   onSelectCommentCountProp: (id: string) => void;
   onTapLikeCountProps: (id: string) => void;
-  handleDeletePostProps: (visible: boolean) => void;
-  handleReportPostProps: () => void;
+  handleDeletePostProps: (visible: boolean, postId: string, isCM: boolean) => void;
+  handleReportPostProps: (postId: string) => void;
   newPostButtonClickProps: () => void;
   onOverlayMenuClickProp: (event: {
     nativeEvent: { pageX: number; pageY: number };
-  }) => void;
+  }, menuItems: LMMenuItemsUI, postId: string) => void;
 }
 
 export interface UniversalFeedCustomisableMethodsContext {
@@ -23,12 +24,12 @@ export interface UniversalFeedCustomisableMethodsContext {
   selectEditPostProp: (id: string) => void;
   onSelectCommentCountProp: (id: string) => void;
   onTapLikeCountProps: (id: string) => void;
-  handleDeletePostProps: (visible: boolean) => void;
-  handleReportPostProps: () => void;
+  handleDeletePostProps: (visible: boolean, postId: string, isCM: boolean) => void;
+  handleReportPostProps: (postId: string) => void;
   newPostButtonClickProps: () => void;
   onOverlayMenuClickProp: (event: {
     nativeEvent: { pageX: number; pageY: number };
-  }) => void;
+  },menuItems: LMMenuItemsUI, postId: string) => void;
 }
 
 const UniversalFeedCustomisableMethodsContext = createContext<

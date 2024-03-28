@@ -24,8 +24,9 @@ const DetailScreen = ({navigation}) => {
     commentLikeHandler(postId, commentId);
     console.log('after like comment');
   };
-  const customOnCommentDelete = (visible) => {
-    console.log('before comment delete');
+  const customOnCommentDelete = (visible, commentId) => {
+    //todo: isCM
+    console.log('before comment delete',commentId);
     handleDeleteComment(visible);
     console.log('after comment delete');
   };
@@ -34,8 +35,8 @@ const DetailScreen = ({navigation}) => {
     handleEditComment(commentId);
     console.log('after comment edit');
   };
-  const customOnCommentReport = () => {
-    console.log('before comment report');
+  const customOnCommentReport = (commentId) => {
+    console.log('before comment report',commentId);
     handleReportComment();
     console.log('after comment report');
   };
@@ -44,8 +45,8 @@ const DetailScreen = ({navigation}) => {
     handleScreenBackPress()
     console.log('after back click');
   };
-  const customCommentOverlayMenuCick = (event) => {
-    console.log('before comment menuItemClick');
+  const customCommentOverlayMenuCick = (event, menuItems, commentId) => {
+    console.log('before comment menuItemClick',commentId, menuItems);
     onCommentOverflowMenuClick(event);
     console.log('after comment menuItemClick');
   };
@@ -57,11 +58,11 @@ const DetailScreen = ({navigation}) => {
       addNewCommentProp={(id) => customAddNewCommentProp(id)}
       addNewReplyProp={(postId, commentId) => customAddNewReplyProp(postId, commentId)}
       commentLikeHandlerProp={(postId, commentId) => customCommentLikeHandlerProp(postId, commentId)}
-      handleDeleteCommentProp={(visible) => customOnCommentDelete(visible)}
+      handleDeleteCommentProp={(visible,commentId) => customOnCommentDelete(visible,commentId)}
       handleEditCommentProp={(id) => customOnCommentEdit(id)}
-      handleReportCommentProp={() => customOnCommentReport()}
+      handleReportCommentProp={(commentId) => customOnCommentReport(commentId)}
       handleScreenBackPressProp={() => customBackHandler()}
-      onCommentOverflowMenuClickProp={(event) => customCommentOverlayMenuCick(event)}
+      onCommentOverflowMenuClickProp={(event, menuItems, commentId) => customCommentOverlayMenuCick(event, menuItems, commentId)}
     />
   );
 };

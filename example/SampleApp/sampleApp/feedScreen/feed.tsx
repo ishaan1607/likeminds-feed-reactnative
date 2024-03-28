@@ -42,13 +42,14 @@ const Feed = ({route}) => {
     onTapLikeCount(postId);
     console.log('after like count select', postId);
   };
-  const customHandleDelete = (visible) => {
-    console.log('before delete select');
+  const customHandleDelete = (visible, postId) => {
+    //todo: isCM
+    console.log('before delete select',postId);
     handleDeletePost(visible);
     console.log('after delete select', visible);
   };
-  const customHandleReport = () => {
-    console.log('before report select');
+  const customHandleReport = (postId) => {
+    console.log('before report select', postId);
     handleReportPost();
     console.log('after report select');
   };
@@ -57,8 +58,8 @@ const Feed = ({route}) => {
     newPostButtonClick();
     console.log('after new post');
   };
-  const customOverlayMenuCick = (event) => {
-    console.log('before menuItemClick');
+  const customOverlayMenuCick = (event, menuItems, postId) => {
+    console.log('before menuItemClick', menuItems, postId);
     onOverlayMenuClick(event);
     console.log('after menuItemClick');
   };
@@ -72,10 +73,10 @@ const Feed = ({route}) => {
         selectEditPostProp={(id) => customHandleEdit(id)}
         selectPinPostProp={(id, pinned) => customHandlePin(id, pinned)}
         onTapLikeCountProps={(id) => customHandleLikeCountClick(id)}
-        handleDeletePostProps={(visible) => customHandleDelete(visible)}
-        handleReportPostProps={() => customHandleReport()}
+        handleDeletePostProps={(visible, postId) => customHandleDelete(visible, postId)}
+        handleReportPostProps={(postId) => customHandleReport(postId)}
         newPostButtonClickProps={() => customHandleNewPostButton()}
-        onOverlayMenuClickProp={(event) => customOverlayMenuCick(event)}
+        onOverlayMenuClickProp={(event, menuItems, postId) => customOverlayMenuCick(event, menuItems, postId)}
       >
       </UniversalFeed>
   );

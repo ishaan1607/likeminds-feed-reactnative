@@ -36,7 +36,7 @@ import { showToastMessage } from "../../store/actions/toast";
 import { LMHeader, LMImage, LMLoader, LMVideo } from "../../components";
 import { LMIcon } from "../../uiComponents";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../models";
+import { LMMenuItemsUI, RootStackParamList } from "../../models";
 
 interface UniversalFeedProps {
   children: React.ReactNode;
@@ -53,12 +53,12 @@ interface UniversalFeedProps {
   selectEditPostProp: (id: string) => void;
   onSelectCommentCountProp: (id: string) => void;
   onTapLikeCountProps: (id: string) => void;
-  handleDeletePostProps: (visible: boolean) => void;
-  handleReportPostProps: () => void;
+  handleDeletePostProps: (visible: boolean, postId: string, isCM: boolean) => void;
+  handleReportPostProps: (postId: string) => void;
   newPostButtonClickProps: () => void;
   onOverlayMenuClickProp: (event: {
     nativeEvent: { pageX: number; pageY: number };
-  }) => void;
+  },menuItems: LMMenuItemsUI, postId: string) => void;
 }
 
 const UniversalFeed = ({

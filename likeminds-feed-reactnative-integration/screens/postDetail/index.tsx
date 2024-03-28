@@ -43,7 +43,7 @@ import {
 import { postLikesClear } from "../../store/actions/postLikes";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LMCommentItem, LMHeader, LMLoader } from "../../components";
-import { LMUserUI, RootStackParamList } from "../../models";
+import { LMMenuItemsUI, LMUserUI, RootStackParamList } from "../../models";
 import {
   LMIcon,
   LMInputText,
@@ -70,13 +70,13 @@ interface PostDetailProps {
   addNewCommentProp: (postId: string) => void;
   addNewReplyProp: (postId: string, commentId: string) => void;
   commentLikeHandlerProp: (postId: string, commentId: string) => void;
-  handleReportCommentProp: () => void;
-  handleDeleteCommentProp: (visible: boolean) => void;
+  handleReportCommentProp: (commentId: string) => void;
+  handleDeleteCommentProp: (visible: boolean,commentId: string) => void;
   handleEditCommentProp: (commentId: string) => void;
   handleScreenBackPressProp: () => void;
   onCommentOverflowMenuClickProp: (event: {
     nativeEvent: { pageX: number; pageY: number };
-  }) => void;
+  },menuItems: LMMenuItemsUI, commentId: string) => void;
 }
 
 const PostDetail = ({
@@ -198,12 +198,12 @@ const PostDetailComponent = React.memo(() => {
     setSelectedMenuItemCommentId(commentId);
     if (itemId === REPORT_COMMENT_MENU_ITEM) {
       handleReportCommentProp
-        ? handleReportCommentProp()
+        ? handleReportCommentProp(commentId)
         : handleReportComment();
     }
     if (itemId === DELETE_COMMENT_MENU_ITEM) {
       handleDeleteCommentProp
-        ? handleDeleteCommentProp(true)
+        ? handleDeleteCommentProp(true,commentId)
         : handleDeleteComment(true);
     }
     if (itemId === EDIT_COMMENT_MENU_ITEM) {
@@ -441,7 +441,7 @@ const PostDetailComponent = React.memo(() => {
                             timeStampStyle={
                               customCommentItemStyle?.timeStampStyle
                             }
-                            onCommentOverflowMenuClick={(event) => {onCommentOverflowMenuClickProp ? onCommentOverflowMenuClickProp(event) : onCommentOverflowMenuClick(event)}}
+                            onCommentOverflowMenuClick={(event) => {onCommentOverflowMenuClickProp ? onCommentOverflowMenuClickProp(event, item?.menuItems, item?.id) : onCommentOverflowMenuClick(event)}}
                           />
                         )}
                       </>
