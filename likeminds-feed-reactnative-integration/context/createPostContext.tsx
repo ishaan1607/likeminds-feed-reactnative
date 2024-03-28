@@ -231,6 +231,7 @@ export const CreatePostContextProvider = ({
     });
   };
 
+  // this handles the functionality of creating or editing post
   const onPostClick = async (allMedia:Array<LMAttachmentUI>, linkData: Array<LMAttachmentUI>, content: string) => {
     const isConnected = await NetworkUtil.isNetworkAvailable();
     if (isConnected) {
@@ -570,6 +571,7 @@ export const CreatePostContextProvider = ({
     }
   };
 
+  // this handles the functionality on back press
   const handleScreenBackPress = () => {
     navigation.goBack();
   }

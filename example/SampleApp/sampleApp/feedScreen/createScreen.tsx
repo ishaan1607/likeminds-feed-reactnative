@@ -14,7 +14,7 @@ const CreateScreen = ({navigation}) => {
     handleGallery(type);
     console.log('after gallery handle');
   };
-  const customHandlecreatePost = (allAttachment,formattedLinkAttachments, postContentText) => {
+  const customHandleCreatePost = (allAttachment,formattedLinkAttachments, postContentText) => {
     console.log('before post click');
     onPostClick(allAttachment,formattedLinkAttachments, postContentText);
     console.log('after post click');
@@ -27,7 +27,7 @@ const CreateScreen = ({navigation}) => {
   return (
    <CreatePost handleDocumentProp={() => customHandleDocumentProp()}
    handleGalleryProp={(type) => customHandleGalleryProp(type)}
-   onPostClickProp={(allAttachment,formattedLinkAttachments, postContentText) => customHandlecreatePost(allAttachment,formattedLinkAttachments, postContentText)} 
+   onPostClickProp={(allAttachment,formattedLinkAttachments, postContentText) => customHandleCreatePost(allAttachment,formattedLinkAttachments, postContentText)} 
    handleScreenBackPressProp={() => customBackHandler()}/>
   );
 };

@@ -181,6 +181,7 @@ export const UniversalFeedContextProvider = ({
     return addPostResponse;
   };
 
+  // this handles the functionality of new post button
   const newPostButtonClick = () => {
     showCreatePost
       ? postUploading
