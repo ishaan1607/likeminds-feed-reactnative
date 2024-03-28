@@ -4,7 +4,7 @@ export const initMyClient = (apiKey: string) => {
   const lmFeedClient = LMFeedClient.Builder()
     .setApiKey(apiKey)
     .setPlatformCode('rn')
-    .setVersionCode(3)
+    .setVersionCode(4)
     .build();
 
   return lmFeedClient;
