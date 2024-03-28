@@ -17,17 +17,7 @@ import {
   VIDEO_ATTACHMENT_TYPE,
 } from '../constants/Strings';
 import {IComment} from '@likeminds.community/feed-js';
-import {
-  LMAttachmentMetaUI,
-  LMAttachmentUI,
-  LMCommentUI,
-  LMLikeUI,
-  LMMenuItemsUI,
-  LMOGTagsUI,
-  LMPostUI,
-  LMSDKClientInfoUI,
-  LMUserUI,
-} from '@likeminds.community/feed-rn-ui';
+import { LMAttachmentMetaUI, LMAttachmentUI, LMLikeUI, LMMenuItemsUI, LMOGTagsUI, LMPostUI, LMSDKClientInfoUI, LMUserUI } from '../models';
 
 /**
  * @param data: [GetFeedResponse]

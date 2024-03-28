@@ -1,6 +1,6 @@
 {
   "name": "sampleApp",
-  "version": "0.6.0",
+  "version": "0.7.2",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -10,8 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@likeminds.community/feed-rn-core": "0.6.1",
-    "@likeminds.community/feed-rn-ui": "0.6.1",
+    "@likeminds.community/feed-rn-core": "0.7.2",
     "@react-native-community/netinfo": "11.3.0",
     "@react-navigation/native": "6.1.9",
     "@react-navigation/stack": "6.3.20",

@@ -29,13 +29,13 @@ import {
   REPORT_TAGS_TYPE,
   SOMETHING_WENT_WRONG,
 } from "../../constants/Strings";
-import { LMLoader } from "@likeminds.community/feed-rn-ui";
 import { SafeAreaView } from "react-native";
-import { LMCommentUI, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { getReportTags, postReport } from "../../store/actions/feed";
 import Toast from "react-native-toast-message";
 import { showToastMessage } from "../../store/actions/toast";
+import { LMLoader } from "../../components";
+import { LMCommentUI, LMPostUI } from "../../models";
 
 // interface for post report api request
 interface ReportRequest {

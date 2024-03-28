@@ -9,12 +9,7 @@ import React, {
   useRef,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import {
-  LMCommentUI,
-  LMPost,
-  LMPostUI,
-  LMUserUI,
-} from "@likeminds.community/feed-rn-ui";
+
 import {
   DELETE_COMMENT_MENU_ITEM,
   DELETE_POST_MENU_ITEM,
@@ -68,7 +63,7 @@ import {
   savePostStateHandler,
 } from "../store/actions/feed";
 import _ from "lodash";
-import { CREATE_POST, POST_LIKES_LIST } from "../constants/screenNames";
+import { CREATE_POST, POST_LIKES_LIST, UNIVERSAL_FEED } from "../constants/screenNames";
 import {
   detectMentions,
   mentionToRouteConverter,
@@ -78,6 +73,8 @@ import { postLikesClear } from "../store/actions/postLikes";
 import { showToastMessage } from "../store/actions/toast";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../models/RootStackParamsList";
+import LMPost from "../components/LMPost/LMPost";
+import { LMCommentUI, LMPostUI, LMUserUI } from "../models";
 
 interface PostDetailContextProps {
   children: ReactNode;
@@ -92,6 +89,12 @@ interface PostDetailContextProps {
 
 export interface PostDetailContextValues {
   navigation: NativeStackNavigationProp<RootStackParamList, "PostDetail">;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
   postDetail: LMPostUI;
   modalPosition: {};
   showActionListModal: false;
@@ -123,11 +126,14 @@ export interface PostDetailContextValues {
   refreshing: boolean;
   localRefresh: boolean;
   commentFocus: boolean;
-  routeParams: string;
+  routeParams: boolean;
+  navigatedFromComments: boolean;
   isKeyboardVisible: boolean;
   keyboardFocusOnReply: boolean;
   setKeyboardFocusOnReply: Dispatch<SetStateAction<boolean>>;
-  setRouteParams: Dispatch<SetStateAction<string>>;
+  setModalPositionComment: Dispatch<SetStateAction<{ x: number; y: number }>>;
+  setRouteParams: Dispatch<SetStateAction<boolean>>;
+  setNavigatedFromComments: Dispatch<SetStateAction<boolean>>;
   setCommentFocus: Dispatch<SetStateAction<boolean>>;
   setLocalRefresh: Dispatch<SetStateAction<boolean>>;
   setRefreshing: Dispatch<SetStateAction<boolean>>;
@@ -168,7 +174,7 @@ export interface PostDetailContextValues {
   ) => void;
   handleReportComment: () => void;
   handleDeleteComment: (visible: boolean) => void;
-  onCommentMenuItemSelect: (commentId: string, itemId?: number) => void;
+  handleEditComment: (commentId: string) => void;
   getCommentDetail: (
     comments?: LMCommentUI[],
     id?: string
@@ -188,6 +194,12 @@ export interface PostDetailContextValues {
   handleInputChange: (event: string) => void;
   loadData: (newPage: number) => void;
   handleLoadMore: () => void;
+  showRepliesOfCommentId: string;
+  setShowRepliesOfCommentId: Dispatch<SetStateAction<string>>;
+  handleScreenBackPress: () => void;
+  onCommentOverflowMenuClick: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => void;
 }
 
 const PostDetailContext = createContext<PostDetailContextValues | undefined>(
@@ -220,10 +232,10 @@ export const PostDetailContextProvider = ({
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [commentPageNumber, setCommentPageNumber] = useState(1);
-  const modalPositionComment = {
+  const [modalPositionComment, setModalPositionComment] = useState({
     x: 0,
     y: 0,
-  };
+  });
   const loggedInUser = useAppSelector((state) => state.login.member);
   const [showCommentActionListModal, setShowCommentActionListModal] =
     useState(false);
@@ -253,7 +265,9 @@ export const PostDetailContextProvider = ({
   const [routeParams, setRouteParams] = useState(
     route.params[1] === NAVIGATED_FROM_COMMENT
   );
+  const [navigatedFromComments, setNavigatedFromComments] = useState(route.params[1] === NAVIGATED_FROM_COMMENT)
   const isKeyboardVisible = Keyboard.isVisible();
+  const [showRepliesOfCommentId, setShowRepliesOfCommentId] = useState('')
 
   const LMFeedContextStyles = useLMFeedStyles();
   const { postListStyle } = LMFeedContextStyles;
@@ -285,6 +299,15 @@ export const PostDetailContextProvider = ({
   // this function closes the comment action list modal
   const closeCommentActionListModal = () => {
     setShowCommentActionListModal(false);
+  };
+
+   // this function is executed on the click of menu icon & handles the position and visibility of the modal
+   const onCommentOverflowMenuClick = (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => {
+    const { pageX, pageY } = event.nativeEvent;
+    setShowCommentActionListModal(true);
+    setModalPositionComment({ x: pageX, y: pageY });
   };
 
   // debounce on like post function
@@ -416,31 +439,17 @@ export const PostDetailContextProvider = ({
     setDeleteModal(visible);
   };
 
-  // this function returns the id of the item selected from menu list and handles further functionalities accordingly for comment
-  const onCommentMenuItemSelect = async (
-    commentId: string,
-    itemId?: number
-  ) => {
-    setSelectedMenuItemPostId("");
-    setSelectedMenuItemCommentId(commentId);
-    if (itemId === REPORT_COMMENT_MENU_ITEM) {
-      handleReportComment();
-    }
-    if (itemId === DELETE_COMMENT_MENU_ITEM) {
-      handleDeleteComment(true);
-    }
-    if (itemId === EDIT_COMMENT_MENU_ITEM) {
-      const commentDetail = getCommentDetail(postDetail?.replies, commentId);
-      // converts the mentions route to mention values
-      const convertedComment = routeToMentionConverter(
-        commentDetail?.text ? commentDetail.text : ""
-      );
-      setCommentToAdd(convertedComment);
-      setTimeout(() => {
-        setEditCommentFocus(true);
-      }, 100);
-    }
-  };
+  const handleEditComment = async (commentId) => {
+    const commentDetail = getCommentDetail(postDetail?.replies, commentId);
+    // converts the mentions route to mention values
+    const convertedComment = routeToMentionConverter(
+      commentDetail?.text ? commentDetail.text : ""
+    );
+    setCommentToAdd(convertedComment);
+    setTimeout(() => {
+      setEditCommentFocus(true);
+    }, 100);
+  }
 
   // this function gets the detail of comment whose menu item is clicked
   const getCommentDetail = (
@@ -540,6 +549,9 @@ export const PostDetailContextProvider = ({
     };
     setCommentToAdd("");
     setCommentFocus(false);
+    setKeyboardFocusOnReply(false);
+    setEditCommentFocus(false);
+    setRouteParams(false);
     // handles adding comment locally
     dispatch(addCommentStateHandler({ payload, loggedInUser }));
     // calls new comment api
@@ -553,6 +565,7 @@ export const PostDetailContextProvider = ({
         false
       )
     );
+    Keyboard.dismiss();
     return commentAddResponse;
   };
 
@@ -567,8 +580,13 @@ export const PostDetailContextProvider = ({
       tempId: `${-currentDate.getTime()}`,
       commentId: commentId,
     };
+    setShowRepliesOfCommentId(replyOnComment?.commentId)
     setCommentToAdd("");
     setReplyOnComment({ textInputFocus: false, commentId: "" });
+    setKeyboardFocusOnReply(false);
+    setEditCommentFocus(false);
+    setCommentFocus(false);
+    setRouteParams(false);
     dispatch(replyCommentStateHandler({ payload, loggedInUser }));
     // call reply on comment api
     const replyAddResponse = await dispatch(
@@ -582,6 +600,7 @@ export const PostDetailContextProvider = ({
         false
       )
     );
+    Keyboard.dismiss();
     return replyAddResponse;
   };
 
@@ -597,110 +616,41 @@ export const PostDetailContextProvider = ({
         post={postDetail}
         // header props
         headerProps={{
-          post: postDetail,
           postMenu: {
-            postId: postDetail?.id,
-            menuItems: postDetail?.menuItems,
             modalPosition: modalPosition,
             modalVisible: showActionListModal,
             onCloseModal: closePostActionListModal,
             onSelected: (postId, itemId) =>
-              onMenuItemSelect(postId, itemId, postDetail?.isPinned),
-            ...postListStyle?.header?.postMenu,
-          },
-          onTap: () => {
-            postListStyle?.header?.onTap();
-          },
-          showMenuIcon: postListStyle?.header?.showMenuIcon
-            ? postListStyle?.header?.showMenuIcon
-            : true,
-          showMemberStateLabel: postListStyle?.header?.showMemberStateLabel
-            ? postListStyle?.header?.showMemberStateLabel
-            : true,
-          profilePicture: postListStyle?.header?.profilePicture,
-          titleText: postListStyle?.header?.titleText,
-          createdAt: postListStyle?.header?.createdAt,
-          memberStateViewStyle: postListStyle?.header?.memberStateViewStyle,
-          memberStateTextStyle: postListStyle?.header?.memberStateTextStyle,
-          postHeaderViewStyle: postListStyle?.header?.postHeaderViewStyle,
-          pinIcon: postListStyle?.header?.pinIcon,
-          menuIcon: postListStyle?.header?.menuIcon,
+            onMenuItemSelect(postId, itemId, postDetail?.isPinned),
+          }
         }}
         // footer props
         footerProps={{
-          isLiked: postDetail?.isLiked,
-          isSaved: postDetail?.isSaved,
-          likesCount: postDetail?.likesCount,
-          commentsCount: postDetail?.commentsCount,
-          showBookMarkIcon: postListStyle?.footer?.showBookMarkIcon
-            ? postListStyle?.footer?.showBookMarkIco
-            : true,
-          showShareIcon: postListStyle?.footer?.showShareIcon
-            ? postListStyle?.footer?.showShareIcon
-            : true,
           likeIconButton: {
-            ...postListStyle?.footer?.likeIconButton,
             onTap: () => {
               postLikeHandler(postDetail?.id);
-              postListStyle?.footer?.likeIconButton?.onTap();
             },
           },
           saveButton: {
-            ...postListStyle?.footer?.saveButton,
             onTap: () => {
               savePostHandler(postDetail?.id, postDetail?.isSaved);
-              postListStyle?.footer?.saveButton?.onTap();
             },
           },
           likeTextButton: {
-            ...postListStyle?.footer?.likeTextButton,
             onTap: () => {
               dispatch(postLikesClear());
               navigation.navigate(POST_LIKES_LIST, [
                 POST_LIKES,
                 postDetail?.id,
               ]);
-              postListStyle?.footer?.likeTextButton?.onTap();
             },
           },
           commentButton: {
-            ...postListStyle?.footer?.commentButton,
             onTap: () => {
               setCommentFocus(true);
-              postListStyle?.footer?.commentButton?.onTap();
-            },
-          },
-          shareButton: postListStyle?.footer?.shareButton,
-          footerBoxStyle: postListStyle?.footer?.footerBoxStyle,
+            }
+          }
         }}
-        // media props
-        mediaProps={{
-          attachments: postDetail?.attachments ? postDetail.attachments : [],
-          imageProps: postListStyle?.media?.image,
-          videoProps: {
-            ...postListStyle?.media?.video,
-            videoUrl: "",
-            showControls: postListStyle?.media?.video?.showControls
-              ? postListStyle?.media?.video?.showControls
-              : true,
-          },
-          carouselProps: {
-            ...postListStyle?.media?.carousel,
-            attachments: postDetail?.attachments ? postDetail.attachments : [],
-            videoItem: {
-              ...postListStyle?.media?.carousel?.videoItem,
-              videoUrl: "",
-              showControls: postListStyle?.media?.carousel?.videoItem
-                ?.showControls
-                ? postListStyle?.media?.carousel?.videoItem?.showControls
-                : true,
-            },
-          },
-          documentProps: postListStyle?.media?.document,
-          linkPreviewProps: postListStyle?.media?.linkPreview,
-          postMediaStyle: postListStyle?.media?.postMediaStyle,
-        }}
-        contentProps={postListStyle?.postContent}
       />
     );
   };
@@ -769,6 +719,10 @@ export const PostDetailContextProvider = ({
     if (editCommentResponse) {
       setEditCommentFocus(false);
       setCommentToAdd("");
+      setKeyboardFocusOnReply(false);
+      setCommentFocus(false);
+      setRouteParams(false);
+      Keyboard.dismiss();
     }
     return editCommentResponse;
   };
@@ -858,8 +812,14 @@ export const PostDetailContextProvider = ({
     }
   };
 
+  const handleScreenBackPress = () => {
+    Keyboard.dismiss();
+    navigation.navigate(UNIVERSAL_FEED);
+  }
+
   const contextValues: PostDetailContextValues = {
     navigation,
+    route,
     postDetail,
     modalPosition,
     showActionListModal,
@@ -889,11 +849,13 @@ export const PostDetailContextProvider = ({
     localRefresh,
     commentFocus,
     routeParams,
+    navigatedFromComments,
     isKeyboardVisible,
     keyboardFocusOnReply,
     setKeyboardFocusOnReply,
 
     setRouteParams,
+    setNavigatedFromComments,
     setCommentFocus,
     setLocalRefresh,
     setRefreshing,
@@ -930,7 +892,6 @@ export const PostDetailContextProvider = ({
     onMenuItemSelect,
     handleReportComment,
     handleDeleteComment,
-    onCommentMenuItemSelect,
     getCommentDetail,
     getPostData,
     getCommentsReplies,
@@ -942,6 +903,12 @@ export const PostDetailContextProvider = ({
     handleInputChange,
     loadData,
     handleLoadMore,
+    showRepliesOfCommentId,
+    setShowRepliesOfCommentId,
+    handleEditComment,
+    handleScreenBackPress,
+    setModalPositionComment,
+    onCommentOverflowMenuClick
   };
 
   return (

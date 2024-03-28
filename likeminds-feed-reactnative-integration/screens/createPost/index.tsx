@@ -7,25 +7,11 @@ import {
   Pressable,
   FlatList,
   Alert,
+  StyleSheet,
 } from "react-native";
 import React from "react";
 import { NetworkUtil, nameInitials, replaceLastMention } from "../../utils";
 import { useAppDispatch } from "../../store/store";
-import {
-  LMButton,
-  LMCarousel,
-  LMDocument,
-  LMHeader,
-  LMIcon,
-  LMImage,
-  LMInputText,
-  LMLinkPreview,
-  LMProfilePicture,
-  LMText,
-  LMUserUI,
-  LMVideo,
-  LMLoader,
-} from "@likeminds.community/feed-rn-ui";
 import {
   ADD_FILES,
   ADD_IMAGES,
@@ -45,27 +31,78 @@ import { styles } from "./styles";
 import {
   CreatePostContextProvider,
   CreatePostContextValues,
+  CreatePostCustomisableMethodsContextProvider,
   useCreatePostContext,
+  useCreatePostCustomisableMethodsContext,
 } from "../../context";
-import { getNameInitials } from "@likeminds.community/feed-rn-ui/utils/utils";
 import { useLMFeedStyles } from "../../lmFeedProvider";
+import {
+  LMButton,
+  LMIcon,
+  LMInputText,
+  LMProfilePicture,
+  LMText,
+} from "../../uiComponents";
+import { LMAttachmentUI, LMUserUI, RootStackParamList } from "../../models";
+import {
+  LMCarousel,
+  LMDocument,
+  LMHeader,
+  LMImage,
+  LMLinkPreview,
+  LMLoader,
+  LMVideo,
+} from "../../components";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-const CreatePost = ({ navigation, route, children }) => {
+interface CreatePostProps {
+  children: React.ReactNode;
+  navigation: NativeStackNavigationProp<RootStackParamList, "CreatePost">;
+  route: {
+    key: string;
+    name: string;
+    params: { postId: string };
+    path: undefined;
+  };
+  handleGalleryProp: (type: string) => void;
+  handleDocumentProp: () => void;
+  onPostClickProp: (allMedia:Array<LMAttachmentUI>, linkData: Array<LMAttachmentUI>, content: string) => void;
+  handleScreenBackPressProp: () => void;
+}
+
+const CreatePost = ({
+  navigation,
+  route,
+  children,
+  handleDocumentProp,
+  handleGalleryProp,
+  onPostClickProp,
+  handleScreenBackPressProp
+}: CreatePostProps) => {
   return (
-    <CreatePostContextProvider
-      navigation={navigation}
-      route={route}
-      children={children}
-    >
-      <CreatePostComponent />
-    </CreatePostContextProvider>
+  
+      <CreatePostCustomisableMethodsContextProvider
+        handleDocumentProp={handleDocumentProp}
+        handleGalleryProp={handleGalleryProp}
+        onPostClickProp={onPostClickProp}
+        handleScreenBackPressProp={handleScreenBackPressProp}
+      >
+        <CreatePostComponent />
+      </CreatePostCustomisableMethodsContextProvider>
   );
 };
 
-const CreatePostComponent = React.memo(() => {
+const CreatePostComponent = () => {
   const dispatch = useAppDispatch();
   const LMFeedContextStyles = useLMFeedStyles();
-  const { postListStyle, createPostStyle } = LMFeedContextStyles;
+  const { postListStyle, createPostStyle, postDetailStyle } =
+    LMFeedContextStyles;
+    const customTextInputStyle = createPostStyle?.createPostTextInputStyle
+    const customAddMoreAttachmentsButton = createPostStyle?.addMoreAttachmentsButton
+    const customCreatePostScreenHeader = createPostStyle?.createPostScreenHeader
+    const customAttachmentOptionsStyle = createPostStyle?.attachmentOptionsStyle
+    const postHeaderStyle = postListStyle?.header
+    const postMediaStyle = postListStyle?.media
   const {
     navigation,
     postToEdit,
@@ -99,7 +136,17 @@ const CreatePostComponent = React.memo(() => {
     setShowLinkPreview,
     postDetail,
     postEdit,
+    onPostClick,
+    handleScreenBackPress
   }: CreatePostContextValues = useCreatePostContext();
+
+  const {
+    handleDocumentProp,
+    handleGalleryProp,
+    onPostClickProp,
+    handleScreenBackPressProp
+  } = useCreatePostCustomisableMethodsContext();
+
   // this renders the post detail UI
   const uiRenderForPost = () => {
     return (
@@ -117,7 +164,7 @@ const CreatePostComponent = React.memo(() => {
         <View style={styles.profileContainer}>
           {/* profile image */}
           <LMProfilePicture
-            {...postListStyle?.header?.profilePicture}
+            {...postHeaderStyle?.profilePicture}
             fallbackText={{
               children: <Text>{nameInitials(memberData.name)}</Text>,
             }}
@@ -135,21 +182,42 @@ const CreatePostComponent = React.memo(() => {
         </View>
         {/* text input field */}
         <LMInputText
-          {...createPostStyle?.createPostTextInputStyle}
-          placeholderText={CREATE_POST_PLACEHOLDER_TEXT}
-          placeholderTextColor="#0F1E3D66"
-          inputTextStyle={styles.textInputView}
-          multilineField
+          {...customTextInputStyle}
+          placeholderText={
+            customTextInputStyle?.placeholderText
+              ? customTextInputStyle?.placeholderText
+              : CREATE_POST_PLACEHOLDER_TEXT
+          }
+          placeholderTextColor={
+            customTextInputStyle?.placeholderTextColor
+              ? customTextInputStyle?.placeholderTextColor
+              : "#0F1E3D66"
+          }
+          inputTextStyle={[
+            styles.textInputView,
+            customTextInputStyle?.inputTextStyle,
+          ]}
+          multilineField={
+            customTextInputStyle?.multilineField !=
+            undefined
+              ? customTextInputStyle?.multilineField
+              : true
+          }
           inputRef={myRef}
           inputText={postContentText}
           onType={handleInputChange}
           autoFocus={postToEdit ? true : false}
-          textValueStyle={{ fontSize: 16 }}
+          textValueStyle={
+            customTextInputStyle?.textValueStyle
+              ? customTextInputStyle?.textValueStyle
+              : { fontSize: 16 }
+          }
           partTypes={[
             {
               trigger: "@", // Should be a single character like '@' or '#'
               textStyle: {
                 color: "#007AFF",
+                ...customTextInputStyle?.mentionTextStyle,
               }, // The mention style in the input
             },
           ]}
@@ -163,6 +231,7 @@ const CreatePostComponent = React.memo(() => {
               {
                 height: userTaggingListHeight,
               },
+              postDetailStyle?.userTaggingListStyle?.taggingListView,
             ]}
           >
             <FlatList
@@ -183,21 +252,44 @@ const CreatePostComponent = React.memo(() => {
                       setAllTags([]);
                       setIsUserTagging(false);
                     }}
-                    style={styles.taggingListItem}
+                    style={[
+                      styles.taggingListItem,
+                      postDetailStyle?.userTaggingListStyle?.userTagView,
+                    ]}
                     key={item?.id}
                   >
                     <LMProfilePicture
+                      {...postHeaderStyle?.profilePicture}
                       fallbackText={{
-                        children: <Text>{getNameInitials(item?.name)}</Text>,
+                        ...postHeaderStyle?.profilePicture?.fallbackText,
+                        children: postHeaderStyle?.profilePicture
+                          ?.fallbackText?.children ? (
+                          postHeaderStyle?.profilePicture?.fallbackText
+                            ?.children
+                        ) : (
+                          <Text>{nameInitials(item?.name)}</Text>
+                        ),
                       }}
-                      fallbackTextBoxStyle={styles.taggingListProfileBoxStyle}
-                      size={40}
+                      fallbackTextBoxStyle={[
+                        styles.taggingListProfileBoxStyle,
+                        postHeaderStyle?.profilePicture
+                          ?.fallbackTextBoxStyle,
+                      ]}
+                      size={
+                        postHeaderStyle?.profilePicture?.size
+                          ? postHeaderStyle?.profilePicture?.size
+                          : 40
+                      }
                     />
                     <View style={styles.taggingListItemTextView}>
                       <LMText
                         children={<Text>{item?.name}</Text>}
                         maxLines={1}
-                        textStyle={styles.taggingListText}
+                        textStyle={[
+                          styles.taggingListText,
+                          postDetailStyle?.userTaggingListStyle
+                            ?.userTagNameStyle,
+                        ]}
                       />
                     </View>
                   </Pressable>
@@ -235,10 +327,19 @@ const CreatePostComponent = React.memo(() => {
           ) : formattedMediaAttachments ? (
             formattedMediaAttachments?.length > 1 ? (
               <LMCarousel
+                {...postMediaStyle?.carousel}
                 attachments={formattedMediaAttachments}
-                showCancel={postToEdit ? false : true}
-                videoItem={{ videoUrl: "", showControls: true }}
-                onCancel={(index) => removeMediaAttachment(index)}
+                showCancel={
+                  postMediaStyle?.carousel?.showCancel != undefined
+                    ? postMediaStyle?.carousel?.showCancel
+                    : postToEdit
+                    ? false
+                    : true
+                }
+                onCancel={(index) => {
+                  removeMediaAttachment(index);
+                  postMediaStyle?.carousel?.onCancel();
+                }}
               />
             ) : (
               <>
@@ -246,20 +347,48 @@ const CreatePostComponent = React.memo(() => {
                 {formattedMediaAttachments[0]?.attachmentType ===
                   IMAGE_ATTACHMENT_TYPE && (
                   <LMImage
+                    {...postMediaStyle?.image}
                     imageUrl={`${formattedMediaAttachments[0]?.attachmentMeta.url}`}
-                    showCancel={postToEdit ? false : true}
-                    onCancel={() => removeSingleAttachment()}
+                    showCancel={
+                      postMediaStyle?.image?.showCancel != undefined
+                        ? postMediaStyle?.image?.showCancel
+                        : postToEdit
+                        ? false
+                        : true
+                    }
+                    onCancel={() => {
+                      removeSingleAttachment();
+                      postMediaStyle?.image?.onCancel();
+                    }}
                   />
                 )}
                 {/* single video selected section  */}
                 {formattedMediaAttachments[0]?.attachmentType ===
                   VIDEO_ATTACHMENT_TYPE && (
                   <LMVideo
+                    {...postMediaStyle?.video}
                     videoUrl={`${formattedMediaAttachments[0]?.attachmentMeta.url}`}
-                    showCancel={postToEdit ? false : true}
-                    showControls
-                    looping={false}
-                    onCancel={() => removeSingleAttachment()}
+                    showCancel={
+                      postMediaStyle?.video?.showCancel != undefined
+                        ? postMediaStyle?.video?.showCancel
+                        : postToEdit
+                        ? false
+                        : true
+                    }
+                    showControls={
+                      postMediaStyle?.video?.showControls != undefined
+                        ? postMediaStyle?.video?.showControls
+                        : true
+                    }
+                    looping={
+                      postMediaStyle?.video?.looping != undefined
+                        ? postMediaStyle?.video?.looping
+                        : false
+                    }
+                    onCancel={() => {
+                      removeSingleAttachment();
+                      postMediaStyle?.video?.onCancel();
+                    }}
                   />
                 )}
               </>
@@ -269,10 +398,24 @@ const CreatePostComponent = React.memo(() => {
           {formattedDocumentAttachments &&
             formattedDocumentAttachments.length >= 1 && (
               <LMDocument
+                {...postMediaStyle?.document}
                 attachments={formattedDocumentAttachments}
-                showCancel={postToEdit ? false : true}
-                showMoreText={false}
-                onCancel={(index) => removeDocumentAttachment(index)}
+                showCancel={
+                  postMediaStyle?.document?.showCancel != undefined
+                    ? postMediaStyle?.document?.showCancel
+                    : postToEdit
+                    ? false
+                    : true
+                }
+                showMoreText={
+                  postMediaStyle?.document?.showMoreText != undefined
+                    ? postMediaStyle?.document?.showMoreText
+                    : false
+                }
+                onCancel={(index) => {
+                  removeDocumentAttachment(index);
+                  postMediaStyle?.document?.onCancel();
+                }}
               />
             )}
           {/* added link preview section */}
@@ -281,12 +424,18 @@ const CreatePostComponent = React.memo(() => {
             showLinkPreview &&
             formattedLinkAttachments.length >= 1 && (
               <LMLinkPreview
+                {...postMediaStyle?.linkPreview}
                 attachments={formattedLinkAttachments}
-                showCancel
+                showCancel={
+                  postMediaStyle?.linkPreview?.showCancel != undefined
+                    ? postMediaStyle?.linkPreview?.showCancel
+                    : true
+                }
                 onCancel={() => {
                   setShowLinkPreview(false);
                   setClosedOnce(true);
                   setFormattedLinkAttachments([]);
+                  postMediaStyle?.linkPreview?.onCancel();
                 }}
               />
             )}
@@ -296,56 +445,61 @@ const CreatePostComponent = React.memo(() => {
           allAttachment.length > 0 &&
           allAttachment.length < 10 && (
             <LMButton
-              onTap={
+              onTap={() => {
                 formattedMediaAttachments.length > 0
-                  ? () => handleGallery(SELECT_BOTH)
+                  ? handleGalleryProp ? handleGalleryProp(SELECT_BOTH) : handleGallery(SELECT_BOTH)
                   : formattedDocumentAttachments.length > 0
-                  ? () => handleDocument()
-                  : () => {}
-              }
+                  ? handleDocumentProp ? handleDocumentProp() : handleDocument()
+                  : {},
+                  customAddMoreAttachmentsButton?.onTap();
+              }}
               icon={{
                 assetPath: require("../../assets/images/plusAdd_icon3x.png"),
-                type: "png",
                 height: 20,
                 width: 20,
+                ...customAddMoreAttachmentsButton?.icon,
               }}
               text={{
                 children: <Text>{ADD_MORE_MEDIA}</Text>,
                 textStyle: styles.addMoreButtonText,
+                ...customAddMoreAttachmentsButton?.text,
               }}
-              buttonStyle={styles.addMoreButtonView}
+              buttonStyle={StyleSheet.flatten([
+                styles.addMoreButtonView,
+                customAddMoreAttachmentsButton?.buttonStyle,
+              ])}
+              placement={customAddMoreAttachmentsButton?.placement}
+              isClickable={
+                customAddMoreAttachmentsButton?.isClickable
+              }
             />
           )}
       </ScrollView>
     );
   };
 
-  const checkNetInfo = async () => {
-    const isConnected = await NetworkUtil.isNetworkAvailable();
-    if (isConnected) {
-      postToEdit
-        ? postEdit()
-        : // store the media for uploading and navigate to feed screen
-          dispatch(
-            setUploadAttachments({
-              mediaAttachmentData: allAttachment,
-              linkAttachmentData: formattedLinkAttachments,
-              postContentData: postContentText.trim(),
-            })
-          );
-      navigation.goBack();
-    } else {
-      Alert.alert("", "Please check your internet connection");
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       {/* screen header section*/}
       <LMHeader
-        showBackArrow
-        onBackPress={() => navigation.goBack()}
-        heading={postToEdit ? "Edit Post" : "Create a Post"}
+        {...customCreatePostScreenHeader}
+        showBackArrow={
+          customCreatePostScreenHeader?.showBackArrow != undefined
+            ? customCreatePostScreenHeader?.showBackArrow
+            : true
+        }
+        onBackPress={() => {
+          handleScreenBackPressProp ? handleScreenBackPressProp() : handleScreenBackPress()
+        }}
+        heading={
+          postToEdit
+            ? customCreatePostScreenHeader?.editPostHeading
+              ? customCreatePostScreenHeader?.editPostHeading
+              : "Edit Post"
+            : customCreatePostScreenHeader?.createPostHeading
+            ? customCreatePostScreenHeader?.createPostHeading
+            : "Create a Post"
+        }
         rightComponent={
           // post button section
           <TouchableOpacity
@@ -361,9 +515,7 @@ const CreatePostComponent = React.memo(() => {
                 : true
             }
             style={
-              createPostStyle?.createPostTextStyle
-                ? createPostStyle?.createPostTextStyle
-                : postToEdit
+              postToEdit
                 ? styles.enabledOpacity
                 : allAttachment?.length > 0 ||
                   formattedLinkAttachments?.length > 0 ||
@@ -371,11 +523,15 @@ const CreatePostComponent = React.memo(() => {
                 ? styles.enabledOpacity
                 : styles.disabledOpacity
             }
-            onPress={() => checkNetInfo()}
+            onPress={() => onPostClickProp ? onPostClickProp(allAttachment,formattedLinkAttachments, postContentText) : onPostClick(allAttachment,formattedLinkAttachments, postContentText)}
           >
-            <Text style={styles.headerRightComponentText}>
-              {postToEdit ? SAVE_POST_TEXT : ADD_POST_TEXT}
-            </Text>
+            {customCreatePostScreenHeader?.rightComponent ? (
+              customCreatePostScreenHeader?.rightComponent
+            ) : (
+              <Text style={styles.headerRightComponentText}>
+                {postToEdit ? SAVE_POST_TEXT : ADD_POST_TEXT}
+              </Text>
+            )}
           </TouchableOpacity>
         }
       />
@@ -392,64 +548,91 @@ const CreatePostComponent = React.memo(() => {
       )}
       {/* selection options section */}
       {!postToEdit && showOptions && (
-        <View>
-          <View style={styles.selectionOptionsView}>
-            {/* add photos button */}
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.optionItemView}
-              onPress={() => {
-                handleGallery(SELECT_IMAGE);
-              }}
-            >
-              <LMIcon
-                type="png"
-                assetPath={require("../../assets/images/gallery_icon3x.png")}
-              />
-              <LMText
-                children={<Text>{ADD_IMAGES}</Text>}
-                textStyle={styles.selectionOptionstext}
-              />
-            </TouchableOpacity>
-            {/* add video button */}
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.optionItemView}
-              onPress={() => {
-                handleGallery(SELECT_VIDEO);
-              }}
-            >
-              <LMIcon
-                type="png"
-                assetPath={require("../../assets/images/video_icon3x.png")}
-              />
-              <LMText
-                children={<Text>{ADD_VIDEOS}</Text>}
-                textStyle={styles.selectionOptionstext}
-              />
-            </TouchableOpacity>
-            {/* add files button */}
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.optionItemView}
-              onPress={() => {
-                handleDocument();
-              }}
-            >
-              <LMIcon
-                type="png"
-                assetPath={require("../../assets/images/paperClip_icon3x.png")}
-              />
-              <LMText
-                children={<Text>{ADD_FILES}</Text>}
-                textStyle={styles.selectionOptionstext}
-              />
-            </TouchableOpacity>
-          </View>
+        <View
+          style={[
+            styles.selectionOptionsView,
+            customAttachmentOptionsStyle?.attachmentOptionsView,
+          ]}
+        >
+          {/* add photos button */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={[
+              styles.optionItemView,
+              customAttachmentOptionsStyle?.photoAttachmentView,
+            ]}
+            onPress={() => {
+              handleGalleryProp ? handleGalleryProp(SELECT_IMAGE) :handleGallery(SELECT_IMAGE);
+              customAttachmentOptionsStyle
+                ?.onPhotoAttachmentOptionClick &&
+                customAttachmentOptionsStyle?.onPhotoAttachmentOptionClick();
+            }}
+          >
+            <LMIcon
+              assetPath={require("../../assets/images/gallery_icon3x.png")}
+              {...customAttachmentOptionsStyle?.photoAttachmentIcon}
+            />
+            <LMText
+              children={<Text>{ADD_IMAGES}</Text>}
+              textStyle={styles.selectionOptionstext}
+              {...customAttachmentOptionsStyle
+                ?.photoAttachmentTextStyle}
+            />
+          </TouchableOpacity>
+          {/* add video button */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={[
+              styles.optionItemView,
+              customAttachmentOptionsStyle?.videoAttachmentView,
+            ]}
+            onPress={() => {
+              handleGalleryProp ? handleGalleryProp(SELECT_VIDEO) : handleGallery(SELECT_VIDEO);
+              customAttachmentOptionsStyle
+                ?.onVideoAttachmentOptionClick &&
+                customAttachmentOptionsStyle?.onVideoAttachmentOptionClick();
+            }}
+          >
+            <LMIcon
+              assetPath={require("../../assets/images/video_icon3x.png")}
+              {...customAttachmentOptionsStyle?.videoAttachmentIcon}
+            />
+            <LMText
+              children={<Text>{ADD_VIDEOS}</Text>}
+              textStyle={styles.selectionOptionstext}
+              {...customAttachmentOptionsStyle
+                ?.videoAttachmentTextStyle}
+            />
+          </TouchableOpacity>
+          {/* add files button */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={[
+              styles.optionItemView,
+              customAttachmentOptionsStyle?.filesAttachmentView,
+            ]}
+            onPress={() => {
+              handleDocumentProp ? handleDocumentProp() : handleDocument();
+              customAttachmentOptionsStyle
+                ?.onFilesAttachmentOptionClick &&
+                customAttachmentOptionsStyle?.onFilesAttachmentOptionClick();
+            }}
+          >
+            <LMIcon
+              assetPath={require("../../assets/images/paperClip_icon3x.png")}
+              {...customAttachmentOptionsStyle?.filesAttachmentIcon}
+            />
+            <LMText
+              children={<Text>{ADD_FILES}</Text>}
+              textStyle={styles.selectionOptionstext}
+              {...customAttachmentOptionsStyle
+                ?.filesAttachmentTextStyle}
+            />
+          </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
   );
-});
+};
 
 export { CreatePost };

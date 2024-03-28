@@ -1,4 +1,3 @@
-import { LMCommentUI, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { convertToLMCommentUI, convertToLMPostUI } from "../../viewDataModels";
 import {
   PIN_POST_ID,
@@ -23,6 +22,7 @@ import {
   POST_DATA_SUCCESS,
   SAVE_POST_STATE,
 } from "../types/types";
+import { LMCommentUI, LMPostUI } from "../../models";
 
 export interface PostDetailReducerState {
   postDetail: LMPostUI;
@@ -310,9 +310,7 @@ export const postDetailReducer = (state = initialState, action) => {
       } else {
         if (updatedPostDetail?.replies) {
           for (let i = 0; i <= updatedPostDetail?.replies?.length - 1; i++) {
-            const editCommentIndexChild = updatedPostDetail.replies[
-              i
-            ]?.replies.findIndex((item: LMCommentUI) => item?.id === commentId);
+            const editCommentIndexChild = updatedPostDetail.replies[i]?.replies.findIndex((item: LMCommentUI) => item?.id === commentId);
             // removes that child comment from the data
             if (
               updatedPostDetail?.replies[i]?.replies &&

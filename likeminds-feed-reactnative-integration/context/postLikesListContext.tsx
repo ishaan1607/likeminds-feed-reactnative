@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect
-} from "react";
+import React, { createContext, ReactNode, useContext, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import {
   GetCommentLikesRequest,
@@ -16,7 +11,7 @@ import { RootStackParamList } from "../models/RootStackParamsList";
 
 interface PostLikesListContextProps {
   children: ReactNode;
-  navigation: NativeStackNavigationProp<RootStackParamList, 'PostLikesList'>;
+  navigation: NativeStackNavigationProp<RootStackParamList, "PostLikesList">;
   route: {
     key: string;
     name: string;
@@ -26,11 +21,12 @@ interface PostLikesListContextProps {
 }
 
 export interface PostLikesListContextValues {
-  navigation:  NativeStackNavigationProp<RootStackParamList, 'PostLikesList'>;
+  navigation: NativeStackNavigationProp<RootStackParamList, "PostLikesList">;
   postLike: [];
   totalLikes: number;
   postLikesList: (id: string) => void;
   commentLikesList: (id: string, postId: string) => void;
+  handleScreenBackPress: () => void;
 }
 
 const PostLikesListContext = createContext<
@@ -105,12 +101,18 @@ export const PostLikesListContextProvider = ({
     }
   }, [route.params]);
 
+  // this handles the functionality on back press
+  const handleScreenBackPress = () => {
+    navigation.goBack();
+  };
+
   const contextValues: PostLikesListContextValues = {
     navigation,
     postLike,
     totalLikes,
     postLikesList,
     commentLikesList,
+    handleScreenBackPress,
   };
 
   return (

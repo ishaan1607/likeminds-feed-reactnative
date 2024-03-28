@@ -26,7 +26,6 @@ import {
   SOMETHING_WENT_WRONG,
 } from "../../constants/Strings";
 import STYLES from "../../constants/Styles";
-import { LMCommentUI, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { deletePost, deletePostStateHandler } from "../../store/actions/feed";
 import { deleteComment, deleteCommentStateHandler } from "../../store/actions/postDetail";
@@ -34,6 +33,7 @@ import Toast from "react-native-toast-message";
 import { showToastMessage } from "../../store/actions/toast";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../models/RootStackParamsList";
+import { LMCommentUI, LMPostUI } from "../../models";
 
 // delete modal's props
 interface DeleteModalProps {

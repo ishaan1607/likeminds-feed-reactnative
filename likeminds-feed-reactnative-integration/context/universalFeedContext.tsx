@@ -10,20 +10,30 @@ import React, {
   MutableRefObject,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { LMAttachmentUI, LMPostUI } from "@likeminds.community/feed-rn-ui";
 import { mentionToRouteConverter, uploadFilesToAWS } from "../utils";
 import { addPost, setUploadAttachments } from "../store/actions/createPost";
-import { AddPostRequest, GetFeedRequest } from "@likeminds.community/feed-js";
+import {
+  AddPostRequest,
+  GetFeedRequest,
+} from "@likeminds.community/feed-js";
 import { refreshFeed } from "../store/actions/feed";
-import { POST_UPLOADED, RIGHT_CREATE_POST, STATE_ADMIN } from "../constants/Strings";
+import {
+  CREATE_POST_PERMISSION,
+  POST_UPLOADED,
+  POST_UPLOAD_INPROGRESS,
+  RIGHT_CREATE_POST,
+  STATE_ADMIN,
+} from "../constants/Strings";
 import { RootStackParamList } from "../models/RootStackParamsList";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { showToastMessage } from "../store/actions/toast";
 import { FlatList } from "react-native";
+import { LMAttachmentUI, LMPostUI } from "../models";
+import { CREATE_POST } from "../constants/screenNames";
 
 interface UniversalFeedContextProps {
   children: ReactNode;
-  navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
+  navigation: NativeStackNavigationProp<RootStackParamList, "UniversalFeed">;
   route: {
     key: string;
     name: string;
@@ -33,7 +43,7 @@ interface UniversalFeedContextProps {
 }
 
 export interface UniversalFeedContextValues {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'UniversalFeed'>;
+  navigation: NativeStackNavigationProp<RootStackParamList, "UniversalFeed">;
   feedData: Array<LMPostUI>;
   accessToken: string;
   memberData: {};
@@ -54,7 +64,8 @@ export interface UniversalFeedContextValues {
   setShowCreatePost: Dispatch<SetStateAction<boolean>>;
   onRefresh: () => void;
   postAdd: () => void;
-  keyExtractor:(val) => string
+  keyExtractor: (val) => string;
+  newPostButtonClick: () => void;
 }
 
 const UniversalFeedContext = createContext<
@@ -160,12 +171,33 @@ export const UniversalFeedContextProvider = ({
       );
       await onRefresh();
       listRef.current?.scrollToIndex({ animated: true, index: 0 });
-      dispatch(showToastMessage({
-        isToast: true,
-        message: POST_UPLOADED,
-      }));
+      dispatch(
+        showToastMessage({
+          isToast: true,
+          message: POST_UPLOADED,
+        })
+      );
     }
     return addPostResponse;
+  };
+
+  // this handles the functionality of new post button
+  const newPostButtonClick = () => {
+    showCreatePost
+      ? postUploading
+        ? dispatch(
+            showToastMessage({
+              isToast: true,
+              message: POST_UPLOAD_INPROGRESS,
+            })
+          )
+        : navigation.navigate(CREATE_POST)
+      : dispatch(
+          showToastMessage({
+            isToast: true,
+            message: CREATE_POST_PERMISSION,
+          })
+        );
   };
 
   // this useEffect handles the execution of addPost api
@@ -181,8 +213,8 @@ export const UniversalFeedContextProvider = ({
     }
   }, [mediaAttachmemnts, linkAttachments, postContent]);
 
-   // keyExtractor of feed list
-   const keyExtractor = (item: LMPostUI) => {
+  // keyExtractor of feed list
+  const keyExtractor = (item: LMPostUI) => {
     const id = item?.id;
     const itemLiked = item?.isLiked;
     const itemPinned = item?.isPinned;
@@ -190,7 +222,7 @@ export const UniversalFeedContextProvider = ({
     const itemSaved = item?.isSaved;
     const itemText = item?.text;
 
-    return `${id}${itemSaved}`;
+    return `${id}`;
   };
 
   const contextValues: UniversalFeedContextValues = {
@@ -215,7 +247,8 @@ export const UniversalFeedContextProvider = ({
     setRefreshing,
     onRefresh,
     postAdd,
-    keyExtractor
+    keyExtractor,
+    newPostButtonClick
   };
 
   return (

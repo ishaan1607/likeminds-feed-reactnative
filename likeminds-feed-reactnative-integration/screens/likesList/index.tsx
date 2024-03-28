@@ -1,45 +1,78 @@
 import { View, SafeAreaView, FlatList } from "react-native";
 import React from "react";
-import {
-  LMHeader,
-  LMLikeUI,
-  LMMemberListItem,
-  LMLoader,
-} from "@likeminds.community/feed-rn-ui";
 import { styles } from "./styles";
 import {
+  PostLikesCustomisableMethodsContextProvider,
   PostLikesListContextProvider,
   PostLikesListContextValues,
+  usePostLikesCustomisableMethodsContext,
   usePostLikesListContext,
 } from "../../context";
 import { useLMFeedStyles } from "../../lmFeedProvider";
+import { LMHeader, LMLoader, LMMemberListItem } from "../../components";
+import { LMLikeUI, LMUserUI, RootStackParamList } from "../../models";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-const PostLikesList = ({ navigation, route, children }) => {
+interface PostLikesProps {
+  children: React.ReactNode;
+  navigation: NativeStackNavigationProp<RootStackParamList, "PostLikesList">;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
+  onTapUserItemProp: (user: LMUserUI) => void;
+  handleScreenBackPressProp: () => void;
+}
+
+const PostLikesList = ({
+  navigation,
+  route,
+  children,
+  onTapUserItemProp,
+  handleScreenBackPressProp
+}: PostLikesProps) => {
   return (
-    <PostLikesListContextProvider
-      navigation={navigation}
-      route={route}
-      children={children}
-    >
-      <PostLikesListComponent />
-    </PostLikesListContextProvider>
+  
+      <PostLikesCustomisableMethodsContextProvider
+        onTapUserItemProp={onTapUserItemProp}
+        handleScreenBackPressProp={handleScreenBackPressProp}
+      >
+        <PostLikesListComponent />
+      </PostLikesCustomisableMethodsContextProvider>
   );
 };
 
 const PostLikesListComponent = React.memo(() => {
-  const { totalLikes, postLike, navigation }: PostLikesListContextValues =
+  const { totalLikes, postLike, navigation, handleScreenBackPress }: PostLikesListContextValues =
     usePostLikesListContext();
   const LMFeedContextStyles = useLMFeedStyles();
-  const { postListStyle ,postLikesListStyle} = LMFeedContextStyles;
+  const {onTapUserItemProp, handleScreenBackPressProp} = usePostLikesCustomisableMethodsContext()
+  const { postListStyle, postLikesListStyle } = LMFeedContextStyles;
+  const customScreenHeader = postLikesListStyle?.screenHeader;
   return (
     <SafeAreaView style={styles.mainContainer}>
       <LMHeader
-        showBackArrow
-        heading="Likes"
-        subHeading={
-          totalLikes > 1 ? `${totalLikes} likes` : `${totalLikes} like`
+        {...customScreenHeader}
+        showBackArrow={
+          customScreenHeader?.showBackArrow != undefined
+            ? customScreenHeader?.showBackArrow
+            : true
         }
-        onBackPress={() => navigation.goBack()}
+        heading={
+          customScreenHeader?.heading ? customScreenHeader?.heading : "Likes"
+        }
+        subHeading={
+          customScreenHeader?.subHeading
+            ? customScreenHeader?.subHeading
+            : totalLikes > 1
+            ? `${totalLikes} likes`
+            : `${totalLikes} like`
+        }
+        onBackPress={() => {
+        handleScreenBackPressProp ? handleScreenBackPressProp() : handleScreenBackPress()
+        }}
       />
       {/* post likes list */}
       {postLike?.length > 0 ? (
@@ -50,7 +83,12 @@ const PostLikesListComponent = React.memo(() => {
               <LMMemberListItem
                 likes={item}
                 profilePictureProps={postListStyle?.header?.profilePicture}
-                boxStyle = {postLikesListStyle?.likeListItemStyle}
+                boxStyle={postLikesListStyle?.likeListItemStyle}
+                nameProps={{ textStyle: postLikesListStyle?.userNameTextStyle }}
+                customTitleProps={{
+                  textStyle: postLikesListStyle?.userDesignationTextStyle,
+                }}
+                onTap={(user) => onTapUserItemProp(user)}
               />
             );
           }}

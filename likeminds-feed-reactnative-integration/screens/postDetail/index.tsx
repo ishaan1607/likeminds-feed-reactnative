@@ -10,59 +10,108 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
-import {
-  LMCommentItem,
-  LMHeader,
-  LMInputText,
-  LMProfilePicture,
-  LMUserUI,
-  LMLoader,
-} from "@likeminds.community/feed-rn-ui";
-import {
-  POST_LIKES_LIST,
-  UNIVERSAL_FEED,
-} from "../../constants/screenNames";
+import React, { useState } from "react";
+import { POST_LIKES_LIST, UNIVERSAL_FEED } from "../../constants/screenNames";
 import {
   COMMENT_LIKES,
   COMMENT_TYPE,
+  DELETE_COMMENT_MENU_ITEM,
+  EDIT_COMMENT_MENU_ITEM,
   POST_TYPE,
-  VIEW_MORE_TEXT
+  REPORT_COMMENT_MENU_ITEM,
+  VIEW_MORE_TEXT,
 } from "../../constants/Strings";
 import { DeleteModal, ReportModal } from "../../customModals";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { styles } from "./styles";
 import Layout from "../../constants/Layout";
 import {
+  nameInitials,
   replaceLastMention,
+  routeToMentionConverter,
 } from "../../utils";
 import { useLMFeedStyles } from "../../lmFeedProvider";
 import { useAppDispatch } from "../../store/store";
-import {
-  clearComments
-} from "../../store/actions/postDetail";
+import { clearComments } from "../../store/actions/postDetail";
 import {
   PostDetailContextProvider,
   PostDetailContextValues,
+  PostDetailCustomisableMethodsContextProvider,
   usePostDetailContext,
+  usePostDetailCustomisableMethodsContext,
 } from "../../context";
 import { postLikesClear } from "../../store/actions/postLikes";
-import { getNameInitials } from "@likeminds.community/feed-rn-ui/utils/utils";
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { LMCommentItem, LMHeader, LMLoader } from "../../components";
+import { LMMenuItemsUI, LMUserUI, RootStackParamList } from "../../models";
+import {
+  LMIcon,
+  LMInputText,
+  LMProfilePicture,
+  LMText,
+} from "../../uiComponents";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-const PostDetail = ({navigation, route, children }) => {
+interface PostDetailProps {
+  children: React.ReactNode;
+  navigation: NativeStackNavigationProp<RootStackParamList, "PostDetail">;
+  route: {
+    key: string;
+    name: string;
+    params: Array<string>;
+    path: undefined;
+  };
+  getCommentsRepliesProp: (
+    postId: string,
+    commentId: string,
+    repliesResponseCallback: any,
+    pageNo: number
+  ) => void;
+  addNewCommentProp: (postId: string) => void;
+  addNewReplyProp: (postId: string, commentId: string) => void;
+  commentLikeHandlerProp: (postId: string, commentId: string) => void;
+  handleReportCommentProp: (commentId: string) => void;
+  handleDeleteCommentProp: (visible: boolean,commentId: string) => void;
+  handleEditCommentProp: (commentId: string) => void;
+  handleScreenBackPressProp: () => void;
+  onCommentOverflowMenuClickProp: (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  },menuItems: LMMenuItemsUI, commentId: string) => void;
+}
+
+const PostDetail = ({
+  navigation,
+  route,
+  children,
+  getCommentsRepliesProp,
+  commentLikeHandlerProp,
+  addNewCommentProp,
+  addNewReplyProp,
+  handleDeleteCommentProp,
+  handleEditCommentProp,
+  handleReportCommentProp,
+  handleScreenBackPressProp,
+  onCommentOverflowMenuClickProp
+}: PostDetailProps) => {
   return (
-    <PostDetailContextProvider
-      navigation={navigation}
-      route={route}
-      children={children}
-    >
-      <PostDetailComponent />
-    </PostDetailContextProvider>
+  
+      <PostDetailCustomisableMethodsContextProvider
+        getCommentsRepliesProp={getCommentsRepliesProp}
+        commentLikeHandlerProp={commentLikeHandlerProp}
+        addNewCommentProp={addNewCommentProp}
+        addNewReplyProp={addNewReplyProp}
+        handleDeleteCommentProp={handleDeleteCommentProp}
+        handleEditCommentProp={handleEditCommentProp}
+        handleReportCommentProp={handleReportCommentProp}
+        handleScreenBackPressProp={handleScreenBackPressProp}
+        onCommentOverflowMenuClickProp={onCommentOverflowMenuClickProp}
+      >
+        <PostDetailComponent />
+      </PostDetailCustomisableMethodsContextProvider>
   );
 };
 
-const PostDetailComponent = React.memo(() => {  
+const PostDetailComponent = React.memo(() => {
   const dispatch = useAppDispatch();
   const {
     keyboardIsVisible,
@@ -81,7 +130,6 @@ const PostDetailComponent = React.memo(() => {
     modalPositionComment,
     localModalVisibility,
     showCommentActionListModal,
-    onCommentMenuItemSelect,
     closeCommentActionListModal,
     commentLikeHandler,
     setCommentPageNumber,
@@ -97,6 +145,7 @@ const PostDetailComponent = React.memo(() => {
     isLoading,
     handleInputChange,
     routeParams,
+    navigatedFromComments,
     showReportModal,
     setShowReportModal,
     showDeleteModal,
@@ -111,34 +160,79 @@ const PostDetailComponent = React.memo(() => {
     handleDeletePost,
     myRef,
     keyboardFocusOnReply,
-    setKeyboardFocusOnReply
+    setKeyboardFocusOnReply,
+    showRepliesOfCommentId,
+    setSelectedMenuItemCommentId,
+    setSelectedMenuItemPostId,
+    handleReportComment,
+    handleEditComment,
+    handleScreenBackPress,
+    onCommentOverflowMenuClick
   }: PostDetailContextValues = usePostDetailContext();
 
   const LMFeedContextStyles = useLMFeedStyles();
   const { postDetailStyle, postListStyle } = LMFeedContextStyles;
+  const {
+    getCommentsRepliesProp,
+    commentLikeHandlerProp,
+    addNewCommentProp,
+    addNewReplyProp,
+    handleDeleteCommentProp,
+    handleEditCommentProp,
+    handleReportCommentProp,
+    handleScreenBackPressProp,
+    onCommentOverflowMenuClickProp
+  } = usePostDetailCustomisableMethodsContext();
+  const postHeaderStyle = postListStyle?.header;
+  const customScreenHeader = postDetailStyle?.screenHeader;
+  const customCommentItemStyle = postDetailStyle?.commentItemStyle;
+  const customReplyingViewStyle = postDetailStyle?.replyingViewStyle;
+  const customCommentTextInput = postDetailStyle?.commentTextInputStyle;
+
+  // this function returns the id of the item selected from menu list and handles further functionalities accordingly for comment
+  const onCommentMenuItemSelect = async (
+    commentId: string,
+    itemId?: number
+  ) => {
+    setSelectedMenuItemPostId("");
+    setSelectedMenuItemCommentId(commentId);
+    if (itemId === REPORT_COMMENT_MENU_ITEM) {
+      handleReportCommentProp
+        ? handleReportCommentProp(commentId)
+        : handleReportComment();
+    }
+    if (itemId === DELETE_COMMENT_MENU_ITEM) {
+      handleDeleteCommentProp
+        ? handleDeleteCommentProp(true,commentId)
+        : handleDeleteComment(true);
+    }
+    if (itemId === EDIT_COMMENT_MENU_ITEM) {
+      handleEditCommentProp
+        ? handleEditCommentProp(commentId)
+        : handleEditComment(commentId);
+    }
+  };
 
   return (
     <SafeAreaView edges={["left", "right", "top"]} style={styles.flexView}>
       <KeyboardAvoidingView
-       enabled={true}
-       behavior={"height"}
+        enabled={true}
+        behavior={"height"}
         style={styles.flexView}
       >
         {/* header view */}
         <LMHeader
           showBackArrow={
-            postDetailStyle?.screenHeader?.showBackArrow
-              ? postDetailStyle?.screenHeader?.showBackArrow
+            customScreenHeader?.showBackArrow != undefined
+              ? customScreenHeader?.showBackArrow
               : true
           }
           heading={
-            postDetailStyle?.screenHeader?.heading
-              ? postDetailStyle?.screenHeader?.heading
-              : "Post"
+            customScreenHeader?.heading ? customScreenHeader?.heading : "Post"
           }
           subHeading={
-            postDetailStyle?.screenHeader?.subHeading
-              ? postDetailStyle?.screenHeader?.subHeading
+            customScreenHeader?.subHeading
+              ? customScreenHeader?.subHeading
               : postDetail?.id
               ? postDetail?.commentsCount > 1
                 ? `${postDetail?.commentsCount} comments`
@@ -146,17 +240,13 @@ const PostDetailComponent = React.memo(() => {
               : ""
           }
           onBackPress={() => {
-            Keyboard.dismiss();
-            navigation.navigate(UNIVERSAL_FEED);
-            postDetailStyle?.screenHeader?.onBackPress();
+            handleScreenBackPressProp ? handleScreenBackPressProp() : handleScreenBackPress();
           }}
-          rightComponent={postDetailStyle?.screenHeader?.rightComponent}
-          backIcon={postDetailStyle?.screenHeader?.backIcon}
-          subHeadingTextStyle={
-            postDetailStyle?.screenHeader?.subHeadingTextStyle
-          }
-          headingTextStyle={postDetailStyle?.screenHeader?.headingTextStyle}
-          headingViewStyle={postDetailStyle?.screenHeader?.headingViewStyle}
+          rightComponent={customScreenHeader?.rightComponent}
+          backIcon={customScreenHeader?.backIcon}
+          subHeadingTextStyle={customScreenHeader?.subHeadingTextStyle}
+          headingTextStyle={customScreenHeader?.headingTextStyle}
+          headingViewStyle={customScreenHeader?.headingViewStyle}
         />
         {/* post detail view */}
         {Object.keys(postDetail).length > 0 ? (
@@ -168,8 +258,18 @@ const PostDetailComponent = React.memo(() => {
                   allTags && isUserTagging
                     ? 0
                     : replyOnComment.textInputFocus
-                    ? Platform.OS === 'android' ? keyboardFocusOnReply ? Layout.normalize(114) : Layout.normalize(94) : Layout.normalize(94)
-                    : keyboardIsVisible? Layout.normalize(84): Layout.normalize(64),
+                    ? Platform.OS === "android"
+                      ? keyboardFocusOnReply
+                        ? navigatedFromComments
+                          ? Layout.normalize(94)
+                          : Layout.normalize(114)
+                        : Layout.normalize(94)
+                      : Layout.normalize(94)
+                    : keyboardIsVisible
+                    ? navigatedFromComments
+                      ? Layout.normalize(64)
+                      : Layout.normalize(84)
+                    : Layout.normalize(64),
               },
             ])}
           >
@@ -211,16 +311,27 @@ const PostDetailComponent = React.memo(() => {
                         {item && (
                           <LMCommentItem
                             comment={item}
+                            isRepliesVisible={
+                              item?.id === showRepliesOfCommentId
+                            }
                             // this calls the getCommentsReplies function on click of number of child replies text
                             onTapReplies={(repliesResponseCallback) => {
                               dispatch(clearComments(item?.id));
-                              getCommentsReplies(
-                                item?.postId,
-                                item?.id,
-                                repliesResponseCallback,
-                                1
-                              );
-                              postDetailStyle?.commentItemStyle?.onTapReplies();
+                              getCommentsRepliesProp
+                                ? getCommentsRepliesProp(
+                                    item?.postId,
+                                    item?.id,
+                                    repliesResponseCallback,
+                                    1
+                                  )
+                                : getCommentsReplies(
+                                    item?.postId,
+                                    item?.id,
+                                    repliesResponseCallback,
+                                    1
+                                  );
+                              customCommentItemStyle?.onTapReplies &&
+                                customCommentItemStyle?.onTapReplies();
                             }}
                             // this handles the pagination of child replies on click of view more
                             onTapViewMore={(
@@ -233,37 +344,37 @@ const PostDetailComponent = React.memo(() => {
                                 repliesResponseCallback,
                                 pageValue
                               );
-                              postDetailStyle?.commentItemStyle?.onTapViewMore();
+                              customCommentItemStyle?.onTapViewMore &&
+                                customCommentItemStyle?.onTapViewMore();
                             }}
                             // this hanldes the functionality on click of reply text to add reply to an comment
                             replyTextProps={{
-                              ...postDetailStyle?.commentItemStyle
-                                ?.replyTextProps,
+                              ...customCommentItemStyle?.replyTextProps,
                               onTap: () => {
-                                setKeyboardFocusOnReply(true)
+                                setKeyboardFocusOnReply(true);
                                 setReplyOnComment({
                                   textInputFocus: true,
                                   commentId: item?.id,
                                 });
                                 setReplyToUsername(item?.user?.name);
-                                postDetailStyle?.commentItemStyle?.replyTextProps?.onTap();
+                                customCommentItemStyle?.replyTextProps?.onTap &&
+                                  customCommentItemStyle?.replyTextProps?.onTap();
                               },
                             }}
                             // view more text style
                             viewMoreRepliesProps={{
-                              ...postDetailStyle?.commentItemStyle
-                                ?.viewMoreRepliesProps,
-                              children: postDetailStyle?.commentItemStyle
+                              ...customCommentItemStyle?.viewMoreRepliesProps,
+                              children: customCommentItemStyle
                                 ?.viewMoreRepliesProps?.children ? (
-                                postDetailStyle?.commentItemStyle
-                                  ?.viewMoreRepliesProps?.children
+                                customCommentItemStyle?.viewMoreRepliesProps
+                                  ?.children
                               ) : (
                                 <Text>{VIEW_MORE_TEXT}</Text>
                               ),
-                              textStyle: postDetailStyle?.commentItemStyle
+                              textStyle: customCommentItemStyle
                                 ?.viewMoreRepliesProps?.textStyle
-                                ? postDetailStyle?.commentItemStyle
-                                    ?.viewMoreRepliesProps?.textStyle
+                                ? customCommentItemStyle?.viewMoreRepliesProps
+                                    ?.textStyle
                                 : styles.viewMoreText,
                             }}
                             // comment menu item props
@@ -275,58 +386,62 @@ const PostDetailComponent = React.memo(() => {
                               onCloseModal: closeCommentActionListModal,
                               onSelected: (commentId, itemId) =>
                                 onCommentMenuItemSelect(commentId, itemId),
+                              menuItemTextStyle:
+                                postHeaderStyle?.postMenu?.menuItemTextStyle,
+                              menuViewStyle:
+                                postHeaderStyle?.postMenu?.menuViewStyle,
+                              backdropColor:
+                                postHeaderStyle?.postMenu?.backdropColor,
                             }}
                             menuIcon={{
-                              ...postDetailStyle?.commentItemStyle?.menuIcon,
+                              ...postHeaderStyle?.menuIcon,
                               onTap: () => {
                                 setReplyOnComment({
                                   textInputFocus: false,
                                   commentId: "",
                                 });
-                                postDetailStyle?.commentItemStyle?.menuIcon?.onTap();
+                                postHeaderStyle?.menuIcon?.onTap();
                               },
                             }}
                             // this executes on click of like icon of comment
                             likeIconButton={{
-                              ...postDetailStyle?.commentItemStyle
-                                ?.likeIconButton,
+                              ...postListStyle?.footer?.likeIconButton,
                               onTap: (id) => {
-                                commentLikeHandler(item?.postId, id);
-                                postDetailStyle?.commentItemStyle?.likeIconButton?.onTap();
+                                commentLikeHandlerProp
+                                  ? commentLikeHandlerProp(item?.postId, id)
+                                  : commentLikeHandler(item?.postId, id);
+                                postListStyle?.footer?.likeIconButton?.onTap();
                               },
                             }}
                             // this executes on click of like text of comment
                             likeTextButton={{
-                              ...postDetailStyle?.commentItemStyle
-                                ?.likeTextButton,
+                              ...postListStyle?.footer?.likeTextButton,
                               onTap: (id) => {
-                                dispatch(postLikesClear())
+                                dispatch(postLikesClear());
                                 navigation.navigate(POST_LIKES_LIST, [
                                   COMMENT_LIKES,
                                   id,
                                   item?.postId,
                                 ]);
-                                postDetailStyle?.commentItemStyle?.likeTextButton?.onTap();
+                                postListStyle?.footer?.likeTextButton?.onTap();
                               },
                             }}
                             commentUserNameStyle={
-                              postDetailStyle?.commentItemStyle
-                                ?.commentUserNameStyle
+                              customCommentItemStyle?.commentUserNameStyle
                             }
                             commentContentProps={
-                              postDetailStyle?.commentItemStyle
-                                ?.commentContentProps
+                              customCommentItemStyle?.commentContentProps
                             }
                             showMoreProps={
-                              postDetailStyle?.commentItemStyle?.showMoreProps
+                              postListStyle?.postContent?.showMoreText
                             }
                             repliesCountTextStyle={
-                              postDetailStyle?.commentItemStyle
-                                ?.repliesCountTextStyle
+                              customCommentItemStyle?.repliesCountTextStyle
                             }
                             timeStampStyle={
-                              postDetailStyle?.commentItemStyle?.timeStampStyle
+                              customCommentItemStyle?.timeStampStyle
                             }
+                            onCommentOverflowMenuClick={(event) => {onCommentOverflowMenuClickProp ? onCommentOverflowMenuClickProp(event, item?.menuItems, item?.id) : onCommentOverflowMenuClick(event)}}
                           />
                         )}
                       </>
@@ -373,14 +488,28 @@ const PostDetailComponent = React.memo(() => {
           <View
             style={[
               styles.replyCommentSection,
-              {bottom: Platform.OS === 'android' ? keyboardIsVisible ? Layout.normalize(84) : Layout.normalize(64) : Layout.normalize(64)},
-              postDetailStyle?.replyingViewStyle?.replyingView,
+              {
+                bottom:
+                  Platform.OS === "android"
+                    ? keyboardIsVisible
+                      ? navigatedFromComments
+                        ? Layout.normalize(64)
+                        : Layout.normalize(84)
+                      : Layout.normalize(64)
+                    : Layout.normalize(64),
+              },
+              customReplyingViewStyle?.replyingView,
             ]}
           >
-            {postDetailStyle?.replyingViewStyle?.replyingText ? (
-              postDetailStyle?.replyingViewStyle?.replyingText
+            {customReplyingViewStyle?.replyingText?.children ? (
+              <LMText {...customReplyingViewStyle?.replyingText} />
             ) : (
-              <Text style={styles.lightGreyColorText}>
+              <Text
+                style={[
+                  styles.lightGreyColorText,
+                  customReplyingViewStyle?.replyingText?.textStyle,
+                ]}
+              >
                 Replying to {replyToUsername}
               </Text>
             )}
@@ -392,13 +521,31 @@ const PostDetailComponent = React.memo(() => {
                   commentId: "",
                 })
               }
+              style={customReplyingViewStyle?.cancelReplyIcon?.boxStyle}
             >
-              {postDetailStyle?.replyingViewStyle?.cancelReplyIcon ? (
-                postDetailStyle?.replyingViewStyle?.cancelReplyIcon
+              {customReplyingViewStyle?.cancelReplyIcon?.assetPath ||
+              customReplyingViewStyle?.cancelReplyIcon?.iconUrl ? (
+                <LMIcon {...customReplyingViewStyle?.cancelReplyIcon} />
               ) : (
                 <Image
                   source={require("../../assets/images/close_icon3x.png")}
-                  style={styles.crossIconStyle}
+                  style={[
+                    customReplyingViewStyle?.cancelReplyIcon?.iconStyle,
+                    {
+                      width: customReplyingViewStyle?.cancelReplyIcon?.width
+                        ? customReplyingViewStyle?.cancelReplyIcon?.width
+                        : styles.crossIconStyle?.width,
+                      height: customReplyingViewStyle?.cancelReplyIcon?.height
+                        ? customReplyingViewStyle?.cancelReplyIcon?.height
+                        : styles.crossIconStyle?.height,
+                    },
+                  ]}
+                  tintColor={
+                    customReplyingViewStyle?.cancelReplyIcon?.color
+                      ? customReplyingViewStyle?.cancelReplyIcon?.color
+                      : styles.crossIconStyle?.tintColor
+                  }
+                  resizeMode={customReplyingViewStyle?.cancelReplyIcon?.boxFit}
                 />
               )}
             </TouchableOpacity>
@@ -411,9 +558,15 @@ const PostDetailComponent = React.memo(() => {
               styles.taggingListView,
               {
                 paddingBottom: replyOnComment.textInputFocus
-                  ? Layout.normalize(114)
-                  :keyboardIsVisible?  Layout.normalize(84):  Layout.normalize(64),
-                  maxHeight:300
+                  ? navigatedFromComments
+                    ? Layout.normalize(94)
+                    : Layout.normalize(114)
+                  : keyboardIsVisible
+                  ? navigatedFromComments
+                    ? Layout.normalize(64)
+                    : Layout.normalize(84)
+                  : Layout.normalize(64),
+                maxHeight: 300,
               },
               postDetailStyle?.userTaggingListStyle?.taggingListView,
             ]}
@@ -442,29 +595,24 @@ const PostDetailComponent = React.memo(() => {
                     key={item?.id}
                   >
                     <LMProfilePicture
-                      {...postDetailStyle?.userTaggingListStyle
-                        ?.userTagProfileImageStyle}
+                      {...postHeaderStyle?.profilePicture}
                       fallbackText={{
-                        ...postDetailStyle?.userTaggingListStyle
-                          ?.userTagProfileImageStyle?.fallbackText,
-                        children: postDetailStyle?.userTaggingListStyle
-                          ?.userTagProfileImageStyle?.fallbackText?.children ? (
-                          postDetailStyle?.userTaggingListStyle
-                            ?.userTagProfileImageStyle?.fallbackText?.children
+                        ...postHeaderStyle?.profilePicture?.fallbackText,
+                        children: postHeaderStyle?.profilePicture?.fallbackText
+                          ?.children ? (
+                          postHeaderStyle?.profilePicture?.fallbackText
+                            ?.children
                         ) : (
-                          <Text>{getNameInitials(item?.name)}</Text>
+                          <Text>{nameInitials(item?.name)}</Text>
                         ),
                       }}
                       fallbackTextBoxStyle={[
                         styles.taggingListProfileBoxStyle,
-                        postDetailStyle?.userTaggingListStyle
-                          ?.userTagProfileImageStyle?.fallbackTextBoxStyle,
+                        postHeaderStyle?.profilePicture?.fallbackTextBoxStyle,
                       ]}
                       size={
-                        postDetailStyle?.userTaggingListStyle
-                          ?.userTagProfileImageStyle?.size
-                          ? postDetailStyle?.userTaggingListStyle
-                              ?.userTagProfileImageStyle?.size
+                        postHeaderStyle?.profilePicture?.size
+                          ? postHeaderStyle?.profilePicture?.size
                           : 40
                       }
                     />
@@ -507,16 +655,23 @@ const PostDetailComponent = React.memo(() => {
 
         {/* input field */}
         <LMInputText
-          {...postDetailStyle?.commentTextInputStyle}
+          {...customCommentTextInput}
           inputText={commentToAdd}
           onType={handleInputChange}
           inputTextStyle={[
-            styles.textInputStyle,{bottom: keyboardIsVisible? Layout.normalize(25): 0},
-            postDetailStyle?.commentTextInputStyle?.inputTextStyle,
+            styles.textInputStyle,
+            {
+              bottom: keyboardIsVisible
+                ? navigatedFromComments
+                  ? Layout.normalize(0)
+                  : Layout.normalize(25)
+                : 0,
+            },
+            customCommentTextInput?.inputTextStyle,
           ]}
           autoFocus={
-            postDetailStyle?.commentTextInputStyle?.autoFocus
-              ? postDetailStyle?.commentTextInputStyle?.autoFocus
+            customCommentTextInput?.autoFocus != undefined
+              ? customCommentTextInput?.autoFocus
               : routeParams
               ? true
               : keyboardFocusOnReply
@@ -526,49 +681,48 @@ const PostDetailComponent = React.memo(() => {
               : commentFocus
           }
           placeholderText={
-            postDetailStyle?.commentTextInputStyle?.placeholderText
-              ? postDetailStyle?.commentTextInputStyle?.placeholderText
+            customCommentTextInput?.placeholderText
+              ? customCommentTextInput?.placeholderText
               : "Write a comment"
           }
           placeholderTextColor={
-            postDetailStyle?.commentTextInputStyle?.placeholderTextColor
-              ? postDetailStyle?.commentTextInputStyle?.placeholderTextColor
+            customCommentTextInput?.placeholderTextColor
+              ? customCommentTextInput?.placeholderTextColor
               : "#9B9B9B"
           }
-          disabled={
-            postDetailStyle?.commentTextInputStyle?.disabled
-              ? postDetailStyle?.commentTextInputStyle?.disabled
-              : postDetail?.id
-              ? false
-              : true
-          }
           inputRef={myRef}
-          rightIcon={
-            postDetailStyle?.commentTextInputStyle?.rightIcon
-              ? postDetailStyle.commentTextInputStyle.rightIcon
-              : {
-                  onTap: () => {
-                    commentToAdd
-                      ? editCommentFocus
-                        ? commentEdit()
-                        : replyOnComment.textInputFocus
-                        ? addNewReply(postDetail?.id, replyOnComment.commentId)
-                        : addNewComment(postDetail?.id)
-                      : {};
-                      setAllTags([]);
-                      setIsUserTagging(false);
-                  },
-                  icon: {
-                    type: "png",
-                    assetPath: require("../../assets/images/send_icon3x.png"),
-                    iconStyle: { opacity: commentToAdd ? 1 : 0.7 },
-                  },
-                  isClickable: commentToAdd ? false : true,
-                }
-          }
+          rightIcon={{
+            ...customCommentTextInput?.rightIcon,
+            onTap: () => {
+              customCommentTextInput?.rightIcon?.onTap();
+              commentToAdd
+                ? editCommentFocus
+                  ? commentEdit()
+                  : replyOnComment.textInputFocus
+                  ? addNewReplyProp
+                    ? addNewReplyProp(postDetail?.id, replyOnComment.commentId)
+                    : addNewReply(postDetail?.id, replyOnComment.commentId)
+                  : addNewCommentProp
+                  ? addNewCommentProp(postDetail?.id)
+                  : addNewComment(postDetail?.id)
+                : {};
+              setAllTags([]);
+              setIsUserTagging(false);
+            },
+            icon: {
+              assetPath: require("../../assets/images/send_icon3x.png"),
+              iconStyle: { opacity: commentToAdd ? 1 : 0.7 },
+              ...customCommentTextInput?.rightIcon?.icon,
+            },
+            isClickable: commentToAdd
+              ? customCommentTextInput?.rightIcon?.isClickable != undefined
+                ? customCommentTextInput?.rightIcon?.isClickable
+                : true
+              : false,
+          }}
           multilineField={
-            postDetailStyle?.commentTextInputStyle?.multilineField
-              ? postDetailStyle?.commentTextInputStyle?.multilineField
+            customCommentTextInput?.multilineField != undefined
+              ? customCommentTextInput?.multilineField
               : true
           }
           partTypes={[
@@ -576,6 +730,7 @@ const PostDetailComponent = React.memo(() => {
               trigger: "@", // Should be a single character like '@' or '#'
               textStyle: {
                 color: "blue",
+                ...customCommentTextInput?.mentionTextStyle,
               }, // The mention style in the input
             },
           ]}
