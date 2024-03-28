@@ -7,7 +7,7 @@ import App from './App.tsx';
 import {name as appName} from './app.json';
 import {initMyClient} from '@likeminds.community/feed-rn-core';
 
-const myClient = initMyClient('');
+const myClient = initMyClient('',4);
 
 AppRegistry.registerComponent(appName, () => App);
 

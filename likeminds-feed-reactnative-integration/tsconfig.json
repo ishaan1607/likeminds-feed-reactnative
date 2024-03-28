@@ -8,8 +8,7 @@
     "sourceMap": false,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
-    "jsx": "react"
+    "incremental": true
   },
   "exclude": ["node_modules", "test", "lib", "**/*spec.ts"]
 }
